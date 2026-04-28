@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevLaunch - Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#6e3030",
+                        "on-tertiary-container": "#3a2020",
+                        "background": "#faf5ee",
+                        "secondary-fixed-dim": "#cec6be",
+                        "inverse-primary": "#f0a878",
+                        "outline": "#9a9088",
+                        "surface-container-high": "#ece6dc",
+                        "on-secondary-fixed": "#2a2420",
+                        "on-surface": "#3a302a",
+                        "on-secondary-fixed-variant": "#504840",
+                        "on-primary-container": "#fbe8d8",
+                        "primary-fixed": "#fbe8d8",
+                        "on-primary-fixed": "#401a08",
+                        "on-secondary-container": "#605850",
+                        "tertiary-fixed-dim": "#e8a0a0",
+                        "on-background": "#3a302a",
+                        "primary": "#c2652a",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#faf5ee",
+                        "error-container": "#fce4e0",
+                        "primary-container": "#e08850",
+                        "on-surface-variant": "#605850",
+                        "surface-container-highest": "#e6e0d6",
+                        "on-error-container": "#7a1a10",
+                        "tertiary-container": "#d47070",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#eae2da",
+                        "surface-container": "#f2ece4",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#f0a878",
+                        "tertiary": "#8c3c3c",
+                        "secondary-container": "#eae2da",
+                        "surface-variant": "#ece6dc",
+                        "surface-dim": "#dcd6cc",
+                        "surface-tint": "#c2652a",
+                        "surface-container-low": "#f6f0e8",
+                        "surface": "#faf5ee",
+                        "surface-bright": "#faf5ee",
+                        "outline-variant": "#d8d0c8",
+                        "on-tertiary-fixed": "#2e1515",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#8a4518",
+                        "tertiary-fixed": "#fce0e0",
+                        "error": "#c0392b",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#3a302a",
+                        "secondary": "#78706a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": [
+                            "EB Garamond", "serif"
+                        ],
+                        "display": [
+                            "EB Garamond", "serif"
+                        ],
+                        "body": [
+                            "Manrope", "sans-serif"
+                        ],
+                        "label": [
+                            "Manrope", "sans-serif"
+                        ]
+                    },
+                    "fontSize": {}
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'EB Garamond', serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background flex h-screen overflow-hidden antialiased">
+<!-- SideNavBar -->
+<nav class="bg-[#faf5ee] dark:bg-stone-900 text-[#c2652a] dark:text-orange-400 font-['Manrope'] h-screen w-64 border-r border-[#d8d0c8]/60 dark:border-stone-800 rounded-none flex flex-col p-4 gap-2 flex-shrink-0">
+<div class="mb-8 px-2 mt-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden">
+<img alt="Student Profile" class="w-full h-full object-cover" data-alt="close up professional headshot of a young male university student smiling warmly, sunlit campus setting, soft warm golden hour light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRJquvI6thVw2e9wz2C8if0raioNHYAzz9Bi5GgWoEug6zBnEfIOvkXOrnx0F-oOFPgxmHSsezzwTHQPMiC9egqC2kk1pmJdfRSkwITB7YOzgmu-E_3bxYkrDdUUyEX2X4VLYnyws40dScDszunDyhofg7-kTvaYTfDxfLy5VTfIRCt6tm4y1UI8s0JcTGuoIUtaOtmUgK874PLyxtRwXDuxi9cuHOWgSK8n4czdQKbsvoUM5iSWMFBYzv3G5fVqn00lCek4V3cJt-"/>
+</div>
+<div>
+<h1 class="font-['EB_Garamond'] text-xl font-bold text-[#c2652a]">DevLaunch</h1>
+<p class="text-xs text-on-surface-variant font-medium">Student Dashboard</p>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<!-- Active Tab: Overview -->
+<a class="bg-white dark:bg-stone-800 text-[#c2652a] dark:text-orange-400 font-bold rounded-lg shadow-sm flex items-center gap-3 px-4 py-3 scale-98 active:scale-95 transition-transform hover:bg-orange-50 dark:hover:bg-stone-800 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg flex items-center gap-3 px-4 py-3 scale-98 active:scale-95 transition-transform hover:bg-orange-50 dark:hover:bg-stone-800 transition-all font-medium" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span>Portfolio</span>
+</a>
+<a class="text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg flex items-center gap-3 px-4 py-3 scale-98 active:scale-95 transition-transform hover:bg-orange-50 dark:hover:bg-stone-800 transition-all font-medium" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span>Projects</span>
+</a>
+<a class="text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg flex items-center gap-3 px-4 py-3 scale-98 active:scale-95 transition-transform hover:bg-orange-50 dark:hover:bg-stone-800 transition-all font-medium" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Applications</span>
+</a>
+<a class="text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg flex items-center gap-3 px-4 py-3 scale-98 active:scale-95 transition-transform hover:bg-orange-50 dark:hover:bg-stone-800 transition-all font-medium" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</div>
+<div class="mt-auto px-2 pb-4">
+<button class="w-full bg-surface-container-high text-primary font-semibold py-3 rounded-lg border border-outline-variant hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+                Upgrade to Pro
+            </button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto bg-background p-8 md:p-12 lg:p-16">
+<div class="max-w-6xl mx-auto">
+<header class="mb-12 flex justify-between items-end">
+<div>
+<p class="text-on-surface-variant font-medium mb-1 tracking-wide uppercase text-sm">Good morning, Alex</p>
+<h2 class="font-headline text-4xl lg:text-5xl font-bold text-on-surface tracking-tight">Your Launchpad</h2>
+</div>
+<button class="bg-primary text-on-primary px-6 py-3 rounded-lg font-medium shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span>
+                    New Application
+                </button>
+</header>
+<!-- Bento Grid Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-[0_2px_16px_rgba(58,48,42,0.04)] flex flex-col justify-between">
+<div class="flex justify-between items-start mb-6">
+<div class="p-3 bg-primary-fixed rounded-lg text-on-primary-fixed">
+<span class="material-symbols-outlined">work</span>
+</div>
+<span class="text-tertiary font-medium text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+                            +2 this week
+                        </span>
+</div>
+<div>
+<h3 class="font-headline text-4xl font-bold text-on-surface mb-1">12</h3>
+<p class="text-on-surface-variant text-sm font-medium">Active Applications</p>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-primary rounded-xl p-6 shadow-[0_4px_24px_rgba(194,101,42,0.2)] flex flex-col justify-between text-on-primary">
+<div class="flex justify-between items-start mb-6">
+<div class="p-3 bg-white/20 rounded-lg text-white">
+<span class="material-symbols-outlined">event</span>
+</div>
+<span class="bg-white/20 px-2 py-1 rounded text-xs font-medium">Next: Tomorrow</span>
+</div>
+<div>
+<h3 class="font-headline text-4xl font-bold text-white mb-1">3</h3>
+<p class="text-white/80 text-sm font-medium">Upcoming Interviews</p>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-[0_2px_16px_rgba(58,48,42,0.04)] flex flex-col justify-between">
+<div class="flex justify-between items-start mb-6">
+<div class="p-3 bg-secondary-container rounded-lg text-on-secondary-container">
+<span class="material-symbols-outlined">visibility</span>
+</div>
+<span class="text-secondary font-medium text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_flat</span>
+                            Steady
+                        </span>
+</div>
+<div>
+<h3 class="font-headline text-4xl font-bold text-on-surface mb-1">248</h3>
+<p class="text-on-surface-variant text-sm font-medium">Portfolio Views (30d)</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Main Activity Section -->
+<section class="lg:col-span-2">
+<div class="flex justify-between items-center mb-6 border-b border-outline-variant pb-4">
+<h3 class="font-headline text-2xl font-bold text-on-surface">Recent Activity</h3>
+<a class="text-primary hover:text-tertiary text-sm font-medium transition-colors" href="#">View All</a>
+</div>
+<div class="space-y-6">
+<!-- Activity Item -->
+<div class="flex gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors group cursor-pointer border border-transparent hover:border-outline-variant">
+<div class="flex-shrink-0 w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center text-on-primary-fixed mt-1">
+<span class="material-symbols-outlined">mark_email_read</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-bold text-on-surface text-lg">Interview Scheduled</h4>
+<span class="text-xs text-on-surface-variant font-medium">2h ago</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-2">Stripe - Frontend Engineering Intern. Technical round with Sarah J.</p>
+<div class="inline-flex items-center gap-2 bg-surface-container-high px-3 py-1.5 rounded-md text-sm font-medium text-on-surface">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                                    Oct 24, 2:00 PM PST
+                                </div>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors group cursor-pointer border border-transparent hover:border-outline-variant">
+<div class="flex-shrink-0 w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center text-on-secondary-container mt-1">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-bold text-on-surface text-lg">Application Submitted</h4>
+<span class="text-xs text-on-surface-variant font-medium">Yesterday</span>
+</div>
+<p class="text-on-surface-variant text-sm">Vercel - Design Engineer Summer 2025.</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors group cursor-pointer border border-transparent hover:border-outline-variant">
+<div class="flex-shrink-0 w-12 h-12 bg-tertiary-fixed rounded-full flex items-center justify-center text-on-tertiary-fixed mt-1">
+<span class="material-symbols-outlined">cancel</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-bold text-on-surface text-lg">Application Status Update</h4>
+<span class="text-xs text-on-surface-variant font-medium">Oct 18</span>
+</div>
+<p class="text-on-surface-variant text-sm">Meta - Software Engineer Intern. Status changed to: Not Selected.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Sidebar Content -->
+<aside class="space-y-8">
+<!-- Goal Tracker -->
+<div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant">
+<h3 class="font-headline text-xl font-bold text-on-surface mb-4">Weekly Goal</h3>
+<p class="text-sm text-on-surface-variant mb-4">Apply to 5 internships this week.</p>
+<div class="w-full bg-surface-container-high rounded-full h-2 mb-2">
+<div class="bg-primary h-2 rounded-full" style="width: 60%"></div>
+</div>
+<div class="flex justify-between text-xs font-medium text-on-surface-variant">
+<span>3 Applied</span>
+<span>2 Remaining</span>
+</div>
+</div>
+<!-- Action Prompt -->
+<div class="relative overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl text-primary">auto_awesome</span>
+</div>
+<div class="relative z-10">
+<h3 class="font-headline text-xl font-bold text-on-surface mb-2">Polish Your Portfolio</h3>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-3">Recruiters spend an average of 30 seconds on a portfolio. Ensure your top projects are front and center.</p>
+<button class="w-full bg-transparent border-2 border-primary text-primary font-semibold py-2 rounded-lg hover:bg-primary-fixed hover:border-primary-fixed hover:text-on-primary-fixed transition-colors">
+                                Edit Portfolio
+                            </button>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</main>
+</body></html>

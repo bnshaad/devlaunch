@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevLaunch - Build your portfolio. Track your internships. Launch your developer career.</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#6e3030",
+                        "on-tertiary-container": "#3a2020",
+                        "background": "#faf5ee",
+                        "secondary-fixed-dim": "#cec6be",
+                        "inverse-primary": "#f0a878",
+                        "outline": "#9a9088",
+                        "surface-container-high": "#ece6dc",
+                        "on-secondary-fixed": "#2a2420",
+                        "on-surface": "#3a302a",
+                        "on-secondary-fixed-variant": "#504840",
+                        "on-primary-container": "#fbe8d8",
+                        "primary-fixed": "#fbe8d8",
+                        "on-primary-fixed": "#401a08",
+                        "on-secondary-container": "#605850",
+                        "tertiary-fixed-dim": "#e8a0a0",
+                        "on-background": "#3a302a",
+                        "primary": "#c2652a",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#faf5ee",
+                        "error-container": "#fce4e0",
+                        "primary-container": "#e08850",
+                        "on-surface-variant": "#605850",
+                        "surface-container-highest": "#e6e0d6",
+                        "on-error-container": "#7a1a10",
+                        "tertiary-container": "#d47070",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#eae2da",
+                        "surface-container": "#f2ece4",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#f0a878",
+                        "tertiary": "#8c3c3c",
+                        "secondary-container": "#eae2da",
+                        "surface-variant": "#ece6dc",
+                        "surface-dim": "#dcd6cc",
+                        "surface-tint": "#c2652a",
+                        "surface-container-low": "#f6f0e8",
+                        "surface": "#faf5ee",
+                        "surface-bright": "#faf5ee",
+                        "outline-variant": "#d8d0c8",
+                        "on-tertiary-fixed": "#2e1515",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#8a4518",
+                        "tertiary-fixed": "#fce0e0",
+                        "error": "#c0392b",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#3a302a",
+                        "secondary": "#78706a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["EB Garamond", "serif"],
+                        "display": ["EB Garamond", "serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #faf5ee; color: #3a302a; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'EB Garamond', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+<!-- TopNavBar -->
+<header class="bg-[#faf5ee] dark:bg-stone-900 font-['Manrope'] antialiased border-b border-[#d8d0c8]/60 dark:border-stone-800 shadow-[0_2px_16px_rgba(58,48,42,0.04)] sticky top-0 z-50 w-full">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<!-- Brand -->
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#c2652a] dark:text-orange-400 text-3xl icon-fill">rocket_launch</span>
+<span class="font-['EB_Garamond'] text-2xl font-bold text-[#c2652a] dark:text-orange-400 tracking-tight">DevLaunch</span>
+</div>
+<!-- Navigation Links (Hidden on mobile) -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-[#c2652a] dark:text-orange-400 font-semibold border-b-2 border-[#c2652a] py-1 duration-200 ease-in-out" href="#">Features</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-[#c2652a] dark:hover:text-orange-300 transition-colors duration-200 ease-in-out py-1" href="#">Portfolios</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-[#c2652a] dark:hover:text-orange-300 transition-colors duration-200 ease-in-out py-1" href="#">Internships</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-[#c2652a] dark:hover:text-orange-300 transition-colors duration-200 ease-in-out py-1" href="#">Pricing</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<a class="hidden md:inline-block text-stone-600 dark:text-stone-400 font-medium hover:text-[#c2652a] dark:hover:text-orange-300 transition-colors duration-200 ease-in-out" href="#">Log In</a>
+<a class="bg-[#c2652a] text-white px-5 py-2.5 rounded-lg font-medium hover:bg-[#a65421] transition-colors duration-200 ease-in-out shadow-sm" href="#">Get Started</a>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center w-full">
+<!-- Hero Section -->
+<section class="w-full max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-32 flex flex-col md:flex-row items-center gap-16 relative overflow-hidden">
+<!-- Decorative Elements -->
+<div class="absolute top-0 right-0 w-[800px] h-[800px] bg-primary-container/10 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/4"></div>
+<div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-tertiary-container/10 rounded-full blur-3xl -z-10 -translate-x-1/3 translate-y-1/4"></div>
+<div class="flex-1 flex flex-col items-start gap-8 z-10">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/50 text-sm font-medium text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-sm icon-fill">stars</span>
+                    Join 10,000+ students launching their careers
+                </div>
+<h1 class="font-headline text-5xl md:text-7xl font-bold leading-[1.1] text-on-surface tracking-tight">
+                    Build your portfolio.<br/>
+<span class="text-primary italic font-normal">Track your internships.</span><br/>
+                    Launch your developer career.
+                </h1>
+<p class="font-body text-lg md:text-xl text-on-surface-variant max-w-xl leading-relaxed">
+                    DevLaunch is the all-in-one platform for computer science students to showcase projects, manage internship applications, and stand out to top tech recruiters.
+                </p>
+<div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto pt-4">
+<a class="w-full sm:w-auto bg-primary text-on-primary px-8 py-4 rounded-lg font-medium text-lg hover:bg-primary/90 transition-all shadow-sm flex items-center justify-center gap-2" href="#">
+                        Get Started
+                        <span class="material-symbols-outlined text-xl">arrow_forward</span>
+</a>
+<a class="w-full sm:w-auto bg-surface text-on-surface px-8 py-4 rounded-lg font-medium text-lg border border-outline-variant hover:bg-surface-container transition-all flex items-center justify-center gap-2" href="#">
+                        View Demo
+                        <span class="material-symbols-outlined text-xl">play_circle</span>
+</a>
+</div>
+<div class="flex items-center gap-4 mt-4 opacity-70">
+<div class="flex -space-x-3">
+<img alt="User" class="w-10 h-10 rounded-full border-2 border-background object-cover" data-alt="Portrait of young professional woman smiling softly in warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDx4RnSgd5S0SFtZXN5nz6bEWd6PRjtQBVhSfF24E7YGl23N8mFh9OBfxjXjOnr76ikat8QLaMPNzSpMpXoYAY1uBxdW1U0ljVcCVPR16jcyU7eKtLXoWjaq46udzOKuhxVtu8WyePVhQZx_jfF-iFm2MMDIph7l2_qZvMTsVrFMu8OE69bj7RPUhR6TMwgiHW3x5Z2P7XZVU4FMaguCXB-cTFZUsrIwHzl0NVe4m1_rU1bmHA0PGE--Siu0pDIs2_Ut5AE7H3mb9Lv"/>
+<img alt="User" class="w-10 h-10 rounded-full border-2 border-background object-cover" data-alt="Portrait of young professional man in warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUPKW-3gyjAibe3EqbiW57MU_A4JxTScTw1tbeC3ZEQyW2XYZ6VdBCVDEl6b8wGF_6mE29rXeiKvmoJE6j_hF9DuHLXxOLzjF0yEken4z-Akfn_guGrOorzZ90Y6BC_ek0uynxyC-HyJ29TcfJxhLXUJ5L4aRpPDF-XaLWp8nJqEZ4jT98XdwdVX6cZiYH404TWy7vBZdxjsMH-1Sy4jjbrJ7uXLmEDPljdcUg3S3-YagbCsOz4nlgzYEWUIbwJCpL2bf6HegwbMUZ"/>
+<img alt="User" class="w-10 h-10 rounded-full border-2 border-background object-cover" data-alt="Portrait of young woman with curly hair looking confident" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApE2ph_tIKQE9eTv3uvOcK17hMMuucqhtxFvXOgCIo_dysnUle3IX2_Pa33_U3tCfKJOA41cw5hs0xnrMrXGYUoNEMn8BvLv_V25vIzJjhEikfp7eGwSquhGFHEHRU5gyceJnrsgj5o-OQo6JGrZ37BTSsH-EyS3wmO3na5BzNDl-vkhh2VzMIaLhKA55vs0PThWf59ms9_v5Pu5MWs2ANGvPWkYttntUQ0qaKqJEvzcy-GtsfWyVFU8KqkR6ZK1Nl3wQH-8X8ECiw"/>
+</div>
+<span class="text-sm font-medium text-on-surface-variant">Trusted by students at Stanford, MIT, &amp; more.</span>
+</div>
+</div>
+<div class="flex-1 w-full relative z-10 flex justify-end">
+<!-- Abstract UI Representation instead of literal screenshot for more premium feel -->
+<div class="relative w-full max-w-[500px] aspect-[4/5] bg-surface-container-lowest rounded-2xl shadow-[0_20px_40px_rgba(58,48,42,0.08)] border border-outline-variant/50 overflow-hidden flex flex-col p-6 gap-6">
+<!-- Faux Top Bar -->
+<div class="flex justify-between items-center pb-4 border-b border-outline-variant/30">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-xl">person</span>
+</div>
+<div>
+<div class="h-4 w-24 bg-surface-variant rounded mb-1"></div>
+<div class="h-3 w-16 bg-surface-variant/50 rounded"></div>
+</div>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-variant/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">more_horiz</span>
+</div>
+</div>
+<!-- Faux Content Area -->
+<div class="flex-1 flex flex-col gap-4">
+<div class="h-32 w-full bg-gradient-to-br from-primary-container/20 to-tertiary-container/10 rounded-xl relative overflow-hidden">
+<div class="absolute bottom-4 left-4 h-6 w-32 bg-white/50 backdrop-blur-sm rounded"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="h-24 bg-surface-container-low rounded-xl border border-outline-variant/30 p-4 flex flex-col justify-between">
+<span class="material-symbols-outlined text-primary text-xl">folder_open</span>
+<div class="h-2 w-full bg-surface-variant rounded"></div>
+<div class="h-2 w-2/3 bg-surface-variant rounded"></div>
+</div>
+<div class="h-24 bg-surface-container-low rounded-xl border border-outline-variant/30 p-4 flex flex-col justify-between">
+<span class="material-symbols-outlined text-tertiary text-xl">trending_up</span>
+<div class="h-2 w-full bg-surface-variant rounded"></div>
+<div class="h-2 w-2/3 bg-surface-variant rounded"></div>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-xl border border-outline-variant/30 p-4 flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant/50"></div>
+<div class="flex-1 h-3 bg-surface-variant rounded"></div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant/50"></div>
+<div class="flex-1 h-3 bg-surface-variant rounded"></div>
+</div>
+</div>
+</div>
+<!-- Floating Badge -->
+<div class="absolute top-1/4 -right-6 bg-surface-container-lowest py-3 px-5 rounded-xl shadow-lg border border-outline-variant/50 flex items-center gap-3 animate-pulse">
+<div class="w-8 h-8 rounded-full bg-[#10a37f]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#10a37f] text-lg">check_circle</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface leading-tight">Offer Received</p>
+<p class="text-xs text-on-surface-variant">Stripe • Software Engineer</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Features Section -->
+<section class="w-full max-w-7xl mx-auto px-6 md:px-12 py-24">
+<div class="text-center max-w-3xl mx-auto mb-16">
+<h2 class="font-headline text-4xl md:text-5xl font-bold text-on-surface mb-6">Everything you need to land the offer.</h2>
+<p class="font-body text-lg text-on-surface-variant">Ditch the messy spreadsheets and fragmented tools. DevLaunch brings your entire career launchpad into one beautifully designed space.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(280px,auto)]">
+<!-- Public Portfolio (Large Span) -->
+<div class="md:col-span-2 bg-surface-container-low rounded-2xl p-8 border border-outline-variant/30 flex flex-col md:flex-row gap-8 items-center overflow-hidden relative group hover:bg-surface-container-high/50 transition-colors duration-500">
+<div class="flex-1 z-10">
+<div class="w-12 h-12 rounded-xl bg-primary-container/30 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-2xl icon-fill">view_quilt</span>
+</div>
+<h3 class="font-headline text-3xl font-bold text-on-surface mb-3">Public Portfolio</h3>
+<p class="font-body text-on-surface-variant leading-relaxed mb-6">Create a stunning, recruiter-ready portfolio in minutes. Showcase your GitHub repos, highlight key projects, and let your code speak for itself without writing a single line of CSS.</p>
+<a class="inline-flex items-center gap-2 text-primary font-medium hover:underline underline-offset-4" href="#">
+                            Explore templates <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="flex-1 w-full relative h-48 md:h-full min-h-[200px]">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-r from-surface-container-low via-transparent to-transparent z-10"></div>
+<img alt="Code on screen" class="absolute inset-0 w-full h-full object-cover rounded-l-xl opacity-80" data-alt="Close up of modern clean code syntax highlighted on a dark monitor screen with warm ambient desk lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA6XEgk1tHauPt7Lk61qZvgKHwHJuo8uk6hjPO98kwrbcEQ1mC9HrUlCIsT6AwkNZFyqFeK55hyGHGeCHTRWkjOpejnL-6eiz7pQ_5zuhWnW_i1rSptKIa5-de5t82O8C5eENn7pXeFJeCuNGfCWFmCOhLsKCI4-UsaJMbp1yZpwVZeTeY8MTesG-490JmRuguAfuCO2HJZHUyXRXAJnH2rW7c2xn3LQzqDl4ghZUX6sfjlIak6u8Po9re_cAW40U0alzUooZeBd4g"/>
+</div>
+</div>
+<!-- Internship Tracker (Tall) -->
+<div class="md:col-span-1 md:row-span-2 bg-surface-container-lowest rounded-2xl p-8 border border-outline-variant/50 flex flex-col relative overflow-hidden shadow-sm group hover:shadow-md transition-all duration-500">
+<div class="w-12 h-12 rounded-xl bg-tertiary-container/20 flex items-center justify-center mb-6 z-10">
+<span class="material-symbols-outlined text-tertiary text-2xl icon-fill">checklist</span>
+</div>
+<h3 class="font-headline text-3xl font-bold text-on-surface mb-3 z-10">Internship Tracker</h3>
+<p class="font-body text-on-surface-variant leading-relaxed mb-8 z-10">Track applications from 'Applied' to 'Offer'. Log interview dates, save recruiter contacts, and never miss a follow-up deadline again.</p>
+<div class="mt-auto flex flex-col gap-3 z-10 w-full">
+<!-- Kanban Column Mock -->
+<div class="bg-surface-container-low rounded-lg p-3 border border-outline-variant/40">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold text-on-surface uppercase tracking-wider">Interviewing</span>
+<span class="w-5 h-5 rounded-full bg-surface-variant flex items-center justify-center text-[10px] font-bold">3</span>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded border border-outline-variant/50 shadow-sm mb-2">
+<p class="font-bold text-sm text-on-surface">Frontend Intern</p>
+<p class="text-xs text-on-surface-variant">Vercel</p>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded border border-outline-variant/50 shadow-sm opacity-60">
+<p class="font-bold text-sm text-on-surface">SWE Intern</p>
+<p class="text-xs text-on-surface-variant">Airbnb</p>
+</div>
+</div>
+</div>
+<!-- Decorative background blob -->
+<div class="absolute bottom-0 right-0 w-48 h-48 bg-tertiary-container/5 rounded-full blur-2xl -z-0 translate-x-1/4 translate-y-1/4"></div>
+</div>
+<!-- Progress Analytics -->
+<div class="md:col-span-1 bg-surface-container-highest rounded-2xl p-8 border border-outline-variant/20 flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-xl bg-secondary-container/50 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-secondary text-2xl icon-fill">monitoring</span>
+</div>
+<h3 class="font-headline text-2xl font-bold text-on-surface mb-3">Progress Analytics</h3>
+<p class="font-body text-on-surface-variant text-sm leading-relaxed">Visualize your application funnel. See your response rates and identify where you need to improve your process.</p>
+</div>
+<div class="mt-6 flex items-end gap-2 h-16 w-full opacity-60">
+<div class="w-1/5 bg-primary/30 rounded-t-sm h-[30%]"></div>
+<div class="w-1/5 bg-primary/40 rounded-t-sm h-[50%]"></div>
+<div class="w-1/5 bg-primary/60 rounded-t-sm h-[40%]"></div>
+<div class="w-1/5 bg-primary/80 rounded-t-sm h-[70%]"></div>
+<div class="w-1/5 bg-primary rounded-t-sm h-[100%]"></div>
+</div>
+</div>
+<!-- Community / Resource -->
+<div class="md:col-span-1 bg-inverse-surface rounded-2xl p-8 flex flex-col justify-between text-inverse-on-surface relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-8xl">forum</span>
+</div>
+<div class="z-10">
+<h3 class="font-headline text-2xl font-bold mb-3 text-inverse-primary">Join the Community</h3>
+<p class="font-body text-inverse-on-surface/80 text-sm leading-relaxed mb-6">Connect with other students, share interview tips, and get referral opportunities from alumni.</p>
+</div>
+<a class="inline-flex items-center gap-2 text-inverse-primary font-medium hover:text-white transition-colors z-10 w-fit" href="#">
+                        Enter Discord <span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#faf5ee] dark:bg-stone-950 font-['Manrope'] text-sm w-full border-t border-[#d8d0c8]/60 dark:border-stone-800">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-8 py-12 max-w-7xl mx-auto gap-6 md:gap-0">
+<!-- Brand & Copyright -->
+<div class="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
+<span class="font-['EB_Garamond'] text-lg font-bold text-[#c2652a]">DevLaunch</span>
+<span class="text-stone-500 dark:text-stone-400">© 2024 DevLaunch. Sun-baked simplicity for students.</span>
+</div>
+<!-- Links -->
+<nav class="flex flex-wrap justify-center gap-6">
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#c2652a] transition-colors duration-200" href="#">Privacy</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#c2652a] transition-colors duration-200" href="#">Terms</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#c2652a] transition-colors duration-200" href="#">Support</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#c2652a] transition-colors duration-200" href="#">Careers</a>
+</nav>
+</div>
+</footer>
+</body></html>

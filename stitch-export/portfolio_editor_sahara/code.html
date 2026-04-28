@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevLaunch - Profile Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#6e3030",
+                        "on-tertiary-container": "#3a2020",
+                        "background": "#faf5ee",
+                        "secondary-fixed-dim": "#cec6be",
+                        "inverse-primary": "#f0a878",
+                        "outline": "#9a9088",
+                        "surface-container-high": "#ece6dc",
+                        "on-secondary-fixed": "#2a2420",
+                        "on-surface": "#3a302a",
+                        "on-secondary-fixed-variant": "#504840",
+                        "on-primary-container": "#fbe8d8",
+                        "primary-fixed": "#fbe8d8",
+                        "on-primary-fixed": "#401a08",
+                        "on-secondary-container": "#605850",
+                        "tertiary-fixed-dim": "#e8a0a0",
+                        "on-background": "#3a302a",
+                        "primary": "#c2652a",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#faf5ee",
+                        "error-container": "#fce4e0",
+                        "primary-container": "#e08850",
+                        "on-surface-variant": "#605850",
+                        "surface-container-highest": "#e6e0d6",
+                        "on-error-container": "#7a1a10",
+                        "tertiary-container": "#d47070",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#eae2da",
+                        "surface-container": "#f2ece4",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#f0a878",
+                        "tertiary": "#8c3c3c",
+                        "secondary-container": "#eae2da",
+                        "surface-variant": "#ece6dc",
+                        "surface-dim": "#dcd6cc",
+                        "surface-tint": "#c2652a",
+                        "surface-container-low": "#f6f0e8",
+                        "surface": "#faf5ee",
+                        "surface-bright": "#faf5ee",
+                        "outline-variant": "#d8d0c8",
+                        "on-tertiary-fixed": "#2e1515",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#8a4518",
+                        "tertiary-fixed": "#fce0e0",
+                        "error": "#c0392b",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#3a302a",
+                        "secondary": "#78706a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["EB Garamond", "serif"],
+                        "display": ["EB Garamond", "serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-screen w-64 border-r border-[#d8d0c8]/60 dark:border-stone-800 bg-[#faf5ee] dark:bg-stone-900 font-['Manrope'] p-4 gap-2 sticky top-0 shrink-0">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-headline font-bold text-xl overflow-hidden">
+<img alt="Student Profile" class="w-full h-full object-cover" data-alt="close up portrait of a young professional wearing neutral warm tones, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_spcqaR-OQCIJHrIBsjSXr46T0sw615VqPIaPjDl-3XyXRz2pwzvuVH9CC2xCz4jrvuUIe6npeYaVE9-cK4OiDXh25hye3M5tGziU8uc41pvb82i-UtlkgeMBTNM2oTeYDNrTgvGVlhGr48XyfxwRHiBmjkbv5zGCVB9HowfAXto1J6sky1rpx5IgPkIMoq14IxD-He824k_m1Xp960qndLg943rqfX-KWlePAjm2__35L4NXc81GXcbA9rwemaPOX04NoLh_Cny6"/>
+</div>
+<div>
+<h1 class="font-['EB_Garamond'] text-xl font-bold text-[#c2652a]">DevLaunch</h1>
+<p class="text-xs text-on-surface-variant">Student Dashboard</p>
+</div>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-stone-800 text-[#c2652a] dark:text-orange-400 font-bold rounded-lg shadow-sm transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined filled text-[#c2652a]">account_circle</span>
+<span>Portfolio</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-medium">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-medium">Applications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+<div class="mt-auto px-2">
+<button class="w-full py-2.5 px-4 bg-surface-container text-primary font-medium rounded-lg border border-outline-variant hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">star</span>
+                Upgrade to Pro
+            </button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 bg-background overflow-y-auto">
+<!-- Mobile Header (Visible only on sm) -->
+<header class="md:hidden flex items-center justify-between p-4 border-b border-outline-variant bg-surface sticky top-0 z-10">
+<div class="flex items-center gap-2">
+<span class="font-headline text-xl font-bold text-primary">DevLaunch</span>
+</div>
+<button class="p-2 text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<div class="flex-1 p-6 lg:p-10 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-10">
+<!-- Editor Column -->
+<div class="flex-1 max-w-3xl flex flex-col gap-8">
+<div>
+<h2 class="font-headline text-4xl text-on-background font-bold mb-2 tracking-tight">Edit Portfolio</h2>
+<p class="text-on-surface-variant font-body">Craft your professional narrative. Changes sync automatically to your public profile.</p>
+</div>
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/50 shadow-[0_2px_16px_rgba(58,48,42,0.02)]">
+<h3 class="font-headline text-2xl font-bold text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">person</span>
+                        Basic Information
+                    </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="col-span-full flex items-center gap-6 mb-2">
+<div class="relative group cursor-pointer">
+<div class="w-24 h-24 rounded-full bg-surface-container-high border-2 border-surface overflow-hidden shadow-sm">
+<img alt="Profile Avatar" class="w-full h-full object-cover" data-alt="close up portrait of a young professional wearing neutral warm tones, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2dRD33DEMitV8_rI_cYt82w7w-AdAGAaIU4XZuMsf1d3hhvYIOdqAvYcUBzYrJlJwKidQvRi3IUMlG3-j5sbyChcoAIibPE4OTT_--C4GRzHppb6ELMsjjw_gErgVUigDpni-OMOoxTdRZklXlLaFRVY18XPS536qKttqcG3CQYPcuB_mTWMyTLUJlZyD0iXPBr0wKJP5niCcMWiRheMGCC4Pnh_wanWI2HlCNFifV7OoCqtG2jck4eZHmOt5d0A0BV-YXkHBE0hV"/>
+</div>
+<div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white">photo_camera</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="px-4 py-2 bg-surface text-primary border border-outline-variant rounded-lg font-medium text-sm hover:bg-surface-container transition-colors w-fit">Change Photo</button>
+<p class="text-xs text-on-surface-variant">JPG, GIF or PNG. Max size of 5MB.</p>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-on-surface mb-1.5">First Name</label>
+<input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-shadow placeholder-on-surface-variant/50" type="text" value="Julian"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-on-surface mb-1.5">Last Name</label>
+<input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-shadow placeholder-on-surface-variant/50" type="text" value="Martinez"/>
+</div>
+<div class="col-span-full">
+<label class="block text-sm font-medium text-on-surface mb-1.5">Professional Headline</label>
+<input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-shadow placeholder-on-surface-variant/50" type="text" value="Frontend Developer &amp; UX Enthusiast"/>
+<p class="text-xs text-on-surface-variant mt-1.5">Appears below your name on your profile.</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/50 shadow-[0_2px_16px_rgba(58,48,42,0.02)]">
+<h3 class="font-headline text-2xl font-bold text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">edit_note</span>
+                        About Me
+                    </h3>
+<div>
+<label class="block text-sm font-medium text-on-surface mb-1.5">Bio</label>
+<textarea class="w-full bg-white border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-shadow resize-none" rows="5">Passionate about crafting warm, intuitive user experiences. Currently exploring the intersection of editorial design and digital interfaces. When I'm not coding, you can find me brewing specialty coffee or hiking.</textarea>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/50 shadow-[0_2px_16px_rgba(58,48,42,0.02)] mb-10">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline text-2xl font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">terminal</span>
+                            Technical Skills
+                        </h3>
+<button class="text-primary hover:text-primary-container text-sm font-medium flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span> Add Skill
+                        </button>
+</div>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-outline-variant text-sm font-medium text-on-surface group cursor-pointer hover:border-primary transition-colors">
+                            React <span class="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:text-error transition-colors">close</span>
+</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-outline-variant text-sm font-medium text-on-surface group cursor-pointer hover:border-primary transition-colors">
+                            TypeScript <span class="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:text-error transition-colors">close</span>
+</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-outline-variant text-sm font-medium text-on-surface group cursor-pointer hover:border-primary transition-colors">
+                            Tailwind CSS <span class="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:text-error transition-colors">close</span>
+</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-outline-variant text-sm font-medium text-on-surface group cursor-pointer hover:border-primary transition-colors">
+                            Figma <span class="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:text-error transition-colors">close</span>
+</span>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-white border border-outline-variant rounded-lg pl-10 pr-4 py-2.5 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" placeholder="Search skills to add..." type="text"/>
+</div>
+</div>
+<div class="flex justify-end gap-4 sticky bottom-6 z-20 bg-background/80 backdrop-blur-md p-4 rounded-xl border border-outline-variant/30 shadow-[0_4px_24px_rgba(58,48,42,0.08)]">
+<button class="px-6 py-2.5 rounded-lg border border-outline-variant text-on-surface font-medium hover:bg-surface-container transition-colors">Discard</button>
+<button class="px-6 py-2.5 rounded-lg bg-primary text-on-primary font-medium hover:bg-[#a65624] transition-colors shadow-sm">Save Changes</button>
+</div>
+</div>
+<!-- Live Preview Column -->
+<div class="hidden xl:block w-[400px] shrink-0 sticky top-10 h-[calc(100vh-80px)]">
+<div class="flex items-center justify-between mb-4 px-2">
+<h3 class="font-label text-sm font-bold tracking-wider text-on-surface-variant uppercase">Live Preview</h3>
+<button class="text-primary hover:underline text-sm font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span> View Full
+                    </button>
+</div>
+<div class="bg-white rounded-2xl border border-outline-variant shadow-[0_8px_32px_rgba(58,48,42,0.06)] overflow-hidden h-full flex flex-col">
+<!-- Browser Chrome Mockup -->
+<div class="h-10 bg-surface-container-low border-b border-outline-variant/50 flex items-center px-4 gap-2 shrink-0">
+<div class="w-3 h-3 rounded-full bg-outline-variant"></div>
+<div class="w-3 h-3 rounded-full bg-outline-variant"></div>
+<div class="w-3 h-3 rounded-full bg-outline-variant"></div>
+<div class="ml-4 bg-white/50 text-xs text-on-surface-variant px-3 py-1 rounded-md flex-1 text-center font-mono truncate">devlaunch.co/julian</div>
+</div>
+<!-- Preview Content -->
+<div class="flex-1 overflow-y-auto p-8 bg-background">
+<div class="flex flex-col items-center text-center mb-8">
+<img alt="Preview Avatar" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-sm mb-4" data-alt="close up portrait of a young professional wearing neutral warm tones, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfot9Hph4p5JNlZsOG4cJi5ALfiQHlU8kBzGFnvEgrSYYwY4y5okWyBqgEHwt3_lbvy_huva-UgLxVNpb8zeEt_eMvC-amOaFtxf0N5Rub6Doj0rgiyhCKrIUatzHIIuqgLwON0uMmFU2iO4pE7mEybm7_AyY4PfzQuBA6wN29lwUKwFWTnZZMrQv4GzyT1cdlEd7G8FSyYN5UAsacn6CxHijTcNO6cc5vgCT3_CKi6IshCvWVgWV3jqPrr-aFGmanK9VOLYNOVrr8"/>
+<h2 class="font-headline text-3xl font-bold text-on-background mb-1">Julian Martinez</h2>
+<p class="text-primary font-medium text-sm tracking-wide">Frontend Developer &amp; UX Enthusiast</p>
+</div>
+<div class="mb-8">
+<h4 class="font-headline text-xl font-bold text-on-background mb-3 border-b border-outline-variant/40 pb-2">About</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Passionate about crafting warm, intuitive user experiences. Currently exploring the intersection of editorial design and digital interfaces. When I'm not coding, you can find me brewing specialty coffee or hiking.</p>
+</div>
+<div>
+<h4 class="font-headline text-xl font-bold text-on-background mb-3 border-b border-outline-variant/40 pb-2">Expertise</h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 rounded-md bg-surface border border-outline-variant/60 text-xs font-medium text-on-surface">React</span>
+<span class="px-2.5 py-1 rounded-md bg-surface border border-outline-variant/60 text-xs font-medium text-on-surface">TypeScript</span>
+<span class="px-2.5 py-1 rounded-md bg-surface border border-outline-variant/60 text-xs font-medium text-on-surface">Tailwind CSS</span>
+<span class="px-2.5 py-1 rounded-md bg-surface border border-outline-variant/60 text-xs font-medium text-on-surface">Figma</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Public Developer Portfolio | DevLaunch</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#6e3030",
+                        "on-tertiary-container": "#3a2020",
+                        "background": "#faf5ee",
+                        "secondary-fixed-dim": "#cec6be",
+                        "inverse-primary": "#f0a878",
+                        "outline": "#9a9088",
+                        "surface-container-high": "#ece6dc",
+                        "on-secondary-fixed": "#2a2420",
+                        "on-surface": "#3a302a",
+                        "on-secondary-fixed-variant": "#504840",
+                        "on-primary-container": "#fbe8d8",
+                        "primary-fixed": "#fbe8d8",
+                        "on-primary-fixed": "#401a08",
+                        "on-secondary-container": "#605850",
+                        "tertiary-fixed-dim": "#e8a0a0",
+                        "on-background": "#3a302a",
+                        "primary": "#c2652a",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#faf5ee",
+                        "error-container": "#fce4e0",
+                        "primary-container": "#e08850",
+                        "on-surface-variant": "#605850",
+                        "surface-container-highest": "#e6e0d6",
+                        "on-error-container": "#7a1a10",
+                        "tertiary-container": "#d47070",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#eae2da",
+                        "surface-container": "#f2ece4",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#f0a878",
+                        "tertiary": "#8c3c3c",
+                        "secondary-container": "#eae2da",
+                        "surface-variant": "#ece6dc",
+                        "surface-dim": "#dcd6cc",
+                        "surface-tint": "#c2652a",
+                        "surface-container-low": "#f6f0e8",
+                        "surface": "#faf5ee",
+                        "surface-bright": "#faf5ee",
+                        "outline-variant": "#d8d0c8",
+                        "on-tertiary-fixed": "#2e1515",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#8a4518",
+                        "tertiary-fixed": "#fce0e0",
+                        "error": "#c0392b",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#3a302a",
+                        "secondary": "#78706a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["EB Garamond", "serif"],
+                        "display": ["EB Garamond", "serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Anchor -->
+<header class="sticky top-0 z-50 w-full bg-[#faf5ee]/90 backdrop-blur-md dark:bg-stone-900 border-b border-[#d8d0c8]/60 dark:border-stone-800 shadow-[0_2px_16px_rgba(58,48,42,0.04)] font-['Manrope'] antialiased">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-8">
+<a class="font-['EB_Garamond'] text-2xl font-bold text-[#c2652a] dark:text-orange-400" href="#">DevLaunch</a>
+<nav class="hidden md:flex gap-6">
+<a class="text-[#c2652a] dark:text-orange-400 font-semibold border-b-2 border-[#c2652a] pb-1 duration-200 ease-in-out" href="#">Portfolios</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-[#c2652a] dark:hover:text-orange-300 transition-colors pb-1 duration-200 ease-in-out" href="#">Features</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-[#c2652a] dark:hover:text-orange-300 transition-colors pb-1 duration-200 ease-in-out" href="#">Internships</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-[#c2652a] dark:hover:text-orange-300 transition-colors pb-1 duration-200 ease-in-out" href="#">Pricing</a>
+</nav>
+</div>
+<div class="hidden md:flex items-center gap-4">
+<a class="text-stone-600 font-medium hover:text-[#c2652a] transition-colors duration-200 ease-in-out" href="#">Log In</a>
+<a class="bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container px-5 py-2.5 rounded-lg font-medium transition-colors duration-200 ease-in-out shadow-sm" href="#">Get Started</a>
+</div>
+<button class="md:hidden text-stone-600">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+</div>
+</header>
+<main class="w-full">
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-8 py-24 md:py-32 flex flex-col md:flex-row items-center gap-16">
+<div class="flex-1 space-y-8">
+<div class="space-y-4">
+<p class="text-primary font-medium tracking-wide uppercase text-sm">Full-Stack Developer</p>
+<h1 class="font-headline text-5xl md:text-7xl font-bold leading-tight text-on-surface">
+                        Alexandre Dubois
+                    </h1>
+<p class="text-on-surface-variant text-xl md:text-2xl font-light leading-relaxed max-w-2xl">
+                        Crafting elegant digital experiences with robust architectures. Focused on scalable web applications and intuitive interfaces.
+                    </p>
+</div>
+<div class="flex flex-wrap gap-4 pt-4">
+<a class="bg-primary text-on-primary px-8 py-4 rounded-lg font-medium shadow-sm hover:shadow-md transition-shadow" href="#contact">Contact Me</a>
+<a class="border border-outline text-on-surface px-8 py-4 rounded-lg font-medium hover:bg-surface-container-low transition-colors" href="#work">View Selected Works</a>
+</div>
+<div class="flex gap-6 pt-8 border-t border-outline-variant">
+<a class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#">
+<span class="material-symbols-outlined">link</span> GitHub
+                    </a>
+<a class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#">
+<span class="material-symbols-outlined">link</span> LinkedIn
+                    </a>
+</div>
+</div>
+<div class="flex-1 w-full max-w-md">
+<div class="relative rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(58,48,42,0.08)] aspect-[4/5]">
+<img alt="Alexandre Dubois Profile" class="w-full h-full object-cover" data-alt="portrait of a professional male developer in natural warm lighting, confident expression, minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmtdhkcT-mYdpV0hc9jMfQnZ4Qf8PzHNw9lSHJY4wM0y2YF70eEvDKCBe5VwmJVjVZOlqe7xX8lxq8e2g0yqAcNwcBw853vHiiSfKNF52bfsIMB-kXz7pSSHqxQkqneAFSja8aDbExjLaavIU7OFAl_2_Gk6K7ItztDwWyb0vk7b9zk8Gxfnlrfd_S0DJEJ3ng6ESkv9kLXbTOxgJCM8tTGSGDTiSKinQrWVcmyM7LxI1p-LMlJZrOb1B5VDvoXehHrAPz7RHvqMn1"/>
+</div>
+</div>
+</section>
+<!-- About & Philosophy -->
+<section class="bg-surface-container-low py-24 w-full">
+<div class="max-w-7xl mx-auto px-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+<div>
+<h2 class="font-headline text-4xl font-bold mb-8 text-on-surface">Engineering Philosophy</h2>
+<div class="prose prose-lg text-on-surface-variant font-light space-y-6">
+<p>
+                                I believe that great software is built at the intersection of technical excellence and human empathy. My approach to development is rooted in the idea of "Sun-Baked Simplicity" — stripping away the unnecessary to reveal clear, functional, and beautiful solutions.
+                            </p>
+<p>
+                                With over 5 years of experience building modern web applications, I focus on creating systems that are not only performant but maintainable. I value clean code, thorough documentation, and collaborative environments.
+                            </p>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div class="bg-surface p-8 rounded-xl shadow-[0_2px_16px_rgba(58,48,42,0.04)] border border-outline-variant/30">
+<span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings: 'FILL' 1;">architecture</span>
+<h3 class="font-headline text-xl font-bold mb-2">Architecture</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Designing scalable and resilient systems using modern microservices and serverless paradigms.</p>
+</div>
+<div class="bg-surface p-8 rounded-xl shadow-[0_2px_16px_rgba(58,48,42,0.04)] border border-outline-variant/30">
+<span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings: 'FILL' 1;">code_blocks</span>
+<h3 class="font-headline text-xl font-bold mb-2">Clean Code</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Adhering to SOLID principles and maintaining high test coverage for reliable software.</p>
+</div>
+<div class="bg-surface p-8 rounded-xl shadow-[0_2px_16px_rgba(58,48,42,0.04)] border border-outline-variant/30">
+<span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings: 'FILL' 1;">speed</span>
+<h3 class="font-headline text-xl font-bold mb-2">Performance</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Optimizing for Core Web Vitals and ensuring fluid user experiences across devices.</p>
+</div>
+<div class="bg-surface p-8 rounded-xl shadow-[0_2px_16px_rgba(58,48,42,0.04)] border border-outline-variant/30">
+<span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings: 'FILL' 1;">group</span>
+<h3 class="font-headline text-xl font-bold mb-2">Collaboration</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Fostering strong communication between design, product, and engineering teams.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Technical Expertise (Bento Grid) -->
+<section class="max-w-7xl mx-auto px-8 py-24">
+<h2 class="font-headline text-4xl font-bold mb-12 text-center text-on-surface">Technical Expertise</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
+<!-- Frontend -->
+<div class="md:col-span-2 bg-surface-container-highest rounded-2xl p-8 relative overflow-hidden group">
+<div class="relative z-10">
+<h3 class="font-headline text-2xl font-bold mb-4 text-on-surface">Frontend Development</h3>
+<p class="text-on-surface-variant mb-6 max-w-md">Creating responsive, accessible, and highly interactive user interfaces.</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-4 py-1.5 bg-surface rounded-full text-sm font-medium border border-outline-variant text-on-surface">React</span>
+<span class="px-4 py-1.5 bg-surface rounded-full text-sm font-medium border border-outline-variant text-on-surface">TypeScript</span>
+<span class="px-4 py-1.5 bg-surface rounded-full text-sm font-medium border border-outline-variant text-on-surface">Next.js</span>
+<span class="px-4 py-1.5 bg-surface rounded-full text-sm font-medium border border-outline-variant text-on-surface">Tailwind CSS</span>
+</div>
+</div>
+<div class="absolute right-0 bottom-0 opacity-10 translate-x-1/4 translate-y-1/4 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">web</span>
+</div>
+</div>
+<!-- Database -->
+<div class="bg-surface-container-high rounded-2xl p-8 flex flex-col">
+<h3 class="font-headline text-2xl font-bold mb-4 text-on-surface">Database</h3>
+<div class="mt-auto space-y-3">
+<div class="flex justify-between items-center border-b border-outline-variant/50 pb-2">
+<span class="text-on-surface-variant font-medium">PostgreSQL</span>
+<span class="material-symbols-outlined text-primary text-sm">verified</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline-variant/50 pb-2">
+<span class="text-on-surface-variant font-medium">MongoDB</span>
+<span class="material-symbols-outlined text-primary text-sm">verified</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-medium">Redis</span>
+<span class="material-symbols-outlined text-primary text-sm">verified</span>
+</div>
+</div>
+</div>
+<!-- Backend -->
+<div class="bg-surface-container-high rounded-2xl p-8 flex flex-col">
+<h3 class="font-headline text-2xl font-bold mb-4 text-on-surface">Backend &amp; APIs</h3>
+<p class="text-on-surface-variant text-sm mb-4 flex-grow">Robust server-side logic and API design.</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container-lowest rounded-md text-xs font-medium text-on-surface">Node.js</span>
+<span class="px-3 py-1 bg-surface-container-lowest rounded-md text-xs font-medium text-on-surface">GraphQL</span>
+<span class="px-3 py-1 bg-surface-container-lowest rounded-md text-xs font-medium text-on-surface">Python</span>
+</div>
+</div>
+<!-- DevOps -->
+<div class="md:col-span-2 bg-surface-container-highest rounded-2xl p-8 relative overflow-hidden flex items-end">
+<div class="absolute inset-0 z-0">
+<img alt="Server infrastructure abstract" class="w-full h-full object-cover opacity-20" data-alt="abstract close up of clean server rack infrastructure with warm amber LED lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCigu0uIy4AdP2qINcAM373HAzutgfjd47oMC56T4fkoOBgttMwKgvDPoC-yL_9vmNn5aeklndAxGDlR-d2Vt8JFCdUiZijROx0XRWiElfoeICN0imSoCtEAPq9UQNVMPZl0kUhAHfLBqXvoc3rchNTWOAksOrUXijGvjyxLKLwiEP8LkX3W1l84uE_JVBdJtaJlRKwaZRyvqbPH2NPVmXF9Zp1qVNOgP6mJp_0c_ztlKc53b4tEwAlrOy-F9Bg_78kdChZzWfwGrXC"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-highest via-surface-container-highest/80 to-transparent"></div>
+</div>
+<div class="relative z-10 w-full flex justify-between items-end">
+<div>
+<h3 class="font-headline text-2xl font-bold mb-2 text-on-surface">Cloud &amp; DevOps</h3>
+<p class="text-on-surface-variant max-w-sm">AWS, Docker, CI/CD pipelines, and infrastructure as code.</p>
+</div>
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">cloud_done</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Selected Works -->
+<section class="bg-surface-container-lowest py-24 border-y border-outline-variant" id="work">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex justify-between items-end mb-16">
+<div>
+<h2 class="font-headline text-4xl font-bold mb-4 text-on-surface">Selected Works</h2>
+<p class="text-on-surface-variant text-lg">A curated showcase of recent engineering projects.</p>
+</div>
+<a class="hidden md:flex items-center gap-2 text-primary font-medium hover:text-primary-container transition-colors" href="#">
+                        View Full Archive <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+<div class="space-y-24">
+<!-- Project 1 -->
+<div class="group flex flex-col md:flex-row gap-12 items-center">
+<div class="w-full md:w-3/5 rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(58,48,42,0.08)] bg-surface-container">
+<img alt="Fintech Dashboard Project" class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out" data-alt="clean modern financial dashboard interface displayed on a monitor, warm subtle lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjrS23k8z3P9odnIptxEMkYzfMwcpMh3h-Kky39i92iHANl0yCDNNL-brckdBts-FhnDe5nTYj_WZXeZHOSxJYsJxkOkXWErp2SUtBCDlbmqopyA9ZvzjvmW4gge_x0iHWjVWSG3vfWrtpSkUmYtH4M06e6m_wJ0lFVB9mNzkbRGSCzBd8DctWSKzNv4xLd_eKxidfqnXGi9y_ICiGk6NxiPTuh0utbG5U-kMa6ARI4r3857R02Wyo861aBZqT_oDapB-B5iWxJwfz"/>
+</div>
+<div class="w-full md:w-2/5 space-y-6">
+<div class="flex gap-3">
+<span class="text-xs font-bold tracking-wider uppercase text-tertiary">FinTech</span>
+<span class="text-xs font-bold tracking-wider uppercase text-outline">2023</span>
+</div>
+<h3 class="font-headline text-3xl font-bold text-on-surface">Aura Financial Platform</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                                Architected and built the frontend for a next-generation wealth management platform. Implemented complex real-time data visualization and secure transaction flows.
+                            </p>
+<div class="flex flex-wrap gap-2 pt-2">
+<span class="px-3 py-1 bg-surface-container rounded text-xs font-medium text-on-surface-variant">React</span>
+<span class="px-3 py-1 bg-surface-container rounded text-xs font-medium text-on-surface-variant">D3.js</span>
+<span class="px-3 py-1 bg-surface-container rounded text-xs font-medium text-on-surface-variant">GraphQL</span>
+</div>
+<div class="pt-6 border-t border-outline-variant">
+<a class="inline-flex items-center gap-2 text-on-surface hover:text-primary font-medium transition-colors" href="#">
+                                    Read Case Study <span class="material-symbols-outlined text-sm">north_east</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Project 2 -->
+<div class="group flex flex-col md:flex-row-reverse gap-12 items-center">
+<div class="w-full md:w-3/5 rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(58,48,42,0.08)] bg-surface-container">
+<img alt="E-commerce Architecture Project" class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out" data-alt="minimalist architectural rendering of a modern workspace with soft warm sunlight streaming through large windows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUFakFMYg4e1K0sv6WXnhTDsuOilqZVLlT_L7IxEAAHPcYvf4W0quotNdSQpH2W5luYdSn35EuBu-EphXkzan7T_clvaZRjC1SjBNG8A2lbGhyZ6HBIzvJAKVFAiE-1LbfQ3SYEJkPg9pxVOPDuEkw8hhAJxaSITEkG_UGez_EDbsA8dMnvzUTAC2WpgEMokIxERJEO_uFeWxWRC2FACx5w74NxRChpjzRkI6cUfD_RkR-zGj1EQB3WCn7hPOjAxtBwl2QDOkNH3lr"/>
+</div>
+<div class="w-full md:w-2/5 space-y-6">
+<div class="flex gap-3">
+<span class="text-xs font-bold tracking-wider uppercase text-tertiary">E-Commerce</span>
+<span class="text-xs font-bold tracking-wider uppercase text-outline">2022</span>
+</div>
+<h3 class="font-headline text-3xl font-bold text-on-surface">Lumina Retail Core</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                                Migrated a legacy monolithic e-commerce application to a microservices architecture, reducing latency by 40% and enabling independent team deployments.
+                            </p>
+<div class="flex flex-wrap gap-2 pt-2">
+<span class="px-3 py-1 bg-surface-container rounded text-xs font-medium text-on-surface-variant">Node.js</span>
+<span class="px-3 py-1 bg-surface-container rounded text-xs font-medium text-on-surface-variant">Docker</span>
+<span class="px-3 py-1 bg-surface-container rounded text-xs font-medium text-on-surface-variant">AWS</span>
+</div>
+<div class="pt-6 border-t border-outline-variant">
+<a class="inline-flex items-center gap-2 text-on-surface hover:text-primary font-medium transition-colors" href="#">
+                                    Read Case Study <span class="material-symbols-outlined text-sm">north_east</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Anchor -->
+<footer class="bg-[#faf5ee] dark:bg-stone-950 text-[#c2652a] dark:text-orange-400 font-['Manrope'] text-sm w-full border-t border-[#d8d0c8]/60 dark:border-stone-800">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-8 py-12 max-w-7xl mx-auto gap-6 md:gap-0">
+<div class="flex flex-col items-center md:items-start gap-4">
+<span class="font-['EB_Garamond'] text-lg text-[#c2652a]">DevLaunch</span>
+<p class="text-stone-500 dark:text-stone-400">© 2024 DevLaunch. Sun-baked simplicity for students.</p>
+</div>
+<nav class="flex flex-wrap justify-center gap-6">
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#c2652a] transition-colors" href="#">Privacy</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#c2652a] transition-colors" href="#">Terms</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#c2652a] transition-colors" href="#">Support</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#c2652a] transition-colors" href="#">Careers</a>
+</nav>
+</div>
+</footer>
+</body></html>

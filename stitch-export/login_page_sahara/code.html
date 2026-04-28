@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login - DevLaunch</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#6e3030",
+                    "on-tertiary-container": "#3a2020",
+                    "background": "#faf5ee",
+                    "secondary-fixed-dim": "#cec6be",
+                    "inverse-primary": "#f0a878",
+                    "outline": "#9a9088",
+                    "surface-container-high": "#ece6dc",
+                    "on-secondary-fixed": "#2a2420",
+                    "on-surface": "#3a302a",
+                    "on-secondary-fixed-variant": "#504840",
+                    "on-primary-container": "#fbe8d8",
+                    "primary-fixed": "#fbe8d8",
+                    "on-primary-fixed": "#401a08",
+                    "on-secondary-container": "#605850",
+                    "tertiary-fixed-dim": "#e8a0a0",
+                    "on-background": "#3a302a",
+                    "primary": "#c2652a",
+                    "on-primary": "#ffffff",
+                    "inverse-on-surface": "#faf5ee",
+                    "error-container": "#fce4e0",
+                    "primary-container": "#e08850",
+                    "on-surface-variant": "#605850",
+                    "surface-container-highest": "#e6e0d6",
+                    "on-error-container": "#7a1a10",
+                    "tertiary-container": "#d47070",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#eae2da",
+                    "surface-container": "#f2ece4",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#f0a878",
+                    "tertiary": "#8c3c3c",
+                    "secondary-container": "#eae2da",
+                    "surface-variant": "#ece6dc",
+                    "surface-dim": "#dcd6cc",
+                    "surface-tint": "#c2652a",
+                    "surface-container-low": "#f6f0e8",
+                    "surface": "#faf5ee",
+                    "surface-bright": "#faf5ee",
+                    "outline-variant": "#d8d0c8",
+                    "on-tertiary-fixed": "#2e1515",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed-variant": "#8a4518",
+                    "tertiary-fixed": "#fce0e0",
+                    "error": "#c0392b",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#3a302a",
+                    "secondary": "#78706a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": ["EB Garamond", "serif"],
+                    "display": ["EB Garamond", "serif"],
+                    "body": ["Manrope", "sans-serif"],
+                    "label": ["Manrope", "sans-serif"]
+            },
+            "fontSize": {}
+    },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body antialiased min-h-screen flex items-center justify-center selection:bg-primary-container selection:text-on-primary-container">
+<!-- Suppressed Navigation Shells per constraints (Transactional Page) -->
+<main class="w-full max-w-md px-4 sm:px-6 lg:px-8 relative z-10">
+<!-- Subtle warm ambient glow behind the card -->
+<div class="absolute inset-0 -z-10 flex items-center justify-center pointer-events-none">
+<div class="w-[120%] h-[120%] max-w-[600px] max-h-[600px] bg-gradient-to-tr from-surface-tint/5 to-tertiary/5 rounded-full blur-[80px]"></div>
+</div>
+<div class="bg-surface-container-lowest p-8 sm:p-12 rounded-xl shadow-[0_2px_16px_rgba(58,48,42,0.04)] border border-outline-variant/40">
+<div class="text-center mb-10">
+<div class="font-display text-2xl font-bold text-primary mb-4 tracking-tight">DevLaunch</div>
+<h1 class="font-headline text-4xl text-on-background leading-tight mb-2 tracking-tight">Welcome back</h1>
+<p class="text-on-surface-variant font-body text-sm">Please enter your details to sign in.</p>
+</div>
+<form action="#" class="space-y-6" method="POST">
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-on-surface mb-1.5 font-label" for="email">Email address</label>
+<input autocomplete="email" class="appearance-none block w-full px-4 py-3 border border-outline-variant/80 rounded-lg bg-surface-container-lowest placeholder-on-surface-variant/50 text-on-surface focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors font-body text-sm" id="email" name="email" placeholder="student@university.edu" required="" type="email"/>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="block text-sm font-medium text-on-surface font-label" for="password">Password</label>
+<a class="text-sm font-medium text-primary hover:text-on-primary-fixed-variant transition-colors hover:underline underline-offset-4 decoration-primary/30" href="#">Forgot password?</a>
+</div>
+<input autocomplete="current-password" class="appearance-none block w-full px-4 py-3 border border-outline-variant/80 rounded-lg bg-surface-container-lowest placeholder-on-surface-variant/50 text-on-surface focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors font-body text-sm" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+<div>
+<button class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-on-primary bg-primary hover:bg-on-primary-fixed-variant focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background transition-all duration-200" type="submit">
+                        Sign In
+                    </button>
+</div>
+</form>
+<div class="mt-8">
+<div class="relative">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant/60"></div>
+</div>
+<div class="relative flex justify-center text-sm">
+<span class="px-4 bg-surface-container-lowest text-on-surface-variant font-label">Or continue with</span>
+</div>
+</div>
+<div class="mt-6 grid grid-cols-2 gap-4">
+<a class="w-full inline-flex justify-center items-center py-2.5 px-4 border border-outline-variant/80 rounded-lg bg-surface-container-lowest text-sm font-medium text-on-surface hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] mr-2 text-on-surface-variant group-hover:text-on-surface transition-colors" data-weight="fill" style="font-variation-settings: 'FILL' 0;">terminal</span>
+                        GitHub
+                    </a>
+<a class="w-full inline-flex justify-center items-center py-2.5 px-4 border border-outline-variant/80 rounded-lg bg-surface-container-lowest text-sm font-medium text-on-surface hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] mr-2 text-on-surface-variant group-hover:text-on-surface transition-colors" data-weight="fill" style="font-variation-settings: 'FILL' 0;">mail</span>
+                        Google
+                    </a>
+</div>
+</div>
+<p class="mt-10 text-center text-sm text-on-surface-variant font-body">
+                Don't have an account? 
+                <a class="font-medium text-primary hover:text-on-primary-fixed-variant transition-colors hover:underline underline-offset-4 decoration-primary/30" href="#">Sign up</a>
+</p>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevLaunch - Projects</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#6e3030",
+                    "on-tertiary-container": "#3a2020",
+                    "background": "#faf5ee",
+                    "secondary-fixed-dim": "#cec6be",
+                    "inverse-primary": "#f0a878",
+                    "outline": "#9a9088",
+                    "surface-container-high": "#ece6dc",
+                    "on-secondary-fixed": "#2a2420",
+                    "on-surface": "#3a302a",
+                    "on-secondary-fixed-variant": "#504840",
+                    "on-primary-container": "#fbe8d8",
+                    "primary-fixed": "#fbe8d8",
+                    "on-primary-fixed": "#401a08",
+                    "on-secondary-container": "#605850",
+                    "tertiary-fixed-dim": "#e8a0a0",
+                    "on-background": "#3a302a",
+                    "primary": "#c2652a",
+                    "on-primary": "#ffffff",
+                    "inverse-on-surface": "#faf5ee",
+                    "error-container": "#fce4e0",
+                    "primary-container": "#e08850",
+                    "on-surface-variant": "#605850",
+                    "surface-container-highest": "#e6e0d6",
+                    "on-error-container": "#7a1a10",
+                    "tertiary-container": "#d47070",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#eae2da",
+                    "surface-container": "#f2ece4",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#f0a878",
+                    "tertiary": "#8c3c3c",
+                    "secondary-container": "#eae2da",
+                    "surface-variant": "#ece6dc",
+                    "surface-dim": "#dcd6cc",
+                    "surface-tint": "#c2652a",
+                    "surface-container-low": "#f6f0e8",
+                    "surface": "#faf5ee",
+                    "surface-bright": "#faf5ee",
+                    "outline-variant": "#d8d0c8",
+                    "on-tertiary-fixed": "#2e1515",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed-variant": "#8a4518",
+                    "tertiary-fixed": "#fce0e0",
+                    "error": "#c0392b",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#3a302a",
+                    "secondary": "#78706a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": ["EB Garamond", "serif"],
+                    "display": ["EB Garamond", "serif"],
+                    "body": ["Manrope", "sans-serif"],
+                    "label": ["Manrope", "sans-serif"]
+            },
+            "fontSize": {}
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #faf5ee; color: #3a302a; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'EB Garamond', serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background flex h-screen overflow-hidden antialiased">
+<!-- SideNavBar -->
+<nav class="bg-[#faf5ee] dark:bg-stone-900 text-[#c2652a] dark:text-orange-400 font-['Manrope'] h-screen w-64 border-r rounded-none border-r border-[#d8d0c8]/60 dark:border-stone-800 no-shadow flex flex-col h-full p-4 gap-2 hidden md:flex shrink-0">
+<div class="mb-8 px-4 mt-4">
+<h1 class="font-['EB_Garamond'] text-xl font-bold text-[#c2652a] font-display">DevLaunch</h1>
+<p class="text-sm text-secondary font-label mt-1">Student Dashboard</p>
+</div>
+<div class="flex flex-col gap-2 flex-grow">
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg hover:bg-orange-50 dark:hover:bg-stone-800 transition-all scale-98 active:scale-95 transition-transform font-label" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Overview
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg hover:bg-orange-50 dark:hover:bg-stone-800 transition-all scale-98 active:scale-95 transition-transform font-label" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+                Portfolio
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-stone-800 text-[#c2652a] dark:text-orange-400 font-bold rounded-lg shadow-[0_2px_16px_rgba(58,48,42,0.04)] font-label" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+                Projects
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg hover:bg-orange-50 dark:hover:bg-stone-800 transition-all scale-98 active:scale-95 transition-transform font-label" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+                Applications
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800/50 rounded-lg hover:bg-orange-50 dark:hover:bg-stone-800 transition-all scale-98 active:scale-95 transition-transform font-label" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</div>
+<div class="mt-auto pt-4 border-t border-outline-variant">
+<button class="w-full py-3 px-4 bg-primary text-on-primary rounded-lg font-label font-medium hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+                Upgrade to Pro
+            </button>
+<div class="flex items-center gap-3 mt-4 px-2">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden shrink-0">
+<img alt="Student Profile" class="w-full h-full object-cover" data-alt="close-up portrait of young male student smiling slightly in warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCELuE9STn7VU_6G_ww6xeBIQMTw_NrmR5ltfVjMkURJlFdzY0cuQILv8MWuIZHJOZkm3VXvfPdjJxw9-UIPJLTj9eylWITpjwaSP4a3dxeNP9Xkc3rcLGAKM6L2Tu7awks7y8V2jePhkGj_hVuTv_VWZrqEdbfdDya-U7ai_kk3Uzg73pDiZ5KRMSA2bxtIdgyCZxiOAKnPdrs4bC1Em0f2x7GJZj8aOeyMFpp8-bBD-iQYztKqe7y8Y6-bvSow1GqfmBdQEndtPwQ"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="text-sm font-medium text-on-surface truncate font-label">Alex Rivera</span>
+<span class="text-xs text-secondary truncate font-label">alex@example.com</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col overflow-hidden bg-background">
+<!-- TopAppBar (Mobile Fallback) -->
+<header class="md:hidden flex justify-between items-center w-full px-4 py-4 bg-[#faf5ee] border-b border-[#d8d0c8]/60 shadow-[0_2px_16px_rgba(58,48,42,0.04)] z-10 shrink-0">
+<h1 class="font-['EB_Garamond'] text-xl font-bold text-[#c2652a] font-display">DevLaunch</h1>
+<button class="text-primary hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</header>
+<div class="flex-1 overflow-y-auto">
+<div class="max-w-7xl mx-auto px-6 py-12 md:px-12 w-full h-full">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div>
+<h2 class="text-4xl md:text-5xl font-headline font-bold text-on-surface mb-3 tracking-tight">Projects</h2>
+<p class="text-lg text-secondary font-body max-w-2xl">Manage your ongoing development initiatives, track progress, and showcase your best work.</p>
+</div>
+<button class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg font-label font-medium hover:bg-[#a85522] transition-colors shadow-sm shrink-0 w-fit">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                        Create New Project
+                    </button>
+</div>
+<!-- Filters & Search -->
+<div class="flex flex-col sm:flex-row gap-4 mb-10 pb-6 border-b border-outline-variant/50">
+<div class="relative flex-1 max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg font-body text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all text-on-surface placeholder-secondary/70" placeholder="Search projects..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0 hide-scrollbar">
+<button class="px-4 py-2 bg-surface-container-high text-on-surface rounded-full text-sm font-label font-medium whitespace-nowrap hover:bg-surface-dim transition-colors border border-outline-variant/30">All</button>
+<button class="px-4 py-2 bg-surface-container-low text-secondary rounded-full text-sm font-label font-medium whitespace-nowrap hover:bg-surface-container-high transition-colors border border-transparent">Live</button>
+<button class="px-4 py-2 bg-surface-container-low text-secondary rounded-full text-sm font-label font-medium whitespace-nowrap hover:bg-surface-container-high transition-colors border border-transparent">Beta</button>
+<button class="px-4 py-2 bg-surface-container-low text-secondary rounded-full text-sm font-label font-medium whitespace-nowrap hover:bg-surface-container-high transition-colors border border-transparent">Planning</button>
+</div>
+</div>
+<!-- Projects Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
+<!-- Card 1 -->
+<article class="group bg-surface-container-low rounded-xl border border-outline-variant/40 p-8 flex flex-col hover:shadow-[0_8px_30px_rgba(58,48,42,0.06)] hover:border-primary/30 transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+<div class="flex justify-between items-start mb-6 relative z-10">
+<div class="w-12 h-12 bg-white rounded-lg border border-outline-variant/30 shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl" data-icon="public">public</span>
+</div>
+<span class="px-3 py-1 bg-[#e8f5e9] text-[#2e7d32] text-xs font-bold rounded-full font-label tracking-wide uppercase">Live</span>
+</div>
+<h3 class="text-2xl font-headline font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">Nexus E-Commerce</h3>
+<p class="text-secondary font-body text-sm mb-8 flex-grow leading-relaxed">A fully featured headless e-commerce storefront with Stripe integration and dynamic inventory management.</p>
+<div class="mt-auto space-y-5">
+<div>
+<p class="text-xs font-semibold text-secondary mb-2 uppercase tracking-wider font-label">Tech Stack</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-xs rounded font-label border border-outline-variant/30">Next.js</span>
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-xs rounded font-label border border-outline-variant/30">Tailwind</span>
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-xs rounded font-label border border-outline-variant/30">Stripe API</span>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/30 flex justify-between items-center">
+<span class="text-xs text-secondary font-label">Updated 2d ago</span>
+<button class="text-primary hover:text-[#a85522] font-label text-sm font-medium transition-colors flex items-center gap-1">
+                                    View Details <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="group bg-surface-container-low rounded-xl border border-outline-variant/40 p-8 flex flex-col hover:shadow-[0_8px_30px_rgba(58,48,42,0.06)] hover:border-primary/30 transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+<div class="flex justify-between items-start mb-6 relative z-10">
+<div class="w-12 h-12 bg-white rounded-lg border border-outline-variant/30 shadow-sm flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-2xl" data-icon="bug_report">bug_report</span>
+</div>
+<span class="px-3 py-1 bg-[#fff8e1] text-[#f57f17] text-xs font-bold rounded-full font-label tracking-wide uppercase">Beta</span>
+</div>
+<h3 class="text-2xl font-headline font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">Aura Task Manager</h3>
+<p class="text-secondary font-body text-sm mb-8 flex-grow leading-relaxed">Kanban-style project management tool with real-time collaborative features and time tracking capabilities.</p>
+<div class="mt-auto space-y-5">
+<div>
+<p class="text-xs font-semibold text-secondary mb-2 uppercase tracking-wider font-label">Tech Stack</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-xs rounded font-label border border-outline-variant/30">React</span>
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-xs rounded font-label border border-outline-variant/30">Firebase</span>
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-xs rounded font-label border border-outline-variant/30">Zustand</span>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/30 flex justify-between items-center">
+<span class="text-xs text-secondary font-label">Updated 5h ago</span>
+<button class="text-primary hover:text-[#a85522] font-label text-sm font-medium transition-colors flex items-center gap-1">
+                                    View Details <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="group bg-surface-container-low rounded-xl border border-outline-variant/40 p-8 flex flex-col hover:shadow-[0_8px_30px_rgba(58,48,42,0.06)] hover:border-primary/30 transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-tertiary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+<div class="flex justify-between items-start mb-6 relative z-10">
+<div class="w-12 h-12 bg-white rounded-lg border border-outline-variant/30 shadow-sm flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-2xl" data-icon="architecture">architecture</span>
+</div>
+<span class="px-3 py-1 bg-surface-container-high text-secondary text-xs font-bold rounded-full font-label tracking-wide uppercase">Planning</span>
+</div>
+<h3 class="text-2xl font-headline font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">Lumina Analytics</h3>
+<p class="text-secondary font-body text-sm mb-8 flex-grow leading-relaxed">Data visualization dashboard for social media metrics, focusing on custom charting and automated reporting.</p>
+<div class="mt-auto space-y-5">
+<div>
+<p class="text-xs font-semibold text-secondary mb-2 uppercase tracking-wider font-label">Tech Stack</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-xs rounded font-label border border-outline-variant/30">Vue 3</span>
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-xs rounded font-label border border-outline-variant/30">D3.js</span>
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-xs rounded font-label border border-outline-variant/30">Node.js</span>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/30 flex justify-between items-center">
+<span class="text-xs text-secondary font-label">Updated 1w ago</span>
+<button class="text-primary hover:text-[#a85522] font-label text-sm font-medium transition-colors flex items-center gap-1">
+                                    View Details <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Empty State / Add New Card -->
+<article class="bg-surface-container border-2 border-dashed border-outline-variant/60 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container-high hover:border-primary/40 cursor-pointer transition-all duration-300 min-h-[320px] group">
+<div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-3xl text-primary" data-icon="add">add</span>
+</div>
+<h3 class="text-xl font-headline font-bold text-on-surface mb-2">Start a New Project</h3>
+<p class="text-secondary font-body text-sm max-w-xs">Have a new idea? Create a project repository to start tracking your progress.</p>
+</article>
+</div>
+</div>
+</div>
+</main>
+</body></html>
