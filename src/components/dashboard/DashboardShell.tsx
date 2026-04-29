@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { label: "Profile", href: "/dashboard/profile", icon: UserRound },
-  { label: "Projects", href: "/demo", icon: FolderOpen },
+  { label: "Projects", href: "/dashboard/projects", icon: FolderOpen },
   {
     label: "Applications",
     href: "/dashboard",

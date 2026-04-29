@@ -119,6 +119,13 @@ function DashboardContent() {
                 <Plus aria-hidden="true" className="h-4 w-4" />
                 New Application
               </Button>
+              <Link
+                className={buttonVariants()}
+                href="/dashboard/projects/new"
+              >
+                <Plus aria-hidden="true" className="h-4 w-4" />
+                Add Project
+              </Link>
               <Button
                 disabled={isLoggingOut}
                 onClick={handleLogout}
@@ -259,6 +266,32 @@ function DashboardContent() {
               <PencilLine aria-hidden="true" className="h-4 w-4" />
               Edit Portfolio
             </Link>
+          </WarmCard>
+          <WarmCard>
+            <h2 className="font-serif text-2xl font-bold text-sahara-text">
+              Shape Your Projects
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-sahara-muted">
+              Add the work you want recruiters to notice first.
+            </p>
+            <div className="mt-6 flex flex-col gap-3">
+              <Link
+                className={buttonVariants({
+                  className: "w-full",
+                  variant: "secondary"
+                })}
+                href="/dashboard/projects"
+              >
+                Manage Projects
+              </Link>
+              <Link
+                className={buttonVariants({ className: "w-full" })}
+                href="/dashboard/projects/new"
+              >
+                <Plus aria-hidden="true" className="h-4 w-4" />
+                Add Project
+              </Link>
+            </div>
           </WarmCard>
         </AnimatedSection>
       </div>

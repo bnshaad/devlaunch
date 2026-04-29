@@ -6,8 +6,7 @@ import {
   Globe,
   Linkedin,
   Mail,
-  MapPin,
-  Sparkles
+  MapPin
 } from "lucide-react";
 import Link from "next/link";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
@@ -15,12 +14,15 @@ import { StaggerContainer, StaggerItem } from "@/components/shared/AnimatedList"
 import { EditorialHeading } from "@/components/shared/EditorialHeading";
 import { PageShell } from "@/components/shared/PageShell";
 import { WarmCard } from "@/components/shared/WarmCard";
+import { ProjectCard } from "@/components/projects/ProjectCard";
 import { buttonVariants } from "@/components/ui/button";
 import { type Portfolio } from "@/types/portfolio";
+import { type Project } from "@/types/project";
 import { type AppUser } from "@/types/user";
 
 type PublicPortfolioProps = {
   portfolio: Portfolio;
+  projects: Project[];
   user: AppUser;
   username: string;
 };
@@ -147,6 +149,7 @@ function SkillBadge({ skill }: { skill: string }) {
 
 export function PublicPortfolio({
   portfolio,
+  projects,
   user,
   username
 }: PublicPortfolioProps) {
@@ -270,20 +273,36 @@ export function PublicPortfolio({
             </WarmCard>
           </AnimatedSection>
 
-          <AnimatedSection as="section" delay={0.22}>
-            <WarmCard tone="low">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-sahara-surface text-sahara-primary">
-                <Sparkles aria-hidden="true" className="h-5 w-5" />
-              </div>
-              <EditorialHeading as="h2" className="mt-5 text-3xl">
-                Projects coming soon
-              </EditorialHeading>
-              <p className="mt-4 text-sm leading-7 text-sahara-muted">
-                Project showcases will arrive in a later DevLaunch milestone.
-                For now, this public profile highlights the developer story,
-                skills, and contact links.
+          <AnimatedSection as="section" className="lg:col-span-2" delay={0.22}>
+            <div className="mb-5 border-b border-sahara-border/60 pb-4">
+              <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
+                Projects
               </p>
-            </WarmCard>
+              <EditorialHeading as="h2" className="mt-2 text-4xl">
+                Selected work
+              </EditorialHeading>
+            </div>
+            {projects.length ? (
+              <StaggerContainer
+                className="grid gap-6 md:grid-cols-2"
+                staggerDelay={0.06}
+              >
+                {projects.map((project) => (
+                  <StaggerItem key={project.id} y={10}>
+                    <ProjectCard mode="public" project={project} />
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+            ) : (
+              <WarmCard tone="low">
+                <EditorialHeading as="h3" className="text-3xl">
+                  Projects coming soon
+                </EditorialHeading>
+                <p className="mt-4 text-sm leading-7 text-sahara-muted">
+                  This developer has not published projects to their portfolio yet.
+                </p>
+              </WarmCard>
+            )}
           </AnimatedSection>
         </div>
       </div>

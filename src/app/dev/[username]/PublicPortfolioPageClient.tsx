@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { PublicPortfolio } from "@/components/portfolio/PublicPortfolio";
 import { PublicPortfolioState } from "@/components/portfolio/PublicPortfolioState";
 import { getPortfolioByUserId } from "@/services/portfolioService";
+import { getProjectsByUser } from "@/services/projectService";
 import {
   getUidByUsername,
   getUserProfile,
   normalizeUsername
 } from "@/services/userService";
 import { type Portfolio } from "@/types/portfolio";
+import { type Project } from "@/types/project";
 import { type AppUser } from "@/types/user";
 
 type PublicPortfolioPageClientProps = {
@@ -30,6 +32,7 @@ export function PublicPortfolioPageClient({
   const [status, setStatus] = useState<PublicPortfolioStatus>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [user, setUser] = useState<AppUser | null>(null);
 
   useEffect(() => {
@@ -39,6 +42,7 @@ export function PublicPortfolioPageClient({
       setStatus("loading");
       setErrorMessage(null);
       setPortfolio(null);
+      setProjects([]);
       setUser(null);
 
       try {
@@ -72,8 +76,15 @@ export function PublicPortfolioPageClient({
           return;
         }
 
+        const publicProjects = await getProjectsByUser(uid);
+
+        if (!isActive) {
+          return;
+        }
+
         setUser(profile);
         setPortfolio(publicPortfolio);
+        setProjects(publicProjects);
         setStatus("ready");
       } catch (error) {
         if (!isActive) {
@@ -133,6 +144,7 @@ export function PublicPortfolioPageClient({
   return (
     <PublicPortfolio
       portfolio={portfolio}
+      projects={projects}
       user={user}
       username={normalizedUsername}
     />
