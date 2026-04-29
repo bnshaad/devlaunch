@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Rocket } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { EditorialHeading } from "@/components/shared/EditorialHeading";
 import { PageShell } from "@/components/shared/PageShell";
@@ -8,11 +13,45 @@ import { WarmCard } from "@/components/shared/WarmCard";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
+  const { loading, signInWithGoogle, user } = useAuth();
+  const router = useRouter();
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace("/dashboard");
+    }
+  }, [loading, router, user]);
+
+  async function handleGoogleSignIn() {
+    setError(null);
+    setIsSigningIn(true);
+
+    try {
+      await signInWithGoogle();
+      router.replace("/dashboard");
+    } catch (signInError) {
+      setError(
+        signInError instanceof Error
+          ? signInError.message
+          : "Unable to sign in with Google. Please try again."
+      );
+    } finally {
+      setIsSigningIn(false);
+    }
+  }
+
   return (
     <PageShell>
       <SiteHeader minimal />
       <div className="relative flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-14">
-        <AnimatedSection className="relative w-full max-w-md">
+        <AnimatedSection
+          amount={0.35}
+          className="relative w-full max-w-md"
+          duration={0.6}
+          y={20}
+        >
           <WarmCard className="p-8 sm:p-12">
             <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-[#fbe8d8] text-sahara-primary">
               <Rocket aria-hidden="true" className="h-7 w-7" />
@@ -29,19 +68,32 @@ export default function LoginPage() {
                 progress.
               </p>
             </div>
-            <Button className="mt-8 w-full" size="lg">
+            <Button
+              className="mt-8 w-full"
+              disabled={loading || isSigningIn}
+              onClick={handleGoogleSignIn}
+              size="lg"
+            >
               <span
                 aria-hidden="true"
                 className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-xs font-bold text-sahara-primary"
               >
                 G
               </span>
-              Continue with Google
+              {isSigningIn ? "Opening Google..." : "Continue with Google"}
             </Button>
+            {error ? (
+              <div
+                className="mt-4 rounded-lg border border-sahara-tertiary/25 bg-sahara-tertiary/10 px-4 py-3 text-sm leading-6 text-sahara-tertiary"
+                role="alert"
+              >
+                {error}
+              </div>
+            ) : null}
             <div className="my-8 flex items-center gap-4">
               <div className="h-px flex-1 bg-sahara-border/70" />
               <span className="text-xs font-semibold uppercase tracking-wide text-sahara-muted">
-                Day 1 placeholder
+                Google authentication
               </span>
               <div className="h-px flex-1 bg-sahara-border/70" />
             </div>

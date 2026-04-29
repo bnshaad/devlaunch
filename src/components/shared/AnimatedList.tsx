@@ -8,13 +8,15 @@ type StaggerContainerProps = {
   className?: string;
   amount?: number;
   staggerDelay?: number;
+  delayChildren?: number;
 };
 
 export function StaggerContainer({
   children,
   className,
   amount = 0.18,
-  staggerDelay = 0.08
+  staggerDelay = 0.08,
+  delayChildren = 0
 }: StaggerContainerProps) {
   const reduceMotion = useReducedMotion();
 
@@ -28,6 +30,7 @@ export function StaggerContainer({
         hidden: {},
         show: {
           transition: {
+            delayChildren,
             staggerChildren: staggerDelay
           }
         }
@@ -40,10 +43,14 @@ export function StaggerContainer({
 
 export function StaggerItem({
   children,
-  className
+  className,
+  y = 14,
+  duration = 0.5
 }: {
   children: ReactNode;
   className?: string;
+  y?: number;
+  duration?: number;
 }) {
   const reduceMotion = useReducedMotion();
 
@@ -51,11 +58,11 @@ export function StaggerItem({
     <motion.div
       className={className}
       variants={{
-        hidden: reduceMotion ? {} : { opacity: 0, y: 14 },
+        hidden: reduceMotion ? {} : { opacity: 0, y },
         show: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.46, ease: "easeOut" }
+          transition: { duration, ease: "easeOut" }
         }
       }}
     >

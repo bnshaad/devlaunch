@@ -11,6 +11,7 @@ import {
 import { StaggerContainer, StaggerItem } from "@/components/shared/AnimatedList";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { EditorialHeading } from "@/components/shared/EditorialHeading";
+import { HoverRevealCard } from "@/components/shared/HoverRevealCard";
 import { PageShell } from "@/components/shared/PageShell";
 import { SectionContainer } from "@/components/shared/SectionContainer";
 import { SiteHeader } from "@/components/shared/SiteHeader";
@@ -22,18 +23,21 @@ const features = [
     title: "Public developer portfolio",
     description:
       "Show your projects, skills, links, and career story in a recruiter-friendly profile.",
+    reveal: "Recruiters get the strongest signal first: projects, proof, and links.",
     icon: UserRound
   },
   {
     title: "Internship application tracker",
     description:
       "Organize companies, roles, statuses, deadlines, and notes from one focused dashboard.",
+    reveal: "Keep follow-ups and next steps visible without turning the page into a spreadsheet.",
     icon: BriefcaseBusiness
   },
   {
     title: "Progress analytics",
     description:
       "See portfolio completion, interview momentum, offer progress, and next actions clearly.",
+    reveal: "Warm, readable metrics help you decide what to do next.",
     icon: BarChart3
   }
 ];
@@ -43,7 +47,7 @@ export default function Home() {
     <PageShell>
       <SiteHeader />
       <SectionContainer className="grid min-h-[calc(100vh-5rem)] items-center gap-16 overflow-hidden lg:grid-cols-[1.02fr_0.98fr]">
-        <AnimatedSection amount={0.35} className="relative z-10 max-w-3xl">
+        <AnimatedSection amount={0.35} className="relative z-10 max-w-3xl" y={24}>
           <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-sahara-border/70 bg-sahara-surfaceLow px-3 py-1.5 text-sm font-semibold text-sahara-muted">
             <Rocket aria-hidden="true" className="h-4 w-4 text-sahara-primary" />
             Student career dashboard
@@ -77,7 +81,7 @@ export default function Home() {
           </div>
         </AnimatedSection>
 
-        <AnimatedSection amount={0.35} className="relative" delay={0.12}>
+        <AnimatedSection amount={0.35} className="relative" delay={0.12} y={24}>
           <WarmCard className="relative overflow-hidden p-6">
             <div className="flex items-center justify-between gap-4">
               <div>
@@ -127,13 +131,13 @@ export default function Home() {
             career launchpad.
           </p>
         </AnimatedSection>
-        <StaggerContainer className="grid gap-6 md:grid-cols-3">
+        <StaggerContainer className="grid gap-6 md:grid-cols-3" staggerDelay={0.09}>
           {features.map((feature) => {
             const Icon = feature.icon;
 
             return (
-              <StaggerItem key={feature.title}>
-                <WarmCard className="h-full transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-warmHover">
+              <StaggerItem key={feature.title} y={16}>
+                <HoverRevealCard reveal={feature.reveal}>
                   <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[#fbe8d8] text-sahara-primary">
                     <Icon aria-hidden="true" className="h-6 w-6" />
                   </div>
@@ -143,7 +147,7 @@ export default function Home() {
                   <p className="mt-4 leading-7 text-sahara-muted">
                     {feature.description}
                   </p>
-                </WarmCard>
+                </HoverRevealCard>
               </StaggerItem>
             );
           })}

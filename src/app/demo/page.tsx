@@ -3,6 +3,7 @@ import { BarChart3, BriefcaseBusiness, CheckCircle2, UserRound } from "lucide-re
 import { StaggerContainer, StaggerItem } from "@/components/shared/AnimatedList";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { EditorialHeading } from "@/components/shared/EditorialHeading";
+import { HoverRevealCard } from "@/components/shared/HoverRevealCard";
 import { PageShell } from "@/components/shared/PageShell";
 import { SectionContainer } from "@/components/shared/SectionContainer";
 import { SiteHeader } from "@/components/shared/SiteHeader";
@@ -13,24 +14,28 @@ const demoItems = [
   {
     label: "Portfolio preview",
     value: "Recruiter-ready",
+    reveal: "A public profile can foreground projects, skills, and contact links.",
     icon: UserRound,
     color: "text-sahara-primary"
   },
   {
     label: "Applications tracked",
     value: "14",
+    reveal: "Statuses and deadlines stay close enough to act on quickly.",
     icon: BriefcaseBusiness,
     color: "text-sahara-primary"
   },
   {
     label: "Interview rate",
     value: "21%",
+    reveal: "Momentum metrics make the next application session easier to plan.",
     icon: BarChart3,
     color: "text-amber-700"
   },
   {
     label: "Next action",
     value: "Follow up",
+    reveal: "Short prompts keep the dashboard practical instead of decorative.",
     icon: CheckCircle2,
     color: "text-green-700"
   }
@@ -59,8 +64,8 @@ export default function DemoPage() {
             const Icon = item.icon;
 
             return (
-              <StaggerItem key={item.label}>
-                <WarmCard className="h-full transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-warmHover">
+              <StaggerItem key={item.label} y={12}>
+                <HoverRevealCard reveal={item.reveal}>
                   <Icon aria-hidden="true" className={`h-6 w-6 ${item.color}`} />
                   <p className="mt-5 text-sm font-medium text-sahara-muted">
                     {item.label}
@@ -68,29 +73,26 @@ export default function DemoPage() {
                   <p className="mt-2 font-serif text-3xl font-bold text-sahara-text">
                     {item.value}
                   </p>
-                </WarmCard>
+                </HoverRevealCard>
               </StaggerItem>
             );
           })}
         </StaggerContainer>
 
         <AnimatedSection delay={0.18}>
-        <WarmCard className="mt-6">
-          <EditorialHeading as="h2" className="text-3xl">
-            What will be interactive next
-          </EditorialHeading>
-          <p className="mt-3 max-w-2xl leading-7 text-sahara-muted">
-            Google authentication, onboarding, portfolio editing, project
-            management, internship tracking, and analytics will replace these
-            static examples as the MVP grows.
-          </p>
-          <Link
-            href="/login"
-            className={buttonVariants({ className: "mt-6" })}
-          >
-            Get Started
-          </Link>
-        </WarmCard>
+          <WarmCard className="mt-6">
+            <EditorialHeading as="h2" className="text-3xl">
+              What will be interactive next
+            </EditorialHeading>
+            <p className="mt-3 max-w-2xl leading-7 text-sahara-muted">
+              Google authentication, onboarding, portfolio editing, project
+              management, internship tracking, and analytics will replace these
+              static examples as the MVP grows.
+            </p>
+            <Link href="/login" className={buttonVariants({ className: "mt-6" })}>
+              Get Started
+            </Link>
+          </WarmCard>
         </AnimatedSection>
       </SectionContainer>
     </PageShell>

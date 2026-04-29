@@ -1,5 +1,5 @@
 import { type LucideIcon } from "lucide-react";
-import { WarmCard } from "@/components/shared/WarmCard";
+import { HoverRevealCard } from "@/components/shared/HoverRevealCard";
 import { cn } from "@/lib/utils";
 
 type StatCardProps = {
@@ -18,7 +18,15 @@ export function StatCard({
   accentClassName
 }: StatCardProps) {
   return (
-    <WarmCard className="h-full p-6 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-warmHover">
+    <HoverRevealCard
+      className="p-6"
+      reveal={
+        <span>
+          Open the related workspace to keep this number moving without losing
+          the weekly thread.
+        </span>
+      }
+    >
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-sahara-muted">{title}</p>
@@ -36,6 +44,6 @@ export function StatCard({
           <Icon aria-hidden="true" className="h-5 w-5" />
         </div>
       </div>
-    </WarmCard>
+    </HoverRevealCard>
   );
 }

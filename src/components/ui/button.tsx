@@ -6,11 +6,11 @@ type ButtonSize = "default" | "sm" | "lg";
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-sahara-primary text-white shadow-warm hover:-translate-y-0.5 hover:bg-sahara-primaryDark focus-visible:ring-sahara-primary/40",
+    "bg-sahara-primary text-white shadow-warm hover:-translate-y-0.5 hover:scale-[1.01] hover:bg-sahara-primaryDark focus-visible:ring-sahara-primary/40 motion-reduce:transform-none motion-reduce:transition-none",
   secondary:
-    "border border-sahara-border/80 bg-transparent text-sahara-text hover:-translate-y-0.5 hover:bg-sahara-surfaceLow focus-visible:ring-sahara-primary/40",
+    "border border-sahara-border/80 bg-transparent text-sahara-text hover:-translate-y-0.5 hover:scale-[1.01] hover:bg-sahara-surfaceLow focus-visible:ring-sahara-primary/40 motion-reduce:transform-none motion-reduce:transition-none",
   ghost:
-    "text-sahara-muted hover:bg-sahara-surfaceLow hover:text-sahara-text focus-visible:ring-sahara-primary/40"
+    "text-sahara-muted hover:bg-sahara-surfaceLow hover:text-sahara-text focus-visible:ring-sahara-primary/40 motion-reduce:transition-none"
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

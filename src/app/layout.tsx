@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { EB_Garamond, Manrope } from "next/font/google";
+import { AppProviders } from "@/components/providers/AppProviders";
 import "./globals.css";
 
 const ebGaramond = EB_Garamond({
@@ -28,7 +29,7 @@ export default function RootLayout({
   return (
     <html data-scroll-behavior="smooth" lang="en">
       <body className={`${ebGaramond.variable} ${manrope.variable} antialiased`}>
-        {children}
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

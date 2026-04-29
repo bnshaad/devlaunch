@@ -9,6 +9,8 @@ type AnimatedSectionProps = {
   delay?: number;
   amount?: number;
   as?: "div" | "section" | "article" | "aside";
+  y?: number;
+  duration?: number;
 };
 
 export function AnimatedSection({
@@ -16,7 +18,9 @@ export function AnimatedSection({
   className,
   delay = 0,
   amount = 0.2,
-  as = "div"
+  as = "div",
+  y = 20,
+  duration = 0.56
 }: AnimatedSectionProps) {
   const reduceMotion = useReducedMotion();
   const Component = motion[as];
@@ -24,10 +28,10 @@ export function AnimatedSection({
   const motionProps: MotionProps = reduceMotion
     ? { initial: false }
     : {
-        initial: { opacity: 0, y: 16 },
+        initial: { opacity: 0, y },
         whileInView: { opacity: 1, y: 0 },
         viewport: { once: true, amount },
-        transition: { duration: 0.5, ease: "easeOut", delay }
+        transition: { duration, ease: "easeOut", delay }
       };
 
   return (

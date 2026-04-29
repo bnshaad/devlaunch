@@ -1,13 +1,21 @@
+"use client";
+
 import {
   BarChart3,
   BriefcaseBusiness,
   CalendarCheck2,
+  LogOut,
   Plus,
   Trophy
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { StaggerContainer, StaggerItem } from "@/components/shared/AnimatedList";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { HoverRevealCard } from "@/components/shared/HoverRevealCard";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { WarmCard } from "@/components/shared/WarmCard";
@@ -44,26 +52,125 @@ const stats = [
   }
 ];
 
+const recentActivity = [
+  {
+    title: "Interview Scheduled",
+    description: "Stripe - Frontend Engineering Intern",
+    time: "2h ago",
+    reveal: "Prep notes and role context will live beside this activity."
+  },
+  {
+    title: "Application Submitted",
+    description: "Vercel - Design Engineer Summer 2025",
+    time: "Yesterday",
+    reveal: "A quick follow-up reminder can be attached after submission."
+  },
+  {
+    title: "Portfolio Updated",
+    description: "Added the campus marketplace project",
+    time: "Oct 18",
+    reveal: "Portfolio edits can become visible on your public page."
+  }
+];
+
 export default function DashboardPage() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
+  );
+}
+
+function DashboardContent() {
+  const { logout, user } = useAuth();
+  const router = useRouter();
+  const [logoutError, setLogoutError] = useState<string | null>(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const displayName = user?.displayName || "Developer";
+  const email = user?.email || "No email available";
+
+  async function handleLogout() {
+    setLogoutError(null);
+    setIsLoggingOut(true);
+
+    try {
+      await logout();
+      router.replace("/login");
+    } catch (error) {
+      setLogoutError(
+        error instanceof Error
+          ? error.message
+          : "Unable to log out right now. Please try again."
+      );
+      setIsLoggingOut(false);
+    }
+  }
+
   return (
     <DashboardShell>
       <AnimatedSection>
         <PageHeader
           action={
-            <Button>
-              <Plus aria-hidden="true" className="h-4 w-4" />
-              New Application
-            </Button>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button>
+                <Plus aria-hidden="true" className="h-4 w-4" />
+                New Application
+              </Button>
+              <Button
+                disabled={isLoggingOut}
+                onClick={handleLogout}
+                variant="secondary"
+              >
+                <LogOut aria-hidden="true" className="h-4 w-4" />
+                {isLoggingOut ? "Logging out..." : "Log out"}
+              </Button>
+            </div>
           }
           description="Your portfolio, internship pipeline, and early-career progress will live here as the app grows."
-          eyebrow="Good morning, Alex"
+          eyebrow={`Good morning, ${displayName}`}
           title="Welcome to DevLaunch"
         />
       </AnimatedSection>
 
-      <StaggerContainer className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <AnimatedSection delay={0.08}>
+        <WarmCard className="mt-8 flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            {user?.photoURL ? (
+              <div
+                aria-label={`${displayName} avatar`}
+                className="h-14 w-14 rounded-full border border-sahara-border/70 bg-cover bg-center"
+                role="img"
+                style={{ backgroundImage: `url(${user.photoURL})` }}
+              />
+            ) : (
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-sahara-border/70 bg-sahara-surfaceLow font-serif text-2xl font-bold text-sahara-primary">
+                {displayName.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
+                Signed in as
+              </p>
+              <p className="mt-1 font-serif text-2xl font-bold text-sahara-text">
+                {displayName}
+              </p>
+              <p className="mt-1 text-sm text-sahara-muted">{email}</p>
+            </div>
+          </div>
+          {logoutError ? (
+            <p className="rounded-lg border border-sahara-tertiary/25 bg-sahara-tertiary/10 px-4 py-3 text-sm leading-6 text-sahara-tertiary">
+              {logoutError}
+            </p>
+          ) : null}
+        </WarmCard>
+      </AnimatedSection>
+
+      <StaggerContainer
+        className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4"
+        staggerDelay={0.07}
+      >
         {stats.map((stat) => (
-          <StaggerItem key={stat.title}>
+          <StaggerItem key={stat.title} y={12}>
             <StatCard {...stat} />
           </StaggerItem>
         ))}
@@ -83,42 +190,31 @@ export default function DashboardPage() {
             </a>
           </div>
           <div className="space-y-4">
-            {[
-              [
-                "Interview Scheduled",
-                "Stripe - Frontend Engineering Intern",
-                "2h ago"
-              ],
-              [
-                "Application Submitted",
-                "Vercel - Design Engineer Summer 2025",
-                "Yesterday"
-              ],
-              [
-                "Portfolio Updated",
-                "Added the campus marketplace project",
-                "Oct 18"
-              ]
-            ].map(([title, description, time]) => (
-              <WarmCard
-                className="flex gap-4 p-5 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-sahara-surfaceLow"
-                key={title}
+            {recentActivity.map((activity) => (
+              <HoverRevealCard
+                className="p-5"
+                key={activity.title}
+                reveal={activity.reveal}
               >
-                <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#fbe8d8] text-sahara-primary">
-                  <BriefcaseBusiness aria-hidden="true" className="h-5 w-5" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-                    <h3 className="font-semibold text-sahara-text">{title}</h3>
-                    <span className="text-xs font-semibold text-sahara-muted">
-                      {time}
-                    </span>
+                <div className="flex gap-4">
+                  <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#fbe8d8] text-sahara-primary">
+                    <BriefcaseBusiness aria-hidden="true" className="h-5 w-5" />
                   </div>
-                  <p className="mt-1 text-sm leading-6 text-sahara-muted">
-                    {description}
-                  </p>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                      <h3 className="font-semibold text-sahara-text">
+                        {activity.title}
+                      </h3>
+                      <span className="text-xs font-semibold text-sahara-muted">
+                        {activity.time}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm leading-6 text-sahara-muted">
+                      {activity.description}
+                    </p>
+                  </div>
                 </div>
-              </WarmCard>
+              </HoverRevealCard>
             ))}
           </div>
         </AnimatedSection>
