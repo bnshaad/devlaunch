@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -145,13 +145,24 @@ function DashboardProfileContent() {
       <AnimatedSection>
         <PageHeader
           action={
-            <Link
-              className={buttonVariants({ variant: "secondary" })}
-              href="/dashboard"
-            >
-              <ArrowLeft aria-hidden="true" className="h-4 w-4" />
-              Dashboard
-            </Link>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              {appUser?.username ? (
+                <Link
+                  className={buttonVariants({ variant: "primary" })}
+                  href={`/dev/${appUser.username}`}
+                >
+                  <ExternalLink aria-hidden="true" className="h-4 w-4" />
+                  View Public Portfolio
+                </Link>
+              ) : null}
+              <Link
+                className={buttonVariants({ variant: "secondary" })}
+                href="/dashboard"
+              >
+                <ArrowLeft aria-hidden="true" className="h-4 w-4" />
+                Dashboard
+              </Link>
+            </div>
           }
           description="Craft the profile details that will power your public portfolio page in the next DevLaunch step."
           eyebrow={`Portfolio builder${appUser?.username ? ` - /dev/${appUser.username}` : ""}`}

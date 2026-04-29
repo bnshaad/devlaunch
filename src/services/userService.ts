@@ -90,6 +90,24 @@ export async function getUserProfile(uid: string) {
   return toAppUser(userSnapshot.data());
 }
 
+export async function getUidByUsername(username: string) {
+  const normalizedUsername = normalizeUsername(username);
+
+  if (!normalizedUsername) {
+    return null;
+  }
+
+  const usernameSnapshot = await getDoc(doc(db, "usernames", normalizedUsername));
+
+  if (!usernameSnapshot.exists()) {
+    return null;
+  }
+
+  const usernameData = usernameSnapshot.data();
+
+  return typeof usernameData.uid === "string" ? usernameData.uid : null;
+}
+
 export async function checkUsernameAvailable(username: string) {
   const normalizedUsername = normalizeUsername(username);
   const usernameSnapshot = await getDoc(doc(db, "usernames", normalizedUsername));
