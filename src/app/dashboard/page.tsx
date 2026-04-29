@@ -5,9 +5,11 @@ import {
   BriefcaseBusiness,
   CalendarCheck2,
   LogOut,
+  PencilLine,
   Plus,
   Trophy
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -19,7 +21,7 @@ import { HoverRevealCard } from "@/components/shared/HoverRevealCard";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { WarmCard } from "@/components/shared/WarmCard";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 const stats = [
   {
@@ -247,9 +249,16 @@ function DashboardContent() {
               Recruiters scan quickly. Keep your strongest projects and links
               easy to find.
             </p>
-            <Button className="mt-6 w-full" variant="secondary">
+            <Link
+              className={buttonVariants({
+                className: "mt-6 w-full",
+                variant: "secondary"
+              })}
+              href="/dashboard/profile"
+            >
+              <PencilLine aria-hidden="true" className="h-4 w-4" />
               Edit Portfolio
-            </Button>
+            </Link>
           </WarmCard>
         </AnimatedSection>
       </div>
