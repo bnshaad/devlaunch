@@ -82,12 +82,13 @@ export default function DashboardPage() {
 }
 
 function DashboardContent() {
-  const { logout, user } = useAuth();
+  const { appUser, logout, user } = useAuth();
   const router = useRouter();
   const [logoutError, setLogoutError] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const displayName = user?.displayName || "Developer";
-  const email = user?.email || "No email available";
+  const displayName = appUser?.displayName || user?.displayName || "Developer";
+  const email = appUser?.email || user?.email || "No email available";
+  const username = appUser?.username || "username pending";
 
   async function handleLogout() {
     setLogoutError(null);
@@ -127,7 +128,7 @@ function DashboardContent() {
             </div>
           }
           description="Your portfolio, internship pipeline, and early-career progress will live here as the app grows."
-          eyebrow={`Good morning, ${displayName}`}
+          eyebrow={`Good morning, ${username}`}
           title="Welcome to DevLaunch"
         />
       </AnimatedSection>
@@ -155,6 +156,9 @@ function DashboardContent() {
                 {displayName}
               </p>
               <p className="mt-1 text-sm text-sahara-muted">{email}</p>
+              <p className="mt-1 text-sm font-semibold text-sahara-primary">
+                /dev/{username}
+              </p>
             </div>
           </div>
           {logoutError ? (

@@ -13,24 +13,31 @@ import { WarmCard } from "@/components/shared/WarmCard";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
-  const { loading, signInWithGoogle, user } = useAuth();
+  const { appUser, loading, signInWithGoogle, user } = useAuth();
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!loading && user) {
-      router.replace("/dashboard");
+    if (loading || !user) {
+      return;
     }
-  }, [loading, router, user]);
+
+    if (appUser?.username) {
+      router.replace("/dashboard");
+      return;
+    }
+
+    router.replace("/onboarding");
+  }, [appUser?.username, loading, router, user]);
 
   async function handleGoogleSignIn() {
     setError(null);
     setIsSigningIn(true);
 
     try {
-      await signInWithGoogle();
-      router.replace("/dashboard");
+      const profile = await signInWithGoogle();
+      router.replace(profile.username ? "/dashboard" : "/onboarding");
     } catch (signInError) {
       setError(
         signInError instanceof Error

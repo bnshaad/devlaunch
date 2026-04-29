@@ -9,14 +9,19 @@ import { WarmCard } from "@/components/shared/WarmCard";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { loading, user } = useAuth();
+  const { appUser, loading, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && !user) {
       router.replace("/login");
+      return;
     }
-  }, [loading, router, user]);
+
+    if (!loading && user && !appUser?.username) {
+      router.replace("/onboarding");
+    }
+  }, [appUser?.username, loading, router, user]);
 
   if (loading) {
     return (
@@ -39,6 +44,10 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
   }
 
   if (!user) {
+    return null;
+  }
+
+  if (!appUser?.username) {
     return null;
   }
 
