@@ -19,7 +19,7 @@ const navItems = [
   { label: "Projects", href: "/dashboard/projects", icon: FolderOpen },
   {
     label: "Applications",
-    href: "/dashboard",
+    href: "/dashboard/applications",
     icon: BriefcaseBusiness
   },
   { label: "Settings", href: "/dashboard", icon: Settings }

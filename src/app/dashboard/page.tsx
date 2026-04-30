@@ -161,10 +161,13 @@ function DashboardContent() {
         <PageHeader
           action={
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Button>
+              <Link
+                className={buttonVariants()}
+                href="/dashboard/applications/new"
+              >
                 <Plus aria-hidden="true" className="h-4 w-4" />
                 New Application
-              </Button>
+              </Link>
               <Link
                 className={buttonVariants()}
                 href="/dashboard/projects/new"

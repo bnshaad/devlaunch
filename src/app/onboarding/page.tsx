@@ -25,14 +25,20 @@ function logAuthDebug(message: string, details?: unknown) {
 }
 
 export default function OnboardingPage() {
-  const { appUser, firebaseUser, loading, refreshUserProfile } = useAuth();
+  const {
+    appUser,
+    firebaseUser,
+    loading,
+    profileLoading,
+    refreshUserProfile
+  } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const appUsername = appUser?.username ?? null;
   const hasAppUser = Boolean(appUser);
-  const isResolvingProfile = Boolean(firebaseUser && !appUser);
+  const isResolvingProfile = Boolean(firebaseUser && profileLoading);
   const normalizedUsername = useMemo(
     () => normalizeUsername(username),
     [username]
@@ -59,8 +65,9 @@ export default function OnboardingPage() {
 
     if (!hasAppUser) {
       logAuthDebug("onboarding redirect decision", {
-        action: "wait-app-user"
+        action: "redirect-login-missing-profile"
       });
+      router.replace("/login");
       return;
     }
 

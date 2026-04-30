@@ -25,6 +25,7 @@ export default function LoginPage() {
     clearAuthError,
     firebaseUser,
     loading,
+    profileLoading,
     signInWithGoogle,
   } = useAuth();
   const router = useRouter();
@@ -33,13 +34,23 @@ export default function LoginPage() {
   const displayedError = error || authError;
   const appUsername = appUser?.username ?? null;
   const hasAppUser = Boolean(appUser);
-  const isResolvingProfile = Boolean(firebaseUser && !appUser);
+  const isResolvingProfile = Boolean(firebaseUser && profileLoading);
   const isCheckingSession = loading || isResolvingProfile;
 
   useEffect(() => {
-    if (loading || !firebaseUser || !hasAppUser) {
+    if (loading || !firebaseUser) {
       logAuthDebug("login page redirect decision", {
         action: "wait",
+        hasFirebaseUser: Boolean(firebaseUser),
+        hasAppUser,
+        loading
+      });
+      return;
+    }
+
+    if (!hasAppUser) {
+      logAuthDebug("login page redirect decision", {
+        action: "profile-missing-show-login",
         hasFirebaseUser: Boolean(firebaseUser),
         hasAppUser,
         loading

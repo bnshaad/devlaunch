@@ -42,6 +42,7 @@ type AuthContextValue = {
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+const PROFILE_LOAD_TIMEOUT_MS = 15000;
 
 function getAuthErrorMessage(error: unknown) {
   if (error instanceof Error) {
@@ -63,6 +64,28 @@ function logAuthDebug(message: string, details?: unknown) {
   if (process.env.NODE_ENV !== "production") {
     console.info(`[AUTH DEBUG] ${message}`, details ?? "");
   }
+}
+
+function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  timeoutMessage: string
+) {
+  return new Promise<T>((resolve, reject) => {
+    const timeout = window.setTimeout(() => {
+      reject(new Error(timeoutMessage));
+    }, timeoutMs);
+
+    promise
+      .then((value) => {
+        window.clearTimeout(timeout);
+        resolve(value);
+      })
+      .catch((error: unknown) => {
+        window.clearTimeout(timeout);
+        reject(error);
+      });
+  });
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -126,7 +149,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setAuthLoading(false);
 
         try {
-          const profile = await createUserIfNotExists(firebaseUser);
+          const profile = await withTimeout(
+            createUserIfNotExists(firebaseUser),
+            PROFILE_LOAD_TIMEOUT_MS,
+            "DevLaunch could not load your profile in time. Please try again."
+          );
           if (!isActive) {
             return;
           }

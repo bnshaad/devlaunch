@@ -15,12 +15,12 @@ function logAuthDebug(message: string, details?: unknown) {
 }
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { appUser, firebaseUser, loading } = useAuth();
+  const { appUser, firebaseUser, loading, profileLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const appUsername = appUser?.username ?? null;
   const hasAppUser = Boolean(appUser);
-  const isResolvingProfile = Boolean(firebaseUser && !appUser);
+  const isResolvingProfile = Boolean(firebaseUser && profileLoading);
 
   useEffect(() => {
     if (loading) {
@@ -42,9 +42,10 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 
     if (!hasAppUser) {
       logAuthDebug("dashboard redirect decision", {
-        action: "wait-app-user",
+        action: "redirect-login-missing-profile",
         path: pathname
       });
+      router.replace("/login");
       return;
     }
 
