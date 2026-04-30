@@ -28,9 +28,9 @@ export function SiteHeader({ minimal = false }: SiteHeaderProps) {
           <div className="flex items-center gap-6">
             <div className="hidden items-center gap-7 md:flex">
               {[
-                ["Features", "#features"],
-                ["Portfolios", "/demo"],
-                ["Internships", "/dashboard"]
+                ["Features", "/#features"],
+                ["Portfolios", "/#portfolio"],
+                ["Internships", "/#internships"]
               ].map(([item, href]) => (
                 <a
                   className={cn(

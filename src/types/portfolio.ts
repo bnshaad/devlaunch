@@ -2,6 +2,7 @@ import { type Timestamp } from "firebase/firestore";
 
 export type Portfolio = {
   userId: string;
+  fullName: string;
   headline: string;
   bio: string;
   location: string;
@@ -16,6 +17,7 @@ export type Portfolio = {
 };
 
 export type PortfolioInput = {
+  fullName: string;
   headline: string;
   bio: string;
   location: string;

@@ -12,39 +12,71 @@ import { SiteHeader } from "@/components/shared/SiteHeader";
 import { WarmCard } from "@/components/shared/WarmCard";
 import { Button } from "@/components/ui/button";
 
+function logAuthDebug(message: string, details?: unknown) {
+  if (process.env.NODE_ENV !== "production") {
+    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  }
+}
+
 export default function LoginPage() {
-  const { appUser, loading, signInWithGoogle, user } = useAuth();
+  const {
+    appUser,
+    authError,
+    clearAuthError,
+    firebaseUser,
+    loading,
+    signInWithGoogle,
+  } = useAuth();
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const displayedError = error || authError;
+  const appUsername = appUser?.username ?? null;
+  const hasAppUser = Boolean(appUser);
+  const isResolvingProfile = Boolean(firebaseUser && !appUser);
+  const isCheckingSession = loading || isResolvingProfile;
 
   useEffect(() => {
-    if (loading || !user) {
+    if (loading || !firebaseUser || !hasAppUser) {
+      logAuthDebug("login page redirect decision", {
+        action: "wait",
+        hasFirebaseUser: Boolean(firebaseUser),
+        hasAppUser,
+        loading
+      });
       return;
     }
 
-    if (appUser?.username) {
+    if (appUsername) {
+      logAuthDebug("login page redirect decision", {
+        action: "redirect-dashboard",
+        username: appUsername
+      });
       router.replace("/dashboard");
       return;
     }
 
+    logAuthDebug("login page redirect decision", {
+      action: "redirect-onboarding",
+      username: appUsername
+    });
     router.replace("/onboarding");
-  }, [appUser?.username, loading, router, user]);
+  }, [appUsername, firebaseUser, hasAppUser, loading, router]);
 
   async function handleGoogleSignIn() {
     setError(null);
+    clearAuthError();
     setIsSigningIn(true);
 
     try {
-      const profile = await signInWithGoogle();
-      router.replace(profile.username ? "/dashboard" : "/onboarding");
+      await signInWithGoogle();
+      setIsSigningIn(false);
     } catch (signInError) {
       setError(
         signInError instanceof Error
           ? signInError.message
           : "Unable to sign in with Google. Please try again."
       );
-    } finally {
       setIsSigningIn(false);
     }
   }
@@ -77,7 +109,7 @@ export default function LoginPage() {
             </div>
             <Button
               className="mt-8 w-full"
-              disabled={loading || isSigningIn}
+              disabled={isCheckingSession || isSigningIn}
               onClick={handleGoogleSignIn}
               size="lg"
             >
@@ -87,14 +119,18 @@ export default function LoginPage() {
               >
                 G
               </span>
-              {isSigningIn ? "Opening Google..." : "Continue with Google"}
+              {isCheckingSession
+                ? "Checking session..."
+                : isSigningIn
+                  ? "Opening Google..."
+                  : "Continue with Google"}
             </Button>
-            {error ? (
+            {displayedError ? (
               <div
                 className="mt-4 rounded-lg border border-sahara-tertiary/25 bg-sahara-tertiary/10 px-4 py-3 text-sm leading-6 text-sahara-tertiary"
                 role="alert"
               >
-                {error}
+                {displayedError}
               </div>
             ) : null}
             <div className="my-8 flex items-center gap-4">

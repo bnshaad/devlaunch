@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { BarChart3, BriefcaseBusiness, CheckCircle2, UserRound } from "lucide-react";
+import {
+  BarChart3,
+  BriefcaseBusiness,
+  FolderOpen,
+  UserRound
+} from "lucide-react";
 import { StaggerContainer, StaggerItem } from "@/components/shared/AnimatedList";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { EditorialHeading } from "@/components/shared/EditorialHeading";
@@ -12,32 +17,32 @@ import { buttonVariants } from "@/components/ui/button";
 
 const demoItems = [
   {
-    label: "Portfolio preview",
-    value: "Recruiter-ready",
-    reveal: "A public profile can foreground projects, skills, and contact links.",
+    label: "Portfolio builder",
+    value: "Live",
+    reveal: "Authenticated users can edit headline, bio, links, visibility, and skills.",
     icon: UserRound,
     color: "text-sahara-primary"
   },
   {
-    label: "Applications tracked",
-    value: "14",
-    reveal: "Statuses and deadlines stay close enough to act on quickly.",
-    icon: BriefcaseBusiness,
+    label: "Project management",
+    value: "Live",
+    reveal: "Projects can be added, edited, deleted, and shown on public portfolios.",
+    icon: FolderOpen,
     color: "text-sahara-primary"
   },
   {
-    label: "Interview rate",
-    value: "21%",
-    reveal: "Momentum metrics make the next application session easier to plan.",
-    icon: BarChart3,
-    color: "text-amber-700"
+    label: "Internship tracker",
+    value: "Upcoming",
+    reveal: "Application statuses, deadlines, and notes are planned for the next MVP step.",
+    icon: BriefcaseBusiness,
+    color: "text-sahara-tertiary"
   },
   {
-    label: "Next action",
-    value: "Follow up",
-    reveal: "Short prompts keep the dashboard practical instead of decorative.",
-    icon: CheckCircle2,
-    color: "text-green-700"
+    label: "Analytics",
+    value: "Upcoming",
+    reveal: "Portfolio completion and internship momentum metrics will arrive after CRUD is stable.",
+    icon: BarChart3,
+    color: "text-amber-700"
   }
 ];
 
@@ -48,14 +53,14 @@ export default function DemoPage() {
       <SectionContainer className="py-10 sm:py-14">
         <AnimatedSection className="mb-10 max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
-            Static demo
+            Product demo
           </p>
           <EditorialHeading className="mt-3 text-4xl leading-tight sm:text-5xl">
             A quick look at the DevLaunch workspace
           </EditorialHeading>
           <p className="mt-4 text-lg leading-8 text-sahara-muted">
-            This preview shows the career dashboard direction before Firebase
-            data and Google sign-in are connected.
+            DevLaunch now includes Google sign-in, username onboarding,
+            portfolio editing, public portfolio pages, and project management.
           </p>
         </AnimatedSection>
 
@@ -82,16 +87,24 @@ export default function DemoPage() {
         <AnimatedSection delay={0.18}>
           <WarmCard className="mt-6">
             <EditorialHeading as="h2" className="text-3xl">
-              What will be interactive next
+              What is live now
             </EditorialHeading>
             <p className="mt-3 max-w-2xl leading-7 text-sahara-muted">
-              Google authentication, onboarding, portfolio editing, project
-              management, internship tracking, and analytics will replace these
-              static examples as the MVP grows.
+              Sign in with Google, claim a username, build your portfolio, add
+              projects, and share your public /dev/username page. Internship
+              tracking and analytics are still upcoming.
             </p>
-            <Link href="/login" className={buttonVariants({ className: "mt-6" })}>
-              Get Started
-            </Link>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link href="/login" className={buttonVariants()}>
+                Get Started
+              </Link>
+              <Link
+                href="/dashboard"
+                className={buttonVariants({ variant: "secondary" })}
+              >
+                Open Dashboard
+              </Link>
+            </div>
           </WarmCard>
         </AnimatedSection>
       </SectionContainer>

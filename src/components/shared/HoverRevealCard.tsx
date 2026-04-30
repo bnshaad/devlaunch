@@ -1,13 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion";
 import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-type HoverRevealCardProps = {
+type HoverRevealCardProps = HTMLMotionProps<"article"> & {
   children: ReactNode;
   reveal: ReactNode;
-  className?: string;
   revealClassName?: string;
 };
 
@@ -15,7 +14,8 @@ export function HoverRevealCard({
   children,
   reveal,
   className,
-  revealClassName
+  revealClassName,
+  ...props
 }: HoverRevealCardProps) {
   const reduceMotion = useReducedMotion();
 
@@ -29,6 +29,7 @@ export function HoverRevealCard({
       transition={{ duration: 0.22, ease: "easeOut" }}
       whileFocus={reduceMotion ? undefined : { y: -2 }}
       whileHover={reduceMotion ? undefined : { y: -3 }}
+      {...props}
     >
       {children}
       <div

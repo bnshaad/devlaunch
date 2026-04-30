@@ -35,6 +35,11 @@ const optionalUrlSchema = optionalTextUrl(
 );
 
 const portfolioFormSchema = z.object({
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "Full name must be at least 2 characters.")
+    .max(80, "Full name must be 80 characters or fewer."),
   headline: z
     .string()
     .trim()
@@ -66,6 +71,7 @@ const fieldClassName =
 
 function normalizeValues(values: PortfolioFormValues): PortfolioInput {
   return {
+    fullName: values.fullName,
     headline: values.headline,
     bio: values.bio,
     location: values.location,
@@ -86,6 +92,7 @@ export function PortfolioForm({
   const {
     bio,
     email,
+    fullName,
     githubUrl,
     headline,
     isPublic,
@@ -109,6 +116,7 @@ export function PortfolioForm({
 
   useEffect(() => {
     reset({
+      fullName,
       headline,
       bio,
       location,
@@ -122,6 +130,7 @@ export function PortfolioForm({
   }, [
     bio,
     email,
+    fullName,
     githubUrl,
     headline,
     isPublic,
@@ -135,6 +144,7 @@ export function PortfolioForm({
   useEffect(() => {
     onValuesChange?.(
       normalizeValues({
+        fullName: watchedValues.fullName ?? "",
         headline: watchedValues.headline ?? "",
         bio: watchedValues.bio ?? "",
         location: watchedValues.location ?? "",
@@ -169,6 +179,29 @@ export function PortfolioForm({
         </div>
 
         <div className="mt-7 grid gap-5">
+          <div>
+            <label
+              className="text-sm font-semibold text-sahara-text"
+              htmlFor="fullName"
+            >
+              Full name
+            </label>
+            <input
+              className={`${fieldClassName} mt-2 w-full`}
+              id="fullName"
+              placeholder="Your public display name"
+              {...register("fullName")}
+            />
+            <p className="mt-2 text-xs leading-5 text-sahara-muted">
+              This name appears on your public portfolio.
+            </p>
+            {errors.fullName ? (
+              <p className="mt-2 text-sm font-medium text-sahara-tertiary">
+                {errors.fullName.message}
+              </p>
+            ) : null}
+          </div>
+
           <div>
             <label
               className="text-sm font-semibold text-sahara-text"

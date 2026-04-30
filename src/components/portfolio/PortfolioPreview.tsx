@@ -29,8 +29,11 @@ export function PortfolioPreview({ portfolio, username }: PortfolioPreviewProps)
           /dev/{username || "username"}
         </p>
         <h2 className="mt-3 font-serif text-4xl font-bold leading-tight text-sahara-text">
-          {portfolio.headline || "Your portfolio headline"}
+          {portfolio.fullName || "Your public name"}
         </h2>
+        <p className="mt-3 font-serif text-2xl font-bold leading-tight text-sahara-primary">
+          {portfolio.headline || "Your portfolio headline"}
+        </p>
         {portfolio.location ? (
           <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sahara-muted">
             <MapPin aria-hidden="true" className="h-4 w-4 text-sahara-primary" />

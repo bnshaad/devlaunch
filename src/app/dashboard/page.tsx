@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { StaggerContainer, StaggerItem } from "@/components/shared/AnimatedList";
@@ -22,6 +22,7 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { WarmCard } from "@/components/shared/WarmCard";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { getPortfolio } from "@/services/portfolioService";
 
 const stats = [
   {
@@ -88,9 +89,54 @@ function DashboardContent() {
   const router = useRouter();
   const [logoutError, setLogoutError] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const displayName = appUser?.displayName || user?.displayName || "Developer";
+  const [portfolioFullName, setPortfolioFullName] = useState<string | null>(
+    null
+  );
+  const displayName = useMemo(
+    () =>
+      portfolioFullName?.trim() ||
+      appUser?.displayName?.trim() ||
+      appUser?.username?.trim() ||
+      user?.email?.trim() ||
+      "Developer",
+    [appUser?.displayName, appUser?.username, portfolioFullName, user?.email]
+  );
   const email = appUser?.email || user?.email || "No email available";
   const username = appUser?.username || "username pending";
+
+  useEffect(() => {
+    if (!user?.uid) {
+      return;
+    }
+
+    const userId = user.uid;
+    let isActive = true;
+
+    async function loadPortfolioName() {
+      try {
+        const portfolio = await getPortfolio(userId);
+
+        if (!isActive) {
+          return;
+        }
+
+        setPortfolioFullName(portfolio?.fullName ?? null);
+      } catch (error) {
+        if (!isActive) {
+          return;
+        }
+
+        console.error("Unable to load dashboard portfolio name:", error);
+        setPortfolioFullName(null);
+      }
+    }
+
+    loadPortfolioName();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user?.uid]);
 
   async function handleLogout() {
     setLogoutError(null);
@@ -137,7 +183,7 @@ function DashboardContent() {
             </div>
           }
           description="Your portfolio, internship pipeline, and early-career progress will live here as the app grows."
-          eyebrow={`Good morning, ${username}`}
+          eyebrow={`Good morning, ${displayName}`}
           title="Welcome to DevLaunch"
         />
       </AnimatedSection>

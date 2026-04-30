@@ -153,7 +153,7 @@ export function PublicPortfolio({
   user,
   username
 }: PublicPortfolioProps) {
-  const displayName = user.displayName || username;
+  const displayName = portfolio.fullName || user.displayName || username;
 
   return (
     <PageShell>

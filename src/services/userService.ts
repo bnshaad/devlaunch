@@ -13,6 +13,12 @@ import { type AppUser } from "@/types/user";
 
 const USERNAME_PATTERN = /^[a-z0-9_-]{3,20}$/;
 
+function logAuthDebug(message: string, details?: unknown) {
+  if (process.env.NODE_ENV !== "production") {
+    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  }
+}
+
 function toAppUser(data: DocumentData): AppUser {
   return {
     uid: data.uid,
@@ -52,11 +58,21 @@ export function validateUsername(username: string) {
 }
 
 export async function createUserIfNotExists(firebaseUser: FirebaseUser) {
+  logAuthDebug("createUserIfNotExists started", {
+    uid: firebaseUser.uid
+  });
+
   const userRef = doc(db, "users", firebaseUser.uid);
   const userSnapshot = await getDoc(userRef);
 
   if (userSnapshot.exists()) {
-    return toAppUser(userSnapshot.data());
+    const existingUser = toAppUser(userSnapshot.data());
+    logAuthDebug("createUserIfNotExists completed", {
+      uid: existingUser.uid,
+      username: existingUser.username ?? null
+    });
+
+    return existingUser;
   }
 
   const newUser = {
@@ -71,13 +87,20 @@ export async function createUserIfNotExists(firebaseUser: FirebaseUser) {
 
   await setDoc(userRef, newUser);
 
-  return {
+  const createdUser = {
     uid: firebaseUser.uid,
     email: firebaseUser.email,
     displayName: firebaseUser.displayName,
     photoURL: firebaseUser.photoURL,
     username: null
   } satisfies AppUser;
+
+  logAuthDebug("createUserIfNotExists completed", {
+    uid: createdUser.uid,
+    username: createdUser.username
+  });
+
+  return createdUser;
 }
 
 export async function getUserProfile(uid: string) {

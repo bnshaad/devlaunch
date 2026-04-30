@@ -13,6 +13,7 @@ import { type Portfolio, type PortfolioInput } from "@/types/portfolio";
 function toPortfolio(data: DocumentData): Portfolio {
   return {
     userId: data.userId,
+    fullName: data.fullName ?? "",
     headline: data.headline ?? "",
     bio: data.bio ?? "",
     location: data.location ?? "",
@@ -29,6 +30,7 @@ function toPortfolio(data: DocumentData): Portfolio {
 
 function normalizePortfolioInput(data: PortfolioInput): PortfolioInput {
   return {
+    fullName: data.fullName?.trim() ?? "",
     headline: data.headline.trim(),
     bio: data.bio?.trim() ?? "",
     location: data.location?.trim() ?? "",

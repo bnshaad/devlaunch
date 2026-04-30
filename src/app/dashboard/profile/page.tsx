@@ -19,6 +19,7 @@ import {
 import { type Portfolio, type PortfolioInput } from "@/types/portfolio";
 
 const emptyPortfolio: PortfolioInput = {
+  fullName: "",
   headline: "",
   bio: "",
   location: "",
@@ -30,12 +31,19 @@ const emptyPortfolio: PortfolioInput = {
   isPublic: false
 };
 
-function portfolioToFormValues(portfolio: Portfolio | null): PortfolioInput {
+function portfolioToFormValues(
+  portfolio: Portfolio | null,
+  fallbackFullName = ""
+): PortfolioInput {
   if (!portfolio) {
-    return emptyPortfolio;
+    return {
+      ...emptyPortfolio,
+      fullName: fallbackFullName
+    };
   }
 
   return {
+    fullName: portfolio.fullName || fallbackFullName,
     headline: portfolio.headline,
     bio: portfolio.bio,
     location: portfolio.location,
@@ -86,7 +94,12 @@ function DashboardProfileContent() {
         }
 
         setPortfolio(existingPortfolio);
-        setPreviewPortfolio(portfolioToFormValues(existingPortfolio));
+        setPreviewPortfolio(
+          portfolioToFormValues(
+            existingPortfolio,
+            appUser?.displayName || user?.displayName || ""
+          )
+        );
       } catch (error) {
         if (!isActive) {
           return;
@@ -109,7 +122,7 @@ function DashboardProfileContent() {
     return () => {
       isActive = false;
     };
-  }, [user?.uid]);
+  }, [appUser?.displayName, user?.displayName, user?.uid]);
 
   const handleValuesChange = useCallback((values: PortfolioInput) => {
     setPreviewPortfolio(values);
@@ -210,7 +223,10 @@ function DashboardProfileContent() {
               </WarmCard>
             ) : null}
             <PortfolioForm
-              defaultValues={portfolioToFormValues(portfolio)}
+              defaultValues={portfolioToFormValues(
+                portfolio,
+                appUser?.displayName || user?.displayName || ""
+              )}
               key={portfolio?.updatedAt?.toMillis?.() ?? portfolio?.headline ?? "new"}
               onSubmit={handleSubmit}
               onValuesChange={handleValuesChange}

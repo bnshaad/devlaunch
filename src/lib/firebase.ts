@@ -31,6 +31,12 @@ const missingFirebaseEnv = Object.entries(firebaseEnv)
 
 export const isFirebaseConfigured = missingFirebaseEnv.length === 0;
 
+function logAuthDebug(message: string, details?: unknown) {
+  if (process.env.NODE_ENV !== "production") {
+    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  }
+}
+
 if (!isFirebaseConfigured) {
   console.error(
     `Firebase is missing required public environment variables: ${missingFirebaseEnv.join(
@@ -39,6 +45,24 @@ if (!isFirebaseConfigured) {
   );
 }
 
-export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+function getFirebaseApp() {
+  if (!isFirebaseConfigured) {
+    throw new Error(
+      `Firebase is missing required public environment variables: ${missingFirebaseEnv.join(
+        ", "
+      )}.`
+    );
+  }
+
+  const firebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  logAuthDebug("Firebase app initialized", {
+    authDomain: firebaseConfig.authDomain,
+    projectId: firebaseConfig.projectId
+  });
+
+  return firebaseApp;
+}
+
+export const app = getFirebaseApp();
 export const auth = getAuth(app);
 export const db = getFirestore(app);

@@ -18,12 +18,21 @@ import {
   validateUsername
 } from "@/services/userService";
 
+function logAuthDebug(message: string, details?: unknown) {
+  if (process.env.NODE_ENV !== "production") {
+    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  }
+}
+
 export default function OnboardingPage() {
-  const { appUser, loading, refreshUserProfile, user } = useAuth();
+  const { appUser, firebaseUser, loading, refreshUserProfile } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const appUsername = appUser?.username ?? null;
+  const hasAppUser = Boolean(appUser);
+  const isResolvingProfile = Boolean(firebaseUser && !appUser);
   const normalizedUsername = useMemo(
     () => normalizeUsername(username),
     [username]
@@ -34,23 +43,46 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     if (loading) {
+      logAuthDebug("onboarding redirect decision", {
+        action: "wait-loading"
+      });
       return;
     }
 
-    if (!user) {
+    if (!firebaseUser) {
+      logAuthDebug("onboarding redirect decision", {
+        action: "redirect-login"
+      });
       router.replace("/login");
       return;
     }
 
-    if (appUser?.username) {
-      router.replace("/dashboard");
+    if (!hasAppUser) {
+      logAuthDebug("onboarding redirect decision", {
+        action: "wait-app-user"
+      });
+      return;
     }
-  }, [appUser?.username, loading, router, user]);
+
+    if (appUsername) {
+      logAuthDebug("onboarding redirect decision", {
+        action: "redirect-dashboard",
+        username: appUsername
+      });
+      router.replace("/dashboard");
+      return;
+    }
+
+    logAuthDebug("onboarding redirect decision", {
+      action: "render-form",
+      username: appUsername
+    });
+  }, [appUsername, firebaseUser, hasAppUser, loading, router]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!user || isSaving) {
+    if (!firebaseUser || isSaving) {
       return;
     }
 
@@ -73,7 +105,7 @@ export default function OnboardingPage() {
         return;
       }
 
-      await claimUsername(user.uid, nextUsername);
+      await claimUsername(firebaseUser.uid, nextUsername);
       await refreshUserProfile();
       router.replace("/dashboard");
     } catch (error) {
@@ -85,6 +117,39 @@ export default function OnboardingPage() {
     } finally {
       setIsSaving(false);
     }
+  }
+
+  if (loading || isResolvingProfile) {
+    return (
+      <PageShell>
+        <SiteHeader minimal />
+        <div className="relative flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-14">
+          <AnimatedSection
+            amount={0.35}
+            className="relative w-full max-w-md"
+            duration={0.6}
+            y={20}
+          >
+            <WarmCard className="p-8 text-center sm:p-12">
+              <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
+                Checking access
+              </p>
+              <EditorialHeading className="mt-3 text-4xl leading-tight">
+                Preparing profile setup
+              </EditorialHeading>
+              <p className="mt-4 text-sm leading-6 text-sahara-muted">
+                We are confirming your Google session before opening username
+                setup.
+              </p>
+            </WarmCard>
+          </AnimatedSection>
+        </div>
+      </PageShell>
+    );
+  }
+
+  if (!firebaseUser || appUsername) {
+    return null;
   }
 
   return (
@@ -130,7 +195,7 @@ export default function OnboardingPage() {
                   <input
                     autoComplete="username"
                     className="min-w-0 flex-1 bg-transparent text-sm text-sahara-text outline-none placeholder:text-sahara-muted"
-                    disabled={loading || isSaving}
+                    disabled={loading || isResolvingProfile || isSaving}
                     id="username"
                     onChange={(event) => {
                       setUsername(normalizeUsername(event.target.value));
@@ -165,7 +230,12 @@ export default function OnboardingPage() {
 
               <Button
                 className="w-full"
-                disabled={loading || isSaving || Boolean(validationMessage)}
+                disabled={
+                  loading ||
+                  isResolvingProfile ||
+                  isSaving ||
+                  Boolean(validationMessage)
+                }
                 size="lg"
                 type="submit"
               >

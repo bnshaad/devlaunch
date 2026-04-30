@@ -20,6 +20,7 @@ import { buttonVariants } from "@/components/ui/button";
 
 const features = [
   {
+    id: "portfolio",
     title: "Public developer portfolio",
     description:
       "Show your projects, skills, links, and career story in a recruiter-friendly profile.",
@@ -27,6 +28,7 @@ const features = [
     icon: UserRound
   },
   {
+    id: "internships",
     title: "Internship application tracker",
     description:
       "Organize companies, roles, statuses, deadlines, and notes from one focused dashboard.",
@@ -34,6 +36,7 @@ const features = [
     icon: BriefcaseBusiness
   },
   {
+    id: "analytics",
     title: "Progress analytics",
     description:
       "See portfolio completion, interview momentum, offer progress, and next actions clearly.",
@@ -137,7 +140,11 @@ export default function Home() {
 
             return (
               <StaggerItem key={feature.title} y={16}>
-                <HoverRevealCard reveal={feature.reveal}>
+                <HoverRevealCard
+                  className="scroll-mt-28"
+                  id={feature.id}
+                  reveal={feature.reveal}
+                >
                   <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[#fbe8d8] text-sahara-primary">
                     <Icon aria-hidden="true" className="h-6 w-6" />
                   </div>
