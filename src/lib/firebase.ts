@@ -30,11 +30,15 @@ const missingFirebaseEnv = Object.entries(firebaseEnv)
   .map(([key]) => key);
 
 export const isFirebaseConfigured = missingFirebaseEnv.length === 0;
+export const firebasePublicConfigStatus = {
+  configured: isFirebaseConfigured,
+  missingKeys: missingFirebaseEnv,
+  authDomain: firebaseConfig.authDomain || null,
+  projectId: firebaseConfig.projectId || null
+};
 
 function logAuthDebug(message: string, details?: unknown) {
-  if (process.env.NODE_ENV !== "production") {
-    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
-  }
+  console.info(`[AUTH DEBUG] ${message}`, details ?? "");
 }
 
 if (!isFirebaseConfigured) {

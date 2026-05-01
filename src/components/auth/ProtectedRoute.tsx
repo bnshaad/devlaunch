@@ -10,9 +10,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { Button } from "@/components/ui/button";
 
 function logAuthDebug(message: string, details?: unknown) {
-  if (process.env.NODE_ENV !== "production") {
-    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
-  }
+  console.info(`[AUTH DEBUG] ${message}`, details ?? "");
 }
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -35,7 +33,10 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     if (loading) {
       logAuthDebug("dashboard redirect decision", {
         action: "wait-loading",
-        path: pathname
+        path: pathname,
+        hasFirebaseUser: Boolean(firebaseUser),
+        hasAppUser,
+        hasProfileError: Boolean(profileError)
       });
       return;
     }
@@ -43,7 +44,10 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     if (!firebaseUser) {
       logAuthDebug("dashboard redirect decision", {
         action: "redirect-login",
-        path: pathname
+        path: pathname,
+        hasFirebaseUser: false,
+        hasAppUser,
+        hasProfileError: Boolean(profileError)
       });
       router.replace("/login");
       return;
@@ -52,7 +56,10 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     if (profileError) {
       logAuthDebug("dashboard redirect decision", {
         action: "show-profile-error",
-        path: pathname
+        path: pathname,
+        hasFirebaseUser: true,
+        hasAppUser,
+        hasProfileError: true
       });
       return;
     }
@@ -60,7 +67,10 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     if (!hasAppUser) {
       logAuthDebug("dashboard redirect decision", {
         action: "redirect-login-missing-profile",
-        path: pathname
+        path: pathname,
+        hasFirebaseUser: true,
+        hasAppUser: false,
+        hasProfileError: false
       });
       router.replace("/login");
       return;
@@ -70,6 +80,8 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
       logAuthDebug("dashboard redirect decision", {
         action: "redirect-onboarding",
         path: pathname,
+        hasFirebaseUser: true,
+        hasAppUser,
         username: appUsername
       });
       router.replace("/onboarding");
@@ -79,6 +91,8 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     logAuthDebug("dashboard redirect decision", {
       action: "render",
       path: pathname,
+      hasFirebaseUser: true,
+      hasAppUser,
       username: appUsername
     });
   }, [

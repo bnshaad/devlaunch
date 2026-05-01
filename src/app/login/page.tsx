@@ -13,9 +13,7 @@ import { WarmCard } from "@/components/shared/WarmCard";
 import { Button } from "@/components/ui/button";
 
 function logAuthDebug(message: string, details?: unknown) {
-  if (process.env.NODE_ENV !== "production") {
-    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
-  }
+  console.info(`[AUTH DEBUG] ${message}`, details ?? "");
 }
 
 export default function LoginPage() {
@@ -25,13 +23,16 @@ export default function LoginPage() {
     clearAuthError,
     firebaseUser,
     loading,
+    logout,
+    profileError,
     profileLoading,
+    refreshUserProfile,
     signInWithGoogle,
   } = useAuth();
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const displayedError = error || authError;
+  const displayedError = error || authError || profileError;
   const appUsername = appUser?.username ?? null;
   const hasAppUser = Boolean(appUser);
   const isResolvingProfile = Boolean(firebaseUser && profileLoading);
@@ -44,6 +45,17 @@ export default function LoginPage() {
         hasFirebaseUser: Boolean(firebaseUser),
         hasAppUser,
         loading
+      });
+      return;
+    }
+
+    if (profileError) {
+      logAuthDebug("login page redirect decision", {
+        action: "show-profile-error",
+        hasFirebaseUser: Boolean(firebaseUser),
+        hasAppUser,
+        loading,
+        hasProfileError: true
       });
       return;
     }
@@ -72,7 +84,7 @@ export default function LoginPage() {
       username: appUsername
     });
     router.replace("/onboarding");
-  }, [appUsername, firebaseUser, hasAppUser, loading, router]);
+  }, [appUsername, firebaseUser, hasAppUser, loading, profileError, router]);
 
   async function handleGoogleSignIn() {
     setError(null);
@@ -90,6 +102,18 @@ export default function LoginPage() {
       );
       setIsSigningIn(false);
     }
+  }
+
+  async function handleRetryProfile() {
+    setError(null);
+    clearAuthError();
+    await refreshUserProfile();
+  }
+
+  async function handleLogout() {
+    setError(null);
+    clearAuthError();
+    await logout();
   }
 
   return (
@@ -142,6 +166,20 @@ export default function LoginPage() {
                 role="alert"
               >
                 {displayedError}
+                {firebaseUser && profileError ? (
+                  <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                    <Button onClick={() => void handleRetryProfile()} size="sm">
+                      Try again
+                    </Button>
+                    <Button
+                      onClick={() => void handleLogout()}
+                      size="sm"
+                      variant="secondary"
+                    >
+                      Log out
+                    </Button>
+                  </div>
+                ) : null}
               </div>
             ) : null}
             <div className="my-8 flex items-center gap-4">

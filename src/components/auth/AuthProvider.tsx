@@ -20,7 +20,11 @@ import {
   useState,
   type ReactNode
 } from "react";
-import { auth, isFirebaseConfigured } from "@/lib/firebase";
+import {
+  auth,
+  firebasePublicConfigStatus,
+  isFirebaseConfigured
+} from "@/lib/firebase";
 import { createUserIfNotExists } from "@/services/userService";
 import { type AppUser } from "@/types/user";
 
@@ -59,9 +63,7 @@ function getAuthErrorCode(error: unknown) {
 }
 
 function logAuthDebug(message: string, details?: unknown) {
-  if (process.env.NODE_ENV !== "production") {
-    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
-  }
+  console.info(`[AUTH DEBUG] ${message}`, details ?? "");
 }
 
 function withTimeout<T>(
@@ -113,16 +115,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAppUser(profile);
       setAuthError(null);
       logAuthDebug("appUser loaded", {
-        uid: profile.uid,
+        hasUid: Boolean(profile.uid),
+        hasUsername: Boolean(profile.username),
         username: profile.username ?? null
       });
       logAuthDebug("appUser.username value", profile.username ?? null);
 
       return profile;
     } catch (error) {
+      const code = getAuthErrorCode(error);
       const message = getAuthErrorMessage(error);
 
-      console.error("[AUTH DEBUG] Unable to load user profile:", message);
+      console.error("[AUTH DEBUG] Unable to load user profile:", {
+        code,
+        message
+      });
       setAppUser(null);
       setProfileError(
         "You are signed in, but DevLaunch could not load your profile from Firestore. Check your connection or Firestore rules, then try again."
@@ -136,6 +143,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    logAuthDebug("Firebase public config status", firebasePublicConfigStatus);
+
     if (!isFirebaseConfigured) {
       logAuthDebug("Firebase auth listener skipped; config missing");
       return undefined;
@@ -143,11 +152,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     let isActive = true;
 
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        logAuthDebug("Firebase auth persistence ready", {
+          persistence: "browserLocalPersistence"
+        });
+      })
+      .catch((error) => {
+        console.error(
+          "[AUTH DEBUG] Firebase auth persistence failed:",
+          getAuthErrorMessage(error)
+        );
+      });
+
     getRedirectResult(auth)
       .then((result) => {
         logAuthDebug("getRedirectResult result", {
           hasUser: Boolean(result?.user),
-          uid: result?.user.uid ?? null
+          hasUid: Boolean(result?.user?.uid),
+          hasEmail: Boolean(result?.user?.email)
         });
       })
       .catch((error) => {
@@ -166,7 +189,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async (firebaseUser) => {
         logAuthDebug("onAuthStateChanged fired", {
           hasFirebaseUser: Boolean(firebaseUser),
-          uid: firebaseUser?.uid ?? null
+          hasUid: Boolean(firebaseUser?.uid),
+          hasEmail: Boolean(firebaseUser?.email)
         });
 
         if (!isActive) {
@@ -230,7 +254,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logAuthDebug("signInWithPopup called");
       const result = await signInWithPopup(auth, provider);
       logAuthDebug("signInWithPopup completed", {
-        uid: result.user.uid
+        hasUid: Boolean(result.user.uid),
+        hasEmail: Boolean(result.user.email)
       });
     } catch (error) {
       const code = getAuthErrorCode(error);
@@ -245,7 +270,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const message = getAuthErrorMessage(error);
-      console.error("[AUTH DEBUG] Google sign-in failed:", message);
+      console.error("[AUTH DEBUG] Google sign-in failed:", {
+        code,
+        message
+      });
       setAuthError(message);
       throw error;
     }
