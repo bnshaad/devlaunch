@@ -46,19 +46,14 @@ if (!isFirebaseConfigured) {
 }
 
 function getFirebaseApp() {
-  if (!isFirebaseConfigured) {
-    throw new Error(
-      `Firebase is missing required public environment variables: ${missingFirebaseEnv.join(
-        ", "
-      )}.`
-    );
-  }
-
   const firebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
-  logAuthDebug("Firebase app initialized", {
-    authDomain: firebaseConfig.authDomain,
-    projectId: firebaseConfig.projectId
-  });
+
+  if (isFirebaseConfigured) {
+    logAuthDebug("Firebase app initialized", {
+      authDomain: firebaseConfig.authDomain,
+      projectId: firebaseConfig.projectId
+    });
+  }
 
   return firebaseApp;
 }

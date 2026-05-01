@@ -1,0 +1,107 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isValidUsername(username) {
+      return username is string
+        && username.matches('^[a-z0-9_-]{3,20}$');
+    }
+
+    function publicPortfolioExists(uid) {
+      return exists(/databases/$(database)/documents/portfolios/$(uid))
+        && get(/databases/$(database)/documents/portfolios/$(uid)).data.isPublic == true;
+    }
+
+    // User documents are keyed by Firebase Auth uid.
+    // Assumption: users/{uid}.uid always equals the document id.
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+
+      allow create: if isOwner(uid)
+        && request.resource.data.uid == uid;
+
+      allow update: if isOwner(uid)
+        && resource.data.uid == uid
+        && request.resource.data.uid == uid;
+
+      allow delete: if false;
+    }
+
+    // Username documents are public lookup records used by /dev/{username}.
+    // Assumption: usernames/{username} contains { uid, createdAt }.
+    match /usernames/{username} {
+      allow read: if isValidUsername(username);
+
+      allow create: if isSignedIn()
+        && isValidUsername(username)
+        && !exists(/databases/$(database)/documents/usernames/$(username))
+        && request.resource.data.uid == request.auth.uid;
+
+      allow update: if isSignedIn()
+        && isValidUsername(username)
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid;
+
+      allow delete: if false;
+    }
+
+    // Portfolio documents are keyed by owner uid.
+    // Public reads are allowed only after the owner sets isPublic to true.
+    match /portfolios/{uid} {
+      allow read: if isOwner(uid)
+        || resource.data.isPublic == true;
+
+      allow create: if isOwner(uid)
+        && request.resource.data.userId == uid;
+
+      allow update: if isOwner(uid)
+        && resource.data.userId == uid
+        && request.resource.data.userId == uid;
+
+      allow delete: if isOwner(uid)
+        && resource.data.userId == uid;
+    }
+
+    // Projects are stored as top-level documents with a userId field.
+    // Public reads depend on the owner's portfolio being public. This works
+    // safely only when project queries are scoped by userId, as the app does.
+    match /projects/{projectId} {
+      allow read: if isOwner(resource.data.userId)
+        || publicPortfolioExists(resource.data.userId);
+
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid;
+
+      allow update: if isOwner(resource.data.userId)
+        && request.resource.data.userId == resource.data.userId;
+
+      allow delete: if isOwner(resource.data.userId);
+    }
+
+    // Internship/application tracker records are private to their owner.
+    match /applications/{applicationId} {
+      allow read: if isOwner(resource.data.userId);
+
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid;
+
+      allow update: if isOwner(resource.data.userId)
+        && request.resource.data.userId == resource.data.userId;
+
+      allow delete: if isOwner(resource.data.userId);
+    }
+
+    // Deny every collection or document not explicitly modeled above.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

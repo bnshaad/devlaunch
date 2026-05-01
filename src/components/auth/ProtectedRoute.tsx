@@ -7,6 +7,7 @@ import { EditorialHeading } from "@/components/shared/EditorialHeading";
 import { PageShell } from "@/components/shared/PageShell";
 import { WarmCard } from "@/components/shared/WarmCard";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { Button } from "@/components/ui/button";
 
 function logAuthDebug(message: string, details?: unknown) {
   if (process.env.NODE_ENV !== "production") {
@@ -15,7 +16,15 @@ function logAuthDebug(message: string, details?: unknown) {
 }
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { appUser, firebaseUser, loading, profileLoading } = useAuth();
+  const {
+    appUser,
+    firebaseUser,
+    loading,
+    logout,
+    profileError,
+    profileLoading,
+    refreshUserProfile
+  } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const appUsername = appUser?.username ?? null;
@@ -37,6 +46,14 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
         path: pathname
       });
       router.replace("/login");
+      return;
+    }
+
+    if (profileError) {
+      logAuthDebug("dashboard redirect decision", {
+        action: "show-profile-error",
+        path: pathname
+      });
       return;
     }
 
@@ -64,7 +81,20 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
       path: pathname,
       username: appUsername
     });
-  }, [appUsername, firebaseUser, hasAppUser, loading, pathname, router]);
+  }, [
+    appUsername,
+    firebaseUser,
+    hasAppUser,
+    loading,
+    pathname,
+    profileError,
+    router
+  ]);
+
+  async function handleLogout() {
+    await logout();
+    router.replace("/login");
+  }
 
   if (loading || isResolvingProfile) {
     return (
@@ -88,6 +118,32 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 
   if (!firebaseUser) {
     return null;
+  }
+
+  if (profileError) {
+    return (
+      <PageShell className="flex items-center justify-center px-4 py-16">
+        <AnimatedSection className="w-full max-w-md">
+          <WarmCard className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
+              Profile unavailable
+            </p>
+            <EditorialHeading className="mt-3 text-4xl">
+              We could not load your DevLaunch profile
+            </EditorialHeading>
+            <p className="mt-4 text-sm leading-6 text-sahara-muted">
+              {profileError}
+            </p>
+            <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+              <Button onClick={() => void refreshUserProfile()}>Try again</Button>
+              <Button onClick={() => void handleLogout()} variant="secondary">
+                Log out
+              </Button>
+            </div>
+          </WarmCard>
+        </AnimatedSection>
+      </PageShell>
+    );
   }
 
   if (!appUser?.username) {

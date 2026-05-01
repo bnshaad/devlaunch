@@ -31,19 +31,13 @@ const emptyPortfolio: PortfolioInput = {
   isPublic: false
 };
 
-function portfolioToFormValues(
-  portfolio: Portfolio | null,
-  fallbackFullName = ""
-): PortfolioInput {
+function portfolioToFormValues(portfolio: Portfolio | null): PortfolioInput {
   if (!portfolio) {
-    return {
-      ...emptyPortfolio,
-      fullName: fallbackFullName
-    };
+    return emptyPortfolio;
   }
 
   return {
-    fullName: portfolio.fullName || fallbackFullName,
+    fullName: portfolio.fullName,
     headline: portfolio.headline,
     bio: portfolio.bio,
     location: portfolio.location,
@@ -94,12 +88,7 @@ function DashboardProfileContent() {
         }
 
         setPortfolio(existingPortfolio);
-        setPreviewPortfolio(
-          portfolioToFormValues(
-            existingPortfolio,
-            appUser?.displayName || user?.displayName || ""
-          )
-        );
+        setPreviewPortfolio(portfolioToFormValues(existingPortfolio));
       } catch (error) {
         if (!isActive) {
           return;
@@ -122,7 +111,7 @@ function DashboardProfileContent() {
     return () => {
       isActive = false;
     };
-  }, [appUser?.displayName, user?.displayName, user?.uid]);
+  }, [user?.uid]);
 
   const handleValuesChange = useCallback((values: PortfolioInput) => {
     setPreviewPortfolio(values);
@@ -223,10 +212,7 @@ function DashboardProfileContent() {
               </WarmCard>
             ) : null}
             <PortfolioForm
-              defaultValues={portfolioToFormValues(
-                portfolio,
-                appUser?.displayName || user?.displayName || ""
-              )}
+              defaultValues={portfolioToFormValues(portfolio)}
               key={portfolio?.updatedAt?.toMillis?.() ?? portfolio?.headline ?? "new"}
               onSubmit={handleSubmit}
               onValuesChange={handleValuesChange}

@@ -76,6 +76,16 @@ const recentActivity = [
   }
 ];
 
+function getEmailPrefix(email?: string | null) {
+  const trimmedEmail = email?.trim();
+
+  if (!trimmedEmail) {
+    return null;
+  }
+
+  return trimmedEmail.split("@")[0] || trimmedEmail;
+}
+
 export default function DashboardPage() {
   return (
     <ProtectedRoute>
@@ -95,11 +105,10 @@ function DashboardContent() {
   const displayName = useMemo(
     () =>
       portfolioFullName?.trim() ||
-      appUser?.displayName?.trim() ||
       appUser?.username?.trim() ||
-      user?.email?.trim() ||
+      getEmailPrefix(appUser?.email || user?.email) ||
       "Developer",
-    [appUser?.displayName, appUser?.username, portfolioFullName, user?.email]
+    [appUser?.email, appUser?.username, portfolioFullName, user?.email]
   );
   const email = appUser?.email || user?.email || "No email available";
   const username = appUser?.username || "username pending";

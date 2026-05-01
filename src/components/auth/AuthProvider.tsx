@@ -21,10 +21,7 @@ import {
   type ReactNode
 } from "react";
 import { auth, isFirebaseConfigured } from "@/lib/firebase";
-import {
-  createUserIfNotExists,
-  getUserProfile
-} from "@/services/userService";
+import { createUserIfNotExists } from "@/services/userService";
 import { type AppUser } from "@/types/user";
 
 type AuthContextValue = {
@@ -34,6 +31,7 @@ type AuthContextValue = {
   loading: boolean;
   authLoading: boolean;
   profileLoading: boolean;
+  profileError: string | null;
   authError: string | null;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
@@ -93,8 +91,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [authLoading, setAuthLoading] = useState(isFirebaseConfigured);
   const [profileLoading, setProfileLoading] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(
+    isFirebaseConfigured
+      ? null
+      : "Firebase is not configured yet. Add the NEXT_PUBLIC_FIREBASE_* environment variables and restart the dev server."
+  );
   const loading = authLoading || profileLoading;
+
+  const loadUserProfile = useCallback(async (firebaseUser: FirebaseUser) => {
+    setProfileLoading(true);
+    setProfileError(null);
+
+    try {
+      const profile = await withTimeout(
+        createUserIfNotExists(firebaseUser),
+        PROFILE_LOAD_TIMEOUT_MS,
+        "DevLaunch could not load your profile in time. Please try again."
+      );
+
+      setAppUser(profile);
+      setAuthError(null);
+      logAuthDebug("appUser loaded", {
+        uid: profile.uid,
+        username: profile.username ?? null
+      });
+      logAuthDebug("appUser.username value", profile.username ?? null);
+
+      return profile;
+    } catch (error) {
+      const message = getAuthErrorMessage(error);
+
+      console.error("[AUTH DEBUG] Unable to load user profile:", message);
+      setAppUser(null);
+      setProfileError(
+        "You are signed in, but DevLaunch could not load your profile from Firestore. Check your connection or Firestore rules, then try again."
+      );
+
+      return null;
+    } finally {
+      setProfileLoading(false);
+      setAuthLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isFirebaseConfigured) {
@@ -137,6 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!firebaseUser) {
           setUser(null);
           setAppUser(null);
+          setProfileError(null);
           setProfileLoading(false);
           setAuthLoading(false);
           logAuthDebug("Firebase user is null; auth state cleared");
@@ -145,50 +185,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         setUser(firebaseUser);
         setAppUser(null);
-        setProfileLoading(true);
         setAuthLoading(false);
-
-        try {
-          const profile = await withTimeout(
-            createUserIfNotExists(firebaseUser),
-            PROFILE_LOAD_TIMEOUT_MS,
-            "DevLaunch could not load your profile in time. Please try again."
-          );
-          if (!isActive) {
-            return;
-          }
-          setAppUser(profile);
-          setAuthError(null);
-          logAuthDebug("appUser loaded", {
-            uid: profile.uid,
-            username: profile.username ?? null
-          });
-          logAuthDebug("appUser.username value", profile.username ?? null);
-        } catch (error) {
-          if (!isActive) {
-            return;
-          }
-          console.error(
-            "[AUTH DEBUG] Unable to load user profile:",
-            getAuthErrorMessage(error)
-          );
-          setAppUser(null);
-          setUser(null);
-          setAuthError(
-            "Google sign-in succeeded, but DevLaunch could not load your profile. Please try again."
-          );
-          await signOut(auth).catch((signOutError) => {
-            console.error(
-              "Sign out after profile load failure failed:",
-              getAuthErrorMessage(signOutError)
-            );
-          });
-        } finally {
-          if (isActive) {
-            setProfileLoading(false);
-            setAuthLoading(false);
-          }
-        }
+        await loadUserProfile(firebaseUser);
       },
       (error) => {
         if (!isActive) {
@@ -211,7 +209,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isActive = false;
       unsubscribe();
     };
-  }, []);
+  }, [loadUserProfile]);
 
   const signInWithGoogle = useCallback(async () => {
     logAuthDebug("signInWithGoogle called");
@@ -227,6 +225,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       setAuthError(null);
+      setProfileError(null);
       await setPersistence(auth, browserLocalPersistence);
       logAuthDebug("signInWithPopup called");
       const result = await signInWithPopup(auth, provider);
@@ -257,26 +256,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!currentUser) {
       setAppUser(null);
+      setProfileError(null);
       return null;
     }
 
-    setProfileLoading(true);
-
-    try {
-      const profile = await getUserProfile(currentUser.uid);
-      setAppUser(profile);
-
-      return profile;
-    } finally {
-      setProfileLoading(false);
-    }
-  }, []);
+    return loadUserProfile(currentUser);
+  }, [loadUserProfile]);
 
   const logout = useCallback(async () => {
     try {
       await signOut(auth);
       setUser(null);
       setAppUser(null);
+      setProfileError(null);
     } catch (error) {
       console.error("Sign out failed:", getAuthErrorMessage(error));
       throw error;
@@ -295,6 +287,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       authLoading,
       profileLoading,
+      profileError,
       authError,
       signInWithGoogle,
       logout,
@@ -310,6 +303,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logout,
       refreshUserProfile,
       signInWithGoogle,
+      profileError,
       profileLoading,
       user
     ]
