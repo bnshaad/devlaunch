@@ -7,7 +7,6 @@ The app is built as an MVP-ready career workspace. The landing and demo pages ar
 ## Features
 
 - Google login with Firebase Authentication
-- Optional QA-only tester login with Firebase Email/Password Authentication
 - First-time username onboarding
 - Protected dashboard routes
 - Portfolio profile editor backed by Firestore
@@ -39,7 +38,7 @@ The app is built as an MVP-ready career workspace. The landing and demo pages ar
 | --- | --- |
 | `/` | Public landing page |
 | `/demo` | Static product preview |
-| `/login` | Google sign-in with secondary QA tester login |
+| `/login` | Google sign-in |
 | `/onboarding` | First-time username setup |
 | `/dashboard` | Authenticated overview with real user data |
 | `/dashboard/profile` | Portfolio profile editor |
@@ -54,7 +53,6 @@ The app is built as an MVP-ready career workspace. The landing and demo pages ar
 ## Firebase Services Used
 
 - Firebase Authentication for Google sign-in and identity
-- Firebase Email/Password Authentication for temporary QA tester access
 - Cloud Firestore for:
   - `users/{uid}`
   - `usernames/{username}`
@@ -96,17 +94,7 @@ npm install
 Authentication -> Sign-in method -> Google
 ```
 
-4. For QA/testing environments only, enable Email/Password as an additional
-   sign-in provider:
-
-```txt
-Authentication -> Sign-in method -> Email/Password
-```
-
-Create tester accounts manually in Firebase Console when needed. Do not commit
-test account passwords, seed credentials, or source-code secrets.
-
-5. Add local and deployed domains in Firebase Authorized domains:
+4. Add local and deployed domains in Firebase Authorized domains:
 
 ```txt
 Authentication -> Settings -> Authorized domains
@@ -118,13 +106,13 @@ Include at least:
 - your Vercel production domain
 - any custom domain used for the app
 
-6. Start the dev server:
+5. Start the dev server:
 
 ```bash
 npm run dev
 ```
 
-7. Open the local URL printed by Next.js, usually:
+6. Open the local URL printed by Next.js, usually:
 
 ```txt
 http://localhost:3000
@@ -176,30 +164,12 @@ For Vercel:
 3. Redeploy after changing environment variables.
 4. Add the Vercel production domain to Firebase Authorized domains.
 5. Confirm Google sign-in provider is enabled in Firebase Authentication.
-6. For QA/testing deployments, enable Email/Password in Firebase Authentication
-   and create temporary tester users manually if needed.
-7. Keep tester credentials in deployment notes or your password manager, never
-   in source code, `.env` files, screenshots, or committed docs.
-8. Deploy Firestore rules separately from Firebase CLI when you are ready.
-
-## QA Tester Login
-
-The `/login` page keeps Google as the primary sign-in option. A secondary
-section labeled "Tester login" lets QA users sign in with Firebase
-Email/Password accounts created in Firebase Console.
-
-The app does not create email/password accounts from the frontend and does not
-store tester credentials in source. New tester users follow the same flow as
-Google users: first sign-in creates the existing `users/{uid}` profile with
-`username: null`, then the user is sent to onboarding. Existing tester users
-with a claimed username skip onboarding and land on the dashboard.
+6. Deploy Firestore rules separately from Firebase CLI when you are ready.
 
 ## Manual QA Checklist
 
 - Google login works for an existing user.
 - New Google user is sent to onboarding.
-- Tester login works for a Firebase Email/Password QA account.
-- New tester user is sent to onboarding.
 - Username rejects spaces, invalid symbols, and taken names.
 - Valid onboarding lands on `/dashboard`.
 - Existing user skips onboarding.

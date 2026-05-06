@@ -6,7 +6,6 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   setPersistence,
-  signInWithEmailAndPassword,
   signInWithPopup,
   signInWithRedirect,
   signOut,
@@ -39,7 +38,6 @@ type AuthContextValue = {
   profileError: string | null;
   authError: string | null;
   signInWithGoogle: () => Promise<void>;
-  signInWithEmailPassword: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUserProfile: () => Promise<AppUser | null>;
   clearAuthError: () => void;
@@ -283,46 +281,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const signInWithEmailPassword = useCallback(
-    async (email: string, password: string) => {
-      logAuthDebug("signInWithEmailPassword called", {
-        hasEmail: Boolean(email)
-      });
-
-      if (!isFirebaseConfigured) {
-        throw new Error(
-          "Firebase is not configured yet. Add the NEXT_PUBLIC_FIREBASE_* environment variables and restart the dev server."
-        );
-      }
-
-      try {
-        setAuthError(null);
-        setProfileError(null);
-        await setPersistence(auth, browserLocalPersistence);
-        const result = await signInWithEmailAndPassword(
-          auth,
-          email.trim(),
-          password
-        );
-        logAuthDebug("signInWithEmailPassword completed", {
-          hasUid: Boolean(result.user.uid),
-          hasEmail: Boolean(result.user.email)
-        });
-      } catch (error) {
-        const code = getAuthErrorCode(error);
-        const message = getAuthErrorMessage(error);
-
-        console.error("[AUTH DEBUG] Tester email/password sign-in failed:", {
-          code,
-          message
-        });
-        setAuthError(message);
-        throw error;
-      }
-    },
-    []
-  );
-
   const refreshUserProfile = useCallback(async () => {
     const currentUser = auth.currentUser;
 
@@ -362,7 +320,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profileError,
       authError,
       signInWithGoogle,
-      signInWithEmailPassword,
       logout,
       refreshUserProfile,
       clearAuthError
@@ -375,7 +332,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       logout,
       refreshUserProfile,
-      signInWithEmailPassword,
       signInWithGoogle,
       profileError,
       profileLoading,
