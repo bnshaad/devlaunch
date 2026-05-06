@@ -225,10 +225,6 @@ function DashboardProfileContent() {
                   Complete onboarding to claim your public URL.
                 </p>
               )}
-              <p className="mt-3 text-sm leading-6 text-sahara-muted">
-                Username is set during onboarding. Username editing will be
-                added in a future update.
-              </p>
             </WarmCard>
             <PortfolioForm
               defaultValues={portfolioToFormValues(portfolio)}
