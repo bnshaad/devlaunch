@@ -76,6 +76,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=
 ```
 
 These are Firebase web app public config values. Do not commit `.env.local`.
+The repository `.gitignore` already excludes `.env*.local` files.
 
 ## Local Setup
 
