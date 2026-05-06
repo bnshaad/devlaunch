@@ -8,7 +8,6 @@ import {
   FolderOpen,
   LayoutDashboard,
   Rocket,
-  Settings,
   UserRound
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,8 +20,7 @@ const navItems = [
     label: "Applications",
     href: "/dashboard/applications",
     icon: BriefcaseBusiness
-  },
-  { label: "Settings", href: "/dashboard", icon: Settings }
+  }
 ];
 
 export function DashboardShell({ children }: { children: ReactNode }) {

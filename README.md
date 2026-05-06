@@ -187,6 +187,22 @@ For Vercel:
 - Logged-out users can open a public `/dev/{username}` page.
 - Mobile layout is usable for landing, login, onboarding, dashboard, forms, and public portfolio.
 
+## Presentation Screenshots
+
+Useful screens to capture for a GitHub README, portfolio case study, or LinkedIn post:
+
+- Landing page hero: shows the product positioning and visual style.
+- Demo page: shows the live MVP feature summary without requiring login.
+- Login page: shows the Google-auth entry point.
+- Onboarding page: shows first-time username setup.
+- Dashboard overview: shows real portfolio, project, and application data.
+- Portfolio editor: shows editable profile fields and preview.
+- Projects page: shows project management and featured projects.
+- Applications page: shows the internship tracker and statuses.
+- Public portfolio: shows the recruiter-facing `/dev/{username}` page.
+
+Avoid showing real personal email addresses, private application notes, or unreleased Firebase project details in screenshots.
+
 ## Known Limitations
 
 - Dashboard stats are basic counts and status summaries, not full analytics charts.

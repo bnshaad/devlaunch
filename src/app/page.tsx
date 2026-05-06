@@ -37,10 +37,10 @@ const features = [
   },
   {
     id: "analytics",
-    title: "Progress analytics",
+    title: "Dashboard overview",
     description:
-      "See portfolio completion, interview momentum, offer progress, and next actions clearly.",
-    reveal: "Warm, readable metrics help you decide what to do next.",
+      "Review portfolio status, project count, application count, and pipeline progress at a glance.",
+    reveal: "Basic, readable stats help you decide what to update next.",
     icon: BarChart3
   }
 ];
