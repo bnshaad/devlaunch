@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Rocket } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Lock, Mail, Rocket } from "lucide-react";
+import { FormEvent, useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { EditorialHeading } from "@/components/shared/EditorialHeading";
@@ -29,10 +29,14 @@ export default function LoginPage() {
     profileError,
     profileLoading,
     refreshUserProfile,
-    signInWithGoogle,
+    signInWithEmailPassword,
+    signInWithGoogle
   } = useAuth();
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isTesterSigningIn, setIsTesterSigningIn] = useState(false);
+  const [testerEmail, setTesterEmail] = useState("");
+  const [testerPassword, setTesterPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const displayedError = error || authError || profileError;
   const appUsername = appUser?.username ?? null;
@@ -106,6 +110,25 @@ export default function LoginPage() {
     }
   }
 
+  async function handleTesterSignIn(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    clearAuthError();
+    setIsTesterSigningIn(true);
+
+    try {
+      await signInWithEmailPassword(testerEmail, testerPassword);
+      setIsTesterSigningIn(false);
+    } catch (signInError) {
+      setError(
+        signInError instanceof Error
+          ? signInError.message
+          : "Unable to sign in with the tester account. Please try again."
+      );
+      setIsTesterSigningIn(false);
+    }
+  }
+
   async function handleRetryProfile() {
     setError(null);
     clearAuthError();
@@ -146,7 +169,7 @@ export default function LoginPage() {
             </div>
             <Button
               className="mt-8 w-full"
-              disabled={isCheckingSession || isSigningIn}
+              disabled={isCheckingSession || isSigningIn || isTesterSigningIn}
               onClick={handleGoogleSignIn}
               size="lg"
             >
@@ -187,12 +210,102 @@ export default function LoginPage() {
             <div className="my-8 flex items-center gap-4">
               <div className="h-px flex-1 bg-sahara-border/70" />
               <span className="text-xs font-semibold uppercase tracking-wide text-sahara-muted">
-                Google authentication
+                QA access
               </span>
               <div className="h-px flex-1 bg-sahara-border/70" />
             </div>
-            <p className="text-center text-sm leading-6 text-sahara-muted">
-              New here? Your account setup starts after Google sign-in.
+            <form
+              className="space-y-4 rounded-xl border border-sahara-border/70 bg-sahara-surfaceLow/60 p-4"
+              onSubmit={handleTesterSignIn}
+            >
+              <div>
+                <p className="text-sm font-semibold text-sahara-text">
+                  Tester login
+                </p>
+                <p className="mt-1 text-xs leading-5 text-sahara-muted">
+                  For QA only. Use test account instructions from README or
+                  deployment notes.
+                </p>
+              </div>
+              <div>
+                <label
+                  className="text-sm font-semibold text-sahara-text"
+                  htmlFor="tester-email"
+                >
+                  Email
+                </label>
+                <div className="mt-2 flex items-center gap-3 rounded-lg border border-sahara-border bg-white px-3 py-2 transition focus-within:border-sahara-primary focus-within:ring-2 focus-within:ring-sahara-primary/15">
+                  <Mail
+                    aria-hidden="true"
+                    className="h-5 w-5 shrink-0 text-sahara-primary"
+                  />
+                  <input
+                    autoComplete="email"
+                    className="min-w-0 flex-1 bg-transparent text-sm text-sahara-text outline-none placeholder:text-sahara-muted"
+                    disabled={
+                      isCheckingSession || isSigningIn || isTesterSigningIn
+                    }
+                    id="tester-email"
+                    inputMode="email"
+                    onChange={(event) => {
+                      setTesterEmail(event.target.value);
+                      setError(null);
+                    }}
+                    placeholder="tester@example.com"
+                    required
+                    type="email"
+                    value={testerEmail}
+                  />
+                </div>
+              </div>
+              <div>
+                <label
+                  className="text-sm font-semibold text-sahara-text"
+                  htmlFor="tester-password"
+                >
+                  Password
+                </label>
+                <div className="mt-2 flex items-center gap-3 rounded-lg border border-sahara-border bg-white px-3 py-2 transition focus-within:border-sahara-primary focus-within:ring-2 focus-within:ring-sahara-primary/15">
+                  <Lock
+                    aria-hidden="true"
+                    className="h-5 w-5 shrink-0 text-sahara-primary"
+                  />
+                  <input
+                    autoComplete="current-password"
+                    className="min-w-0 flex-1 bg-transparent text-sm text-sahara-text outline-none placeholder:text-sahara-muted"
+                    disabled={
+                      isCheckingSession || isSigningIn || isTesterSigningIn
+                    }
+                    id="tester-password"
+                    onChange={(event) => {
+                      setTesterPassword(event.target.value);
+                      setError(null);
+                    }}
+                    placeholder="Password"
+                    required
+                    type="password"
+                    value={testerPassword}
+                  />
+                </div>
+              </div>
+              <Button
+                className="w-full"
+                disabled={
+                  isCheckingSession ||
+                  isSigningIn ||
+                  isTesterSigningIn ||
+                  !testerEmail ||
+                  !testerPassword
+                }
+                size="sm"
+                type="submit"
+                variant="secondary"
+              >
+                {isTesterSigningIn ? "Signing in..." : "Sign in as tester"}
+              </Button>
+            </form>
+            <p className="mt-6 text-center text-sm leading-6 text-sahara-muted">
+              New here? Account setup starts after sign-in.
             </p>
             <Link
               href="/"
