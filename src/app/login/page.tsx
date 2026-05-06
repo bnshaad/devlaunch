@@ -13,7 +13,9 @@ import { WarmCard } from "@/components/shared/WarmCard";
 import { Button } from "@/components/ui/button";
 
 function logAuthDebug(message: string, details?: unknown) {
-  console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  if (process.env.NODE_ENV !== "production") {
+    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  }
 }
 
 export default function LoginPage() {

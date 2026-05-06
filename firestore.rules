@@ -82,11 +82,14 @@ service cloud.firestore {
     }
 
     // Projects are top-level documents with a userId owner field. Public reads
-    // are tied to the owner's published portfolio and require queries scoped by
-    // userId, which matches the current app service.
+    // are tied to the owner's published portfolio and only expose featured
+    // projects, which matches the public portfolio service query.
     match /projects/{projectId} {
       allow read: if ownsExistingResource()
-        || isPublicPortfolio(resource.data.userId);
+        || (
+          resource.data.featured == true
+          && isPublicPortfolio(resource.data.userId)
+        );
 
       allow create: if ownsIncomingResource();
 

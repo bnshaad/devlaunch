@@ -175,9 +175,18 @@ export async function getProjectByIdForUser(projectId: string, userId: string) {
 }
 
 export async function getFeaturedProjectsByUser(userId: string) {
-  const projects = await getProjectsByUser(userId);
+  const projectsSnapshot = await getDocs(
+    query(
+      collection(db, "projects"),
+      where("userId", "==", userId),
+      where("featured", "==", true)
+    )
+  );
+  const projects = projectsSnapshot.docs.map((projectDoc) =>
+    toProject(projectDoc.id, projectDoc.data())
+  );
 
-  return projects.filter((project) => project.featured);
+  return sortProjects(projects);
 }
 
 export async function updateProject(

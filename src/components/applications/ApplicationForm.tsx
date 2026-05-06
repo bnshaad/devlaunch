@@ -11,14 +11,22 @@ import {
   type InternshipApplicationInput
 } from "@/types/application";
 
-const urlSchema = z.string().trim().url();
+const httpUrlSchema = z
+  .string()
+  .trim()
+  .url()
+  .refine((value) => {
+    const url = new URL(value);
+
+    return url.protocol === "http:" || url.protocol === "https:";
+  });
 
 function optionalUrl(message: string) {
   return z
     .string()
     .trim()
     .refine(
-      (value) => value === "" || urlSchema.safeParse(value).success,
+      (value) => value === "" || httpUrlSchema.safeParse(value).success,
       message
     );
 }

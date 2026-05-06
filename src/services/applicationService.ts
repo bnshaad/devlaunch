@@ -54,6 +54,7 @@ function normalizeApplicationInput(
 
   const company = data.company.trim();
   const role = data.role.trim();
+  const jobUrl = data.jobUrl?.trim() ?? "";
   const appliedDate = data.appliedDate?.trim() ?? "";
   const deadline = data.deadline?.trim() ?? "";
 
@@ -69,11 +70,15 @@ function normalizeApplicationInput(
     throw new Error("Dates must use the YYYY-MM-DD format.");
   }
 
+  if (!isOptionalHttpUrl(jobUrl)) {
+    throw new Error("Job URL must start with http:// or https://.");
+  }
+
   return {
     company,
     role,
     location: data.location?.trim() ?? "",
-    jobUrl: data.jobUrl?.trim() ?? "",
+    jobUrl,
     source: data.source?.trim() ?? "",
     status: data.status,
     appliedDate,
@@ -84,6 +89,20 @@ function normalizeApplicationInput(
 
 function isDateInputValue(value: string) {
   return !value || /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function isOptionalHttpUrl(value: string) {
+  if (!value) {
+    return true;
+  }
+
+  try {
+    const url = new URL(value);
+
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
 function assertCurrentUserOwnsApplications(userId: string) {

@@ -63,7 +63,9 @@ function getAuthErrorCode(error: unknown) {
 }
 
 function logAuthDebug(message: string, details?: unknown) {
-  console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  if (process.env.NODE_ENV !== "production") {
+    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  }
 }
 
 function withTimeout<T>(

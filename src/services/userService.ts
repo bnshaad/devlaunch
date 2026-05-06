@@ -14,7 +14,9 @@ import { type AppUser } from "@/types/user";
 const USERNAME_PATTERN = /^[a-z0-9_-]{3,20}$/;
 
 function logAuthDebug(message: string, details?: unknown) {
-  console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  if (process.env.NODE_ENV !== "production") {
+    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  }
 }
 
 function toAppUser(data: DocumentData): AppUser {
@@ -149,9 +151,11 @@ export async function claimUsername(uid: string, username: string) {
 
   const userRef = doc(db, "users", uid);
   const usernameRef = doc(db, "usernames", normalizedUsername);
+  const portfolioRef = doc(db, "portfolios", uid);
 
   await runTransaction(db, async (transaction) => {
     const usernameSnapshot = await transaction.get(usernameRef);
+    const portfolioSnapshot = await transaction.get(portfolioRef);
 
     if (usernameSnapshot.exists()) {
       throw new Error("That username is already taken.");
@@ -178,6 +182,24 @@ export async function claimUsername(uid: string, username: string) {
       username: normalizedUsername,
       updatedAt: serverTimestamp()
     });
+
+    if (!portfolioSnapshot.exists()) {
+      transaction.set(portfolioRef, {
+        userId: uid,
+        fullName: "",
+        headline: "",
+        bio: "",
+        location: "",
+        email: "",
+        githubUrl: "",
+        linkedinUrl: "",
+        websiteUrl: "",
+        skills: [],
+        isPublic: false,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+    }
   });
 
   const updatedProfile = await getUserProfile(uid);

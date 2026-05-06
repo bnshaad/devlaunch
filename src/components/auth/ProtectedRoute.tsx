@@ -10,7 +10,9 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { Button } from "@/components/ui/button";
 
 function logAuthDebug(message: string, details?: unknown) {
-  console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  if (process.env.NODE_ENV !== "production") {
+    console.info(`[AUTH DEBUG] ${message}`, details ?? "");
+  }
 }
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {

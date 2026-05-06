@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AtSign, ArrowRight, Rocket } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
@@ -29,6 +28,8 @@ export default function OnboardingPage() {
     appUser,
     firebaseUser,
     loading,
+    logout,
+    profileError,
     profileLoading,
     refreshUserProfile
   } = useAuth();
@@ -63,6 +64,13 @@ export default function OnboardingPage() {
       return;
     }
 
+    if (profileError) {
+      logAuthDebug("onboarding redirect decision", {
+        action: "show-profile-error"
+      });
+      return;
+    }
+
     if (!hasAppUser) {
       logAuthDebug("onboarding redirect decision", {
         action: "redirect-login-missing-profile"
@@ -84,7 +92,7 @@ export default function OnboardingPage() {
       action: "render-form",
       username: appUsername
     });
-  }, [appUsername, firebaseUser, hasAppUser, loading, router]);
+  }, [appUsername, firebaseUser, hasAppUser, loading, profileError, router]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -126,6 +134,11 @@ export default function OnboardingPage() {
     }
   }
 
+  async function handleLogout() {
+    await logout();
+    router.replace("/login");
+  }
+
   if (loading || isResolvingProfile) {
     return (
       <PageShell>
@@ -157,6 +170,42 @@ export default function OnboardingPage() {
 
   if (!firebaseUser || appUsername) {
     return null;
+  }
+
+  if (profileError) {
+    return (
+      <PageShell>
+        <SiteHeader minimal />
+        <div className="relative flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-14">
+          <AnimatedSection
+            amount={0.35}
+            className="relative w-full max-w-md"
+            duration={0.6}
+            y={20}
+          >
+            <WarmCard className="p-8 text-center sm:p-12">
+              <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
+                Profile unavailable
+              </p>
+              <EditorialHeading className="mt-3 text-4xl leading-tight">
+                We could not load your DevLaunch profile
+              </EditorialHeading>
+              <p className="mt-4 text-sm leading-6 text-sahara-muted">
+                {profileError}
+              </p>
+              <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+                <Button onClick={() => void refreshUserProfile()}>
+                  Try again
+                </Button>
+                <Button onClick={() => void handleLogout()} variant="secondary">
+                  Log out
+                </Button>
+              </div>
+            </WarmCard>
+          </AnimatedSection>
+        </div>
+      </PageShell>
+    );
   }
 
   return (
@@ -253,12 +302,14 @@ export default function OnboardingPage() {
 
             <p className="mt-6 text-center text-sm leading-6 text-sahara-muted">
               Signed in with the wrong account?{" "}
-              <Link
+              <button
                 className="font-semibold text-sahara-primary underline-offset-4 hover:underline"
-                href="/login"
+                disabled={isSaving}
+                onClick={() => void handleLogout()}
+                type="button"
               >
                 Return to login
-              </Link>
+              </button>
             </p>
           </WarmCard>
         </AnimatedSection>
