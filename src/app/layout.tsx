@@ -16,9 +16,34 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "DevLaunch",
+  title: {
+    default: "DevLaunch",
+    template: "%s | DevLaunch"
+  },
   description:
-    "Build a public developer portfolio, track internships, and launch your developer career."
+    "Build a public developer portfolio, manage projects, track internship applications, and launch your developer career.",
+  applicationName: "DevLaunch",
+  keywords: [
+    "developer portfolio",
+    "student developer",
+    "internship tracker",
+    "career dashboard",
+    "Next.js",
+    "Firebase"
+  ],
+  openGraph: {
+    title: "DevLaunch",
+    description:
+      "A student developer career dashboard for portfolios, projects, and internship tracking.",
+    siteName: "DevLaunch",
+    type: "website"
+  },
+  twitter: {
+    card: "summary",
+    title: "DevLaunch",
+    description:
+      "A student developer career dashboard for portfolios, projects, and internship tracking."
+  }
 };
 
 export default function RootLayout({
