@@ -60,6 +60,7 @@ export default function DashboardProfilePage() {
 
 function DashboardProfileContent() {
   const { appUser, user } = useAuth();
+  const publicUrl = appUser?.username ? `/dev/${appUser.username}` : null;
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [previewPortfolio, setPreviewPortfolio] =
     useState<PortfolioInput>(emptyPortfolio);
@@ -211,6 +212,24 @@ function DashboardProfileContent() {
                 </p>
               </WarmCard>
             ) : null}
+            <WarmCard className="mb-6 p-5">
+              <p className="text-sm font-semibold text-sahara-text">
+                Public URL
+              </p>
+              {publicUrl ? (
+                <p className="mt-2 break-all font-serif text-2xl font-bold text-sahara-primary">
+                  {publicUrl}
+                </p>
+              ) : (
+                <p className="mt-2 text-sm font-semibold text-sahara-text">
+                  Complete onboarding to claim your public URL.
+                </p>
+              )}
+              <p className="mt-3 text-sm leading-6 text-sahara-muted">
+                Username is set during onboarding. Username editing will be
+                added in a future update.
+              </p>
+            </WarmCard>
             <PortfolioForm
               defaultValues={portfolioToFormValues(portfolio)}
               key={portfolio?.updatedAt?.toMillis?.() ?? portfolio?.headline ?? "new"}
