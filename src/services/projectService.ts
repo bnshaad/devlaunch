@@ -32,9 +32,31 @@ function toProject(id: string, data: DocumentData): Project {
 }
 
 function normalizeProjectInput(data: ProjectInput): ProjectInput {
+  const title = data.title.trim();
+  const description = data.description.trim();
+  const githubUrl = data.githubUrl?.trim() ?? "";
+  const liveUrl = data.liveUrl?.trim() ?? "";
+  const imageUrl = data.imageUrl?.trim() ?? "";
+
+  if (title.length < 3) {
+    throw new Error("Title must be at least 3 characters.");
+  }
+
+  if (description.length < 10) {
+    throw new Error("Description must be at least 10 characters.");
+  }
+
+  if (
+    !isOptionalHttpUrl(githubUrl) ||
+    !isOptionalHttpUrl(liveUrl) ||
+    !isOptionalHttpUrl(imageUrl)
+  ) {
+    throw new Error("Project URLs must start with http:// or https://.");
+  }
+
   return {
-    title: data.title.trim(),
-    description: data.description.trim(),
+    title,
+    description,
     techStack: Array.isArray(data.techStack)
       ? data.techStack
           .map((tech) => tech.trim())
@@ -47,11 +69,25 @@ function normalizeProjectInput(data: ProjectInput): ProjectInput {
           )
           .slice(0, 20)
       : [],
-    githubUrl: data.githubUrl?.trim() ?? "",
-    liveUrl: data.liveUrl?.trim() ?? "",
-    imageUrl: data.imageUrl?.trim() ?? "",
+    githubUrl,
+    liveUrl,
+    imageUrl,
     featured: Boolean(data.featured)
   };
+}
+
+function isOptionalHttpUrl(value: string) {
+  if (!value) {
+    return true;
+  }
+
+  try {
+    const url = new URL(value);
+
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
 function assertCurrentUserOwnsProjects(userId: string) {
@@ -83,6 +119,11 @@ export async function createProject(userId: string, data: ProjectInput) {
   assertCurrentUserOwnsProjects(userId);
 
   const normalizedData = normalizeProjectInput(data);
+
+  if (!normalizedData.techStack.length) {
+    throw new Error("Add at least one technology.");
+  }
+
   const projectRef = doc(collection(db, "projects"));
 
   await setDoc(projectRef, {
@@ -117,6 +158,28 @@ export async function getProjectById(projectId: string) {
   return toProject(projectSnapshot.id, projectSnapshot.data());
 }
 
+export async function getProjectByIdForUser(projectId: string, userId: string) {
+  assertCurrentUserOwnsProjects(userId);
+
+  const project = await getProjectById(projectId);
+
+  if (!project) {
+    return null;
+  }
+
+  if (project.userId !== userId) {
+    throw new Error("You can only view your own projects.");
+  }
+
+  return project;
+}
+
+export async function getFeaturedProjectsByUser(userId: string) {
+  const projects = await getProjectsByUser(userId);
+
+  return projects.filter((project) => project.featured);
+}
+
 export async function updateProject(
   projectId: string,
   userId: string,
@@ -135,8 +198,14 @@ export async function updateProject(
     throw new Error("You can only edit your own projects.");
   }
 
+  const normalizedData = normalizeProjectInput(data);
+
+  if (!normalizedData.techStack.length) {
+    throw new Error("Add at least one technology.");
+  }
+
   await updateDoc(projectRef, {
-    ...normalizeProjectInput(data),
+    ...normalizedData,
     updatedAt: serverTimestamp()
   });
 

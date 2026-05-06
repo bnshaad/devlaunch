@@ -13,7 +13,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { WarmCard } from "@/components/shared/WarmCard";
 import { buttonVariants } from "@/components/ui/button";
 import {
-  getProjectById,
+  getProjectByIdForUser,
   updateProject
 } from "@/services/projectService";
 import { type Project, type ProjectInput } from "@/types/project";
@@ -61,7 +61,7 @@ function EditProjectContent() {
       setLoadError(null);
 
       try {
-        const existingProject = await getProjectById(projectId);
+        const existingProject = await getProjectByIdForUser(projectId, userId);
 
         if (!isActive) {
           return;
@@ -69,11 +69,6 @@ function EditProjectContent() {
 
         if (!existingProject) {
           setLoadError("Project was not found.");
-          return;
-        }
-
-        if (existingProject.userId !== userId) {
-          setLoadError("You do not have permission to edit this project.");
           return;
         }
 

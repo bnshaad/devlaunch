@@ -38,8 +38,20 @@ const applicationFormSchema = z.object({
   jobUrl: optionalUrl("Enter a valid job URL, including https://"),
   source: z.string().trim().max(80, "Source must be 80 characters or fewer."),
   status: z.enum(APPLICATION_STATUSES),
-  appliedDate: z.string().trim(),
-  deadline: z.string().trim(),
+  appliedDate: z
+    .string()
+    .trim()
+    .refine(
+      (value) => !value || /^\d{4}-\d{2}-\d{2}$/.test(value),
+      "Use the YYYY-MM-DD format."
+    ),
+  deadline: z
+    .string()
+    .trim()
+    .refine(
+      (value) => !value || /^\d{4}-\d{2}-\d{2}$/.test(value),
+      "Use the YYYY-MM-DD format."
+    ),
   notes: z.string().trim().max(1000, "Notes must be 1000 characters or fewer.")
 });
 

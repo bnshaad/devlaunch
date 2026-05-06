@@ -13,7 +13,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { WarmCard } from "@/components/shared/WarmCard";
 import { buttonVariants } from "@/components/ui/button";
 import {
-  getApplicationById,
+  getApplicationByIdForUser,
   updateApplication
 } from "@/services/applicationService";
 import {
@@ -69,7 +69,10 @@ function EditApplicationContent() {
       setLoadError(null);
 
       try {
-        const existingApplication = await getApplicationById(applicationId);
+        const existingApplication = await getApplicationByIdForUser(
+          applicationId,
+          userId
+        );
 
         if (!isActive) {
           return;
@@ -77,11 +80,6 @@ function EditApplicationContent() {
 
         if (!existingApplication) {
           setLoadError("Application was not found.");
-          return;
-        }
-
-        if (existingApplication.userId !== userId) {
-          setLoadError("You do not have permission to edit this application.");
           return;
         }
 

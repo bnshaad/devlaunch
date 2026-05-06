@@ -2,28 +2,38 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isSignedIn() {
+    function signedIn() {
       return request.auth != null;
     }
 
     function isOwner(uid) {
-      return isSignedIn() && request.auth.uid == uid;
+      return signedIn() && request.auth.uid == uid;
     }
 
-    function isValidUsername(username) {
+    function ownsExistingResource() {
+      return signedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    function ownsIncomingResource() {
+      return signedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    function usernameIsValid(username) {
       return username is string
         && username.matches('^[a-z0-9_-]{3,20}$');
     }
 
-    function publicPortfolioExists(uid) {
+    function isPublicPortfolio(uid) {
       return exists(/databases/$(database)/documents/portfolios/$(uid))
         && get(/databases/$(database)/documents/portfolios/$(uid)).data.isPublic == true;
     }
 
-    // User documents are keyed by Firebase Auth uid.
-    // Assumption: users/{uid}.uid always equals the document id.
+    // User profile metadata is owner-private unless the user has published a
+    // portfolio. The current public portfolio page reads users/{uid} for avatar
+    // metadata after username resolution.
     match /users/{uid} {
-      allow read: if isOwner(uid);
+      allow read: if isOwner(uid)
+        || isPublicPortfolio(uid);
 
       allow create: if isOwner(uid)
         && request.resource.data.uid == uid;
@@ -35,26 +45,27 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Username documents are public lookup records used by /dev/{username}.
-    // Assumption: usernames/{username} contains { uid, createdAt }.
+    // Public username lookup for /dev/{username}. Writes are limited to the
+    // authenticated uid in the mapping, preventing username takeover.
     match /usernames/{username} {
-      allow read: if isValidUsername(username);
+      allow read: if usernameIsValid(username);
 
-      allow create: if isSignedIn()
-        && isValidUsername(username)
+      allow create: if signedIn()
+        && usernameIsValid(username)
         && !exists(/databases/$(database)/documents/usernames/$(username))
         && request.resource.data.uid == request.auth.uid;
 
-      allow update: if isSignedIn()
-        && isValidUsername(username)
+      allow update: if signedIn()
+        && usernameIsValid(username)
         && resource.data.uid == request.auth.uid
         && request.resource.data.uid == request.auth.uid;
 
-      allow delete: if false;
+      allow delete: if signedIn()
+        && resource.data.uid == request.auth.uid;
     }
 
-    // Portfolio documents are keyed by owner uid.
-    // Public reads are allowed only after the owner sets isPublic to true.
+    // Portfolio documents are keyed by owner uid. Public reads are allowed only
+    // when the owner explicitly publishes the portfolio.
     match /portfolios/{uid} {
       allow read: if isOwner(uid)
         || resource.data.isPublic == true;
@@ -70,36 +81,34 @@ service cloud.firestore {
         && resource.data.userId == uid;
     }
 
-    // Projects are stored as top-level documents with a userId field.
-    // Public reads depend on the owner's portfolio being public. This works
-    // safely only when project queries are scoped by userId, as the app does.
+    // Projects are top-level documents with a userId owner field. Public reads
+    // are tied to the owner's published portfolio and require queries scoped by
+    // userId, which matches the current app service.
     match /projects/{projectId} {
-      allow read: if isOwner(resource.data.userId)
-        || publicPortfolioExists(resource.data.userId);
+      allow read: if ownsExistingResource()
+        || isPublicPortfolio(resource.data.userId);
 
-      allow create: if isSignedIn()
-        && request.resource.data.userId == request.auth.uid;
+      allow create: if ownsIncomingResource();
 
-      allow update: if isOwner(resource.data.userId)
+      allow update: if ownsExistingResource()
         && request.resource.data.userId == resource.data.userId;
 
-      allow delete: if isOwner(resource.data.userId);
+      allow delete: if ownsExistingResource();
     }
 
-    // Internship/application tracker records are private to their owner.
+    // Internship/application tracker data is private to the authenticated owner.
     match /applications/{applicationId} {
-      allow read: if isOwner(resource.data.userId);
+      allow read: if ownsExistingResource();
 
-      allow create: if isSignedIn()
-        && request.resource.data.userId == request.auth.uid;
+      allow create: if ownsIncomingResource();
 
-      allow update: if isOwner(resource.data.userId)
+      allow update: if ownsExistingResource()
         && request.resource.data.userId == resource.data.userId;
 
-      allow delete: if isOwner(resource.data.userId);
+      allow delete: if ownsExistingResource();
     }
 
-    // Deny every collection or document not explicitly modeled above.
+    // Default deny for every collection or document not explicitly modeled.
     match /{document=**} {
       allow read, write: if false;
     }

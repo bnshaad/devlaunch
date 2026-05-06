@@ -32,15 +32,15 @@ const demoItems = [
   },
   {
     label: "Internship tracker",
-    value: "Upcoming",
-    reveal: "Application statuses, deadlines, and notes are planned for the next MVP step.",
+    value: "Live",
+    reveal: "Applications can be saved, edited, deleted, and tracked by status.",
     icon: BriefcaseBusiness,
     color: "text-sahara-tertiary"
   },
   {
-    label: "Analytics",
-    value: "Upcoming",
-    reveal: "Portfolio completion and internship momentum metrics will arrive after CRUD is stable.",
+    label: "Dashboard overview",
+    value: "Live",
+    reveal: "The dashboard summarizes portfolio status, projects, applications, and pipeline progress.",
     icon: BarChart3,
     color: "text-amber-700"
   }
@@ -60,7 +60,8 @@ export default function DemoPage() {
           </EditorialHeading>
           <p className="mt-4 text-lg leading-8 text-sahara-muted">
             DevLaunch now includes Google sign-in, username onboarding,
-            portfolio editing, public portfolio pages, and project management.
+            portfolio editing, public portfolio pages, project management,
+            internship tracking, and a user-specific dashboard overview.
           </p>
         </AnimatedSection>
 
@@ -91,8 +92,9 @@ export default function DemoPage() {
             </EditorialHeading>
             <p className="mt-3 max-w-2xl leading-7 text-sahara-muted">
               Sign in with Google, claim a username, build your portfolio, add
-              projects, and share your public /dev/username page. Internship
-              tracking and analytics are still upcoming.
+              projects, track internship applications, and share your public
+              /dev/username page. This page stays static so visitors can preview
+              the product before entering the live workspace.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link href="/login" className={buttonVariants()}>

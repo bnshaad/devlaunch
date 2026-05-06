@@ -52,17 +52,38 @@ function normalizeApplicationInput(
     throw new Error("Choose a valid application status.");
   }
 
+  const company = data.company.trim();
+  const role = data.role.trim();
+  const appliedDate = data.appliedDate?.trim() ?? "";
+  const deadline = data.deadline?.trim() ?? "";
+
+  if (company.length < 2) {
+    throw new Error("Company must be at least 2 characters.");
+  }
+
+  if (role.length < 2) {
+    throw new Error("Role must be at least 2 characters.");
+  }
+
+  if (!isDateInputValue(appliedDate) || !isDateInputValue(deadline)) {
+    throw new Error("Dates must use the YYYY-MM-DD format.");
+  }
+
   return {
-    company: data.company.trim(),
-    role: data.role.trim(),
+    company,
+    role,
     location: data.location?.trim() ?? "",
     jobUrl: data.jobUrl?.trim() ?? "",
     source: data.source?.trim() ?? "",
     status: data.status,
-    appliedDate: data.appliedDate?.trim() ?? "",
-    deadline: data.deadline?.trim() ?? "",
+    appliedDate,
+    deadline,
     notes: data.notes?.trim() ?? ""
   };
+}
+
+function isDateInputValue(value: string) {
+  return !value || /^\d{4}-\d{2}-\d{2}$/.test(value);
 }
 
 function assertCurrentUserOwnsApplications(userId: string) {
@@ -127,6 +148,25 @@ export async function getApplicationById(applicationId: string) {
   }
 
   return toApplication(applicationSnapshot.id, applicationSnapshot.data());
+}
+
+export async function getApplicationByIdForUser(
+  applicationId: string,
+  userId: string
+) {
+  assertCurrentUserOwnsApplications(userId);
+
+  const application = await getApplicationById(applicationId);
+
+  if (!application) {
+    return null;
+  }
+
+  if (application.userId !== userId) {
+    throw new Error("You can only view your own applications.");
+  }
+
+  return application;
 }
 
 export async function updateApplication(

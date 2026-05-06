@@ -38,8 +38,11 @@ const portfolioFormSchema = z.object({
   fullName: z
     .string()
     .trim()
-    .min(2, "Full name must be at least 2 characters.")
-    .max(80, "Full name must be 80 characters or fewer."),
+    .max(80, "Full name must be 80 characters or fewer.")
+    .refine(
+      (value) => value === "" || value.length >= 2,
+      "Full name must be at least 2 characters."
+    ),
   headline: z
     .string()
     .trim()

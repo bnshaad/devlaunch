@@ -33,7 +33,7 @@ const emptyPortfolio: PortfolioInput = {
 
 function portfolioToFormValues(portfolio: Portfolio | null): PortfolioInput {
   if (!portfolio) {
-    return emptyPortfolio;
+    return { ...emptyPortfolio };
   }
 
   return {
