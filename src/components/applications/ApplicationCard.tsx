@@ -9,6 +9,7 @@ import {
   Trash2
 } from "lucide-react";
 import Link from "next/link";
+import { type MouseEvent } from "react";
 import { ApplicationStatusBadge } from "@/components/applications/ApplicationStatusBadge";
 import { WarmCard } from "@/components/shared/WarmCard";
 import { buttonVariants } from "@/components/ui/button";
@@ -66,6 +67,12 @@ export function ApplicationCard({
   const jobUrl = safeExternalUrl(application.jobUrl);
   const appliedDate = formatDate(application.appliedDate);
   const deadline = formatDate(application.deadline);
+
+  function handleDeleteClick(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    onDelete(application);
+  }
 
   return (
     <WarmCard className="flex h-full flex-col p-6 sm:p-7">
@@ -139,7 +146,7 @@ export function ApplicationCard({
         <button
           className={buttonVariants({ size: "sm", variant: "secondary" })}
           disabled={isDeleting}
-          onClick={() => onDelete(application)}
+          onClick={handleDeleteClick}
           type="button"
         >
           <Trash2 aria-hidden="true" className="h-4 w-4" />

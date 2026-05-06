@@ -98,9 +98,8 @@ function DashboardProjectsContent() {
 
     try {
       await deleteProject(project.id, user.uid);
-      setProjects((currentProjects) =>
-        currentProjects.filter((currentProject) => currentProject.id !== project.id)
-      );
+      const updatedProjects = await getProjectsByUser(user.uid);
+      setProjects(updatedProjects);
       setDeleteMessage("Project deleted.");
     } catch (error) {
       setDeleteError(

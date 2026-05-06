@@ -100,11 +100,8 @@ function DashboardApplicationsContent() {
 
     try {
       await deleteApplication(application.id, user.uid);
-      setApplications((currentApplications) =>
-        currentApplications.filter(
-          (currentApplication) => currentApplication.id !== application.id
-        )
-      );
+      const updatedApplications = await getApplicationsByUser(user.uid);
+      setApplications(updatedApplications);
       setDeleteMessage("Application deleted.");
     } catch (error) {
       setDeleteError(

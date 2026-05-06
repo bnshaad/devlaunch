@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { TechStackInput } from "@/components/projects/TechStackInput";
@@ -89,7 +89,7 @@ export function ProjectForm({
   } = defaultValues;
   const {
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
     register,
     reset
@@ -97,6 +97,7 @@ export function ProjectForm({
     defaultValues,
     resolver: zodResolver(projectFormSchema)
   });
+  const [isSaving, setIsSaving] = useState(false);
   const watchedValues = useWatch({ control });
 
   useEffect(() => {
@@ -121,11 +122,17 @@ export function ProjectForm({
   ]);
 
   async function submitForm(values: ProjectFormValues) {
-    if (isSubmitting) {
+    if (isSaving) {
       return;
     }
 
-    await onSubmit(normalizeValues(values));
+    setIsSaving(true);
+
+    try {
+      await onSubmit(normalizeValues(values));
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -262,9 +269,9 @@ export function ProjectForm({
         </div>
 
         <div className="mt-8 flex justify-end">
-          <Button disabled={isSubmitting} type="submit">
+          <Button disabled={isSaving} type="submit">
             <Save aria-hidden="true" className="h-4 w-4" />
-            {isSubmitting ? "Saving..." : submitLabel}
+            {isSaving ? "Saving..." : submitLabel}
           </Button>
         </div>
       </section>
