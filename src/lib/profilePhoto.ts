@@ -1,4 +1,4 @@
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import {
   deleteObject,
   getDownloadURL,
@@ -21,6 +21,29 @@ type ProfilePhotoResult = {
   photoURL: string | null;
   photoPath: string | null;
 };
+
+function getErrorCode(error: unknown) {
+  if (typeof error === "object" && error && "code" in error) {
+    const code = (error as { code?: unknown }).code;
+
+    return typeof code === "string" ? code : null;
+  }
+
+  return null;
+}
+
+function getErrorMessage(error: unknown) {
+  return error instanceof Error
+    ? error.message
+    : "Firebase did not return an error message.";
+}
+
+function formatFirebaseStepError(step: string, error: unknown) {
+  const code = getErrorCode(error);
+  const message = getErrorMessage(error);
+
+  return `${step} failed${code ? ` (${code})` : ""}: ${message}`;
+}
 
 function getCurrentUserId() {
   const userId = auth.currentUser?.uid;
@@ -57,6 +80,42 @@ async function deleteExistingPhoto(path: string | null | undefined) {
   await deleteObject(ref(storage, path));
 }
 
+async function saveProfilePhotoMetadata(
+  userId: string,
+  photoURL: string | null,
+  photoPath: string | null
+) {
+  const userRef = doc(db, "users", userId);
+  const userSnapshot = await getDoc(userRef);
+  const timestamp = serverTimestamp();
+  const photoFields = {
+    photoURL,
+    photoPath,
+    photoUpdatedAt: timestamp,
+    updatedAt: timestamp
+  };
+
+  if (userSnapshot.exists()) {
+    await setDoc(userRef, photoFields, { merge: true });
+    return;
+  }
+
+  const currentUser = auth.currentUser;
+
+  await setDoc(
+    userRef,
+    {
+      uid: userId,
+      email: currentUser?.email ?? null,
+      displayName: currentUser?.displayName ?? null,
+      username: null,
+      createdAt: timestamp,
+      ...photoFields
+    },
+    { merge: true }
+  );
+}
+
 export function validateProfilePhotoFile(file: File) {
   if (!isAllowedProfilePhotoType(file.type)) {
     return "Choose a JPG, PNG, or WEBP image.";
@@ -82,6 +141,8 @@ export async function uploadProfilePhoto(
   const userId = getCurrentUserId();
   const photoPath = getProfilePhotoPath(userId, file);
   const photoRef = ref(storage, photoPath);
+  let uploaded = false;
+  let photoURL: string;
 
   try {
     await uploadBytes(photoRef, file, {
@@ -90,33 +151,44 @@ export async function uploadProfilePhoto(
         owner: userId
       }
     });
+    uploaded = true;
+  } catch (error) {
+    throw new Error(formatFirebaseStepError("Storage upload", error));
+  }
 
-    const photoURL = await getDownloadURL(photoRef);
-
-    await updateDoc(doc(db, "users", userId), {
-      photoURL,
-      photoPath,
-      photoUpdatedAt: serverTimestamp()
+  try {
+    photoURL = await getDownloadURL(photoRef);
+  } catch (error) {
+    await deleteExistingPhoto(photoPath).catch((cleanupError) => {
+      console.warn("Unable to clean up profile photo after URL failure:", cleanupError);
     });
 
-    if (
-      previousPhotoPath &&
-      previousPhotoPath !== photoPath &&
-      isOwnProfilePhotoPath(userId, previousPhotoPath)
-    ) {
-      deleteExistingPhoto(previousPhotoPath).catch((error) => {
-        console.warn("Unable to delete previous profile photo:", error);
+    throw new Error(formatFirebaseStepError("Download URL lookup", error));
+  }
+
+  try {
+    await saveProfilePhotoMetadata(userId, photoURL, photoPath);
+  } catch (error) {
+    if (uploaded) {
+      await deleteExistingPhoto(photoPath).catch((cleanupError) => {
+        console.warn("Unable to clean up failed profile photo upload:", cleanupError);
       });
     }
 
-    return { photoURL, photoPath };
-  } catch (error) {
-    await deleteExistingPhoto(photoPath).catch((cleanupError) => {
-      console.warn("Unable to clean up failed profile photo upload:", cleanupError);
-    });
-
-    throw error;
+    throw new Error(formatFirebaseStepError("Firestore profile update", error));
   }
+
+  if (
+    previousPhotoPath &&
+    previousPhotoPath !== photoPath &&
+    isOwnProfilePhotoPath(userId, previousPhotoPath)
+  ) {
+    deleteExistingPhoto(previousPhotoPath).catch((error) => {
+      console.warn("Unable to delete previous profile photo:", error);
+    });
+  }
+
+  return { photoURL, photoPath };
 }
 
 export async function removeProfilePhoto(
@@ -132,11 +204,11 @@ export async function removeProfilePhoto(
     await deleteExistingPhoto(currentPhotoPath);
   }
 
-  await updateDoc(doc(db, "users", userId), {
-    photoURL: null,
-    photoPath: null,
-    photoUpdatedAt: serverTimestamp()
-  });
+  try {
+    await saveProfilePhotoMetadata(userId, null, null);
+  } catch (error) {
+    throw new Error(formatFirebaseStepError("Firestore profile update", error));
+  }
 
   return { photoURL: null, photoPath: null };
 }

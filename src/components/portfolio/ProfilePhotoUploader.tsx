@@ -114,6 +114,7 @@ export function ProfilePhotoUploader({
       clearSelection();
       setMessage("Profile photo updated.");
     } catch (uploadError) {
+      console.error("Profile photo upload failed:", uploadError);
       setError(
         uploadError instanceof Error
           ? uploadError.message
@@ -139,6 +140,7 @@ export function ProfilePhotoUploader({
       clearSelection();
       setMessage("Profile photo removed.");
     } catch (removeError) {
+      console.error("Profile photo removal failed:", removeError);
       setError(
         removeError instanceof Error
           ? removeError.message

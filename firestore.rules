@@ -47,9 +47,7 @@ service cloud.firestore {
         && request.resource.data.uid == uid
         && request.resource.data.email == request.auth.token.email
         && nullableString(request.resource.data.displayName)
-        && request.resource.data.photoURL == null
-        && request.resource.data.photoPath == null
-        && request.resource.data.photoUpdatedAt == null
+        && safeUserCreatePhotoValues(uid)
         && request.resource.data.username == null
         && request.resource.data.createdAt == request.time
         && request.resource.data.updatedAt == request.time;
@@ -84,14 +82,29 @@ service cloud.firestore {
         );
     }
 
+    function safeUserCreatePhotoValues(uid) {
+      return (
+          request.resource.data.photoURL == null
+          && request.resource.data.photoPath == null
+          && request.resource.data.photoUpdatedAt == null
+        )
+        || (
+          request.resource.data.photoURL is string
+          && safeUserPhotoPath(uid)
+          && request.resource.data.photoUpdatedAt == request.time
+        );
+    }
+
     function safeUserPhotoUpdate(uid) {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
           'photoURL',
           'photoPath',
-          'photoUpdatedAt'
+          'photoUpdatedAt',
+          'updatedAt'
         ])
         && safeUserPhotoValues(uid)
-        && request.resource.data.photoUpdatedAt == request.time;
+        && request.resource.data.photoUpdatedAt == request.time
+        && request.resource.data.updatedAt == request.time;
     }
 
     function safePortfolioKeys() {
