@@ -28,6 +28,124 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/portfolios/$(uid)).data.isPublic == true;
     }
 
+    function nullableString(value) {
+      return value == null || value is string;
+    }
+
+    function safeUserCreate(uid) {
+      return request.resource.data.keys().hasOnly([
+          'uid',
+          'email',
+          'displayName',
+          'photoURL',
+          'photoPath',
+          'photoUpdatedAt',
+          'username',
+          'createdAt',
+          'updatedAt'
+        ])
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && nullableString(request.resource.data.displayName)
+        && request.resource.data.photoURL == null
+        && request.resource.data.photoPath == null
+        && request.resource.data.photoUpdatedAt == null
+        && request.resource.data.username == null
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    function safeUsernameUpdate() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'username',
+          'updatedAt'
+        ])
+        && resource.data.username == null
+        && usernameIsValid(request.resource.data.username);
+    }
+
+    function safeUserPhotoPath(uid) {
+      return request.resource.data.photoPath is string
+        && (
+          request.resource.data.photoPath == 'users/' + uid + '/profile/avatar.jpg'
+          || request.resource.data.photoPath == 'users/' + uid + '/profile/avatar.png'
+          || request.resource.data.photoPath == 'users/' + uid + '/profile/avatar.webp'
+        );
+    }
+
+    function safeUserPhotoValues(uid) {
+      return (
+          request.resource.data.photoURL == null
+          && request.resource.data.photoPath == null
+        )
+        || (
+          request.resource.data.photoURL is string
+          && safeUserPhotoPath(uid)
+        );
+    }
+
+    function safeUserPhotoUpdate(uid) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'photoURL',
+          'photoPath',
+          'photoUpdatedAt'
+        ])
+        && safeUserPhotoValues(uid)
+        && request.resource.data.photoUpdatedAt == request.time;
+    }
+
+    function safePortfolioKeys() {
+      return request.resource.data.keys().hasOnly([
+        'userId',
+        'fullName',
+        'headline',
+        'bio',
+        'location',
+        'email',
+        'githubUrl',
+        'linkedinUrl',
+        'websiteUrl',
+        'skills',
+        'isPublic',
+        'createdAt',
+        'updatedAt'
+      ]);
+    }
+
+    function safePortfolioTextFields() {
+      return request.resource.data.fullName is string
+        && request.resource.data.headline is string
+        && request.resource.data.bio is string
+        && request.resource.data.location is string
+        && request.resource.data.email is string
+        && request.resource.data.githubUrl is string
+        && request.resource.data.linkedinUrl is string
+        && request.resource.data.websiteUrl is string;
+    }
+
+    function safePortfolioValues(uid) {
+      return safePortfolioKeys()
+        && request.resource.data.userId == uid
+        && safePortfolioTextFields()
+        && request.resource.data.skills is list
+        && request.resource.data.skills.size() <= 20
+        && request.resource.data.isPublic is bool;
+    }
+
+    function safePortfolioCreate(uid) {
+      return safePortfolioValues(uid)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    function safePortfolioUpdate(uid) {
+      return safePortfolioValues(uid)
+        && resource.data.userId == uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt == request.time;
+    }
+
     // User profile metadata is owner-private unless the user has published a
     // portfolio. The current public portfolio page reads users/{uid} for avatar
     // metadata after username resolution.
@@ -36,11 +154,15 @@ service cloud.firestore {
         || isPublicPortfolio(uid);
 
       allow create: if isOwner(uid)
-        && request.resource.data.uid == uid;
+        && safeUserCreate(uid);
 
       allow update: if isOwner(uid)
         && resource.data.uid == uid
-        && request.resource.data.uid == uid;
+        && request.resource.data.uid == uid
+        && (
+          safeUsernameUpdate()
+          || safeUserPhotoUpdate(uid)
+        );
 
       allow delete: if false;
     }
@@ -71,25 +193,21 @@ service cloud.firestore {
         || resource.data.isPublic == true;
 
       allow create: if isOwner(uid)
-        && request.resource.data.userId == uid;
+        && safePortfolioCreate(uid);
 
       allow update: if isOwner(uid)
-        && resource.data.userId == uid
-        && request.resource.data.userId == uid;
+        && safePortfolioUpdate(uid);
 
       allow delete: if isOwner(uid)
         && resource.data.userId == uid;
     }
 
     // Projects are top-level documents with a userId owner field. Public reads
-    // are tied to the owner's published portfolio and only expose featured
-    // projects, which matches the public portfolio service query.
+    // are tied to the owner's published portfolio so saved dashboard projects
+    // can appear on /dev/{username}; the featured flag only affects ordering.
     match /projects/{projectId} {
       allow read: if ownsExistingResource()
-        || (
-          resource.data.featured == true
-          && isPublicPortfolio(resource.data.userId)
-        );
+        || isPublicPortfolio(resource.data.userId);
 
       allow create: if ownsIncomingResource();
 

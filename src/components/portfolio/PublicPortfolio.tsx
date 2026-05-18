@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import {
   ExternalLink,
   Github,
@@ -180,11 +182,11 @@ export function PublicPortfolio({
         >
           <div className="mx-auto w-full max-w-xs md:mx-0">
             {user.photoURL ? (
-              <div
-                aria-label={`${displayName} avatar`}
-                className="aspect-square rounded-2xl border border-sahara-border/70 bg-cover bg-center shadow-warm"
-                role="img"
-                style={{ backgroundImage: `url(${user.photoURL})` }}
+              <img
+                alt={`${displayName} avatar`}
+                className="aspect-square rounded-2xl border border-sahara-border/70 object-cover shadow-warm"
+                referrerPolicy="no-referrer"
+                src={user.photoURL}
               />
             ) : (
               <div className="flex aspect-square items-center justify-center rounded-2xl border border-sahara-border/70 bg-sahara-surfaceLow font-serif text-7xl font-bold text-sahara-primary shadow-warm">

@@ -148,6 +148,10 @@ export async function getProjectsByUser(userId: string) {
   return sortProjects(projects);
 }
 
+export async function getPublicProjectsByUser(userId: string) {
+  return getProjectsByUser(userId);
+}
+
 export async function getProjectById(projectId: string) {
   const projectSnapshot = await getDoc(doc(db, "projects", projectId));
 
@@ -172,21 +176,6 @@ export async function getProjectByIdForUser(projectId: string, userId: string) {
   }
 
   return project;
-}
-
-export async function getFeaturedProjectsByUser(userId: string) {
-  const projectsSnapshot = await getDocs(
-    query(
-      collection(db, "projects"),
-      where("userId", "==", userId),
-      where("featured", "==", true)
-    )
-  );
-  const projects = projectsSnapshot.docs.map((projectDoc) =>
-    toProject(projectDoc.id, projectDoc.data())
-  );
-
-  return sortProjects(projects);
 }
 
 export async function updateProject(

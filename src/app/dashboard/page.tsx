@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import {
   BarChart3,
   BriefcaseBusiness,
@@ -135,8 +137,8 @@ function buildRecentActivity(
       description: project.title,
       time: formatActivityTime(sortTime),
       reveal: project.featured
-        ? "Featured projects are eligible for your public portfolio."
-        : "This project is saved privately until you mark it featured.",
+        ? "Featured projects appear first on your public portfolio."
+        : "This project appears after featured projects on your public portfolio.",
       sortTime
     };
   });
@@ -248,7 +250,7 @@ function DashboardContent() {
       {
         title: "Projects",
         value: isDashboardLoading ? "..." : String(projects.length),
-        detail: `${formatCount(featuredProjectCount, "featured project")} ready for the public portfolio.`,
+        detail: `${formatCount(featuredProjectCount, "featured project")} pinned first on the public portfolio.`,
         icon: BriefcaseBusiness,
         accentClassName: "text-sahara-primary"
       },
@@ -410,12 +412,12 @@ function DashboardContent() {
       <AnimatedSection delay={0.08}>
         <WarmCard className="mt-8 flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            {user?.photoURL ? (
-              <div
-                aria-label={`${displayName} avatar`}
-                className="h-14 w-14 rounded-full border border-sahara-border/70 bg-cover bg-center"
-                role="img"
-                style={{ backgroundImage: `url(${user.photoURL})` }}
+            {appUser?.photoURL ? (
+              <img
+                alt={`${displayName} avatar`}
+                className="h-14 w-14 rounded-full border border-sahara-border/70 object-cover"
+                referrerPolicy="no-referrer"
+                src={appUser.photoURL}
               />
             ) : (
               <div className="flex h-14 w-14 items-center justify-center rounded-full border border-sahara-border/70 bg-sahara-surfaceLow font-serif text-2xl font-bold text-sahara-primary">

@@ -25,6 +25,8 @@ function toAppUser(data: DocumentData): AppUser {
     email: data.email ?? null,
     displayName: data.displayName ?? null,
     photoURL: data.photoURL ?? null,
+    photoPath: data.photoPath ?? null,
+    photoUpdatedAt: data.photoUpdatedAt as Timestamp | undefined,
     username: data.username ?? null,
     createdAt: data.createdAt as Timestamp | undefined,
     updatedAt: data.updatedAt as Timestamp | undefined
@@ -81,7 +83,9 @@ export async function createUserIfNotExists(firebaseUser: FirebaseUser) {
     uid: firebaseUser.uid,
     email: firebaseUser.email,
     displayName: firebaseUser.displayName,
-    photoURL: firebaseUser.photoURL,
+    photoURL: null,
+    photoPath: null,
+    photoUpdatedAt: null,
     username: null,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
@@ -93,7 +97,8 @@ export async function createUserIfNotExists(firebaseUser: FirebaseUser) {
     uid: firebaseUser.uid,
     email: firebaseUser.email,
     displayName: firebaseUser.displayName,
-    photoURL: firebaseUser.photoURL,
+    photoURL: null,
+    photoPath: null,
     username: null
   } satisfies AppUser;
 

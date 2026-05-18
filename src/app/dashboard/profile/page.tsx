@@ -8,6 +8,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { PortfolioForm } from "@/components/portfolio/PortfolioForm";
 import { PortfolioPreview } from "@/components/portfolio/PortfolioPreview";
+import { ProfilePhotoUploader } from "@/components/portfolio/ProfilePhotoUploader";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { WarmCard } from "@/components/shared/WarmCard";
@@ -59,7 +60,7 @@ export default function DashboardProfilePage() {
 }
 
 function DashboardProfileContent() {
-  const { appUser, user } = useAuth();
+  const { appUser, refreshUserProfile, user } = useAuth();
   const publicUrl = appUser?.username ? `/dev/${appUser.username}` : null;
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [previewPortfolio, setPreviewPortfolio] =
@@ -68,6 +69,11 @@ function DashboardProfileContent() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const profilePhotoDisplayName =
+    previewPortfolio.fullName.trim() ||
+    appUser?.username ||
+    appUser?.displayName ||
+    "Developer";
 
   useEffect(() => {
     if (!user?.uid) {
@@ -226,6 +232,15 @@ function DashboardProfileContent() {
                 </p>
               )}
             </WarmCard>
+            {appUser ? (
+              <ProfilePhotoUploader
+                displayName={profilePhotoDisplayName}
+                onPhotoChanged={async () => {
+                  await refreshUserProfile();
+                }}
+                user={appUser}
+              />
+            ) : null}
             <PortfolioForm
               defaultValues={portfolioToFormValues(portfolio)}
               key={portfolio?.updatedAt?.toMillis?.() ?? portfolio?.headline ?? "new"}

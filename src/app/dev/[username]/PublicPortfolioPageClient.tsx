@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { PublicPortfolio } from "@/components/portfolio/PublicPortfolio";
 import { PublicPortfolioState } from "@/components/portfolio/PublicPortfolioState";
 import { getPortfolioByUserId } from "@/services/portfolioService";
-import { getFeaturedProjectsByUser } from "@/services/projectService";
+import { getPublicProjectsByUser } from "@/services/projectService";
 import {
   getUidByUsername,
   getUserProfile,
@@ -76,7 +76,7 @@ export function PublicPortfolioPageClient({
           return;
         }
 
-        const publicProjects = await getFeaturedProjectsByUser(uid);
+        const publicProjects = await getPublicProjectsByUser(uid);
 
         if (!isActive) {
           return;

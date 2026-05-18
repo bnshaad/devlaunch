@@ -178,8 +178,8 @@ For Vercel:
 - Public portfolio uses `portfolio.fullName` or username, not Gmail display name.
 - Private portfolio is not publicly readable.
 - Project add/edit/delete works.
-- Featured projects appear on public portfolio.
-- Unfeatured projects stay private.
+- Saved projects appear on public portfolios when portfolio visibility is public.
+- Featured projects appear first on public portfolios.
 - Application add/edit/delete works.
 - Application status changes persist.
 - Logout clears protected UI.
