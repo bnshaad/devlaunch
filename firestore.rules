@@ -38,7 +38,7 @@ service cloud.firestore {
           'email',
           'displayName',
           'photoURL',
-          'photoPath',
+          'photoPublicId',
           'photoUpdatedAt',
           'username',
           'createdAt',
@@ -62,35 +62,45 @@ service cloud.firestore {
         && usernameIsValid(request.resource.data.username);
     }
 
-    function safeUserPhotoPath(uid) {
-      return request.resource.data.photoPath is string
-        && (
-          request.resource.data.photoPath == 'users/' + uid + '/profile/avatar.jpg'
-          || request.resource.data.photoPath == 'users/' + uid + '/profile/avatar.png'
-          || request.resource.data.photoPath == 'users/' + uid + '/profile/avatar.webp'
-        );
+    function safeUserPhotoPublicId(uid) {
+      return request.resource.data.photoPublicId is string
+        && request.resource.data.photoPublicId == 'devlaunch/profile-photos/' + uid + '/avatar';
+    }
+
+    function safeUserPhotoURL() {
+      return request.resource.data.photoURL is string
+        && request.resource.data.photoURL.matches('^https://res\\.cloudinary\\.com/.+');
     }
 
     function safeUserPhotoValues(uid) {
       return (
           request.resource.data.photoURL == null
-          && request.resource.data.photoPath == null
+          && request.resource.data.photoPublicId == null
         )
         || (
-          request.resource.data.photoURL is string
-          && safeUserPhotoPath(uid)
+          request.resource.data.photoURL == ''
+          && request.resource.data.photoPublicId == ''
+        )
+        || (
+          safeUserPhotoURL()
+          && safeUserPhotoPublicId(uid)
         );
     }
 
     function safeUserCreatePhotoValues(uid) {
       return (
           request.resource.data.photoURL == null
-          && request.resource.data.photoPath == null
+          && request.resource.data.photoPublicId == null
           && request.resource.data.photoUpdatedAt == null
         )
         || (
-          request.resource.data.photoURL is string
-          && safeUserPhotoPath(uid)
+          request.resource.data.photoURL == ''
+          && request.resource.data.photoPublicId == ''
+          && request.resource.data.photoUpdatedAt == null
+        )
+        || (
+          safeUserPhotoURL()
+          && safeUserPhotoPublicId(uid)
           && request.resource.data.photoUpdatedAt == request.time
         );
     }
@@ -98,7 +108,7 @@ service cloud.firestore {
     function safeUserPhotoUpdate(uid) {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
           'photoURL',
-          'photoPath',
+          'photoPublicId',
           'photoUpdatedAt',
           'updatedAt'
         ])

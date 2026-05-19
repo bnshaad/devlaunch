@@ -4,9 +4,9 @@ export type AppUser = {
   uid: string;
   email: string | null;
   displayName: string | null;
-  photoURL: string | null;
-  photoPath?: string | null;
-  photoUpdatedAt?: Timestamp;
+  photoURL: string;
+  photoPublicId: string;
+  photoUpdatedAt: Timestamp | null;
   username?: string | null;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;

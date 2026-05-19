@@ -70,12 +70,24 @@ Create `.env.local` for local development using the keys from `.env.example`.
 NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
+
+FIREBASE_ADMIN_PROJECT_ID=
+FIREBASE_ADMIN_CLIENT_EMAIL=
+FIREBASE_ADMIN_PRIVATE_KEY=
+
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
-These are Firebase web app public config values. Do not commit `.env.local`.
+The `NEXT_PUBLIC_FIREBASE_*` values are Firebase web app public config values.
+The Firebase Admin and Cloudinary values are server-only secrets used by the
+profile photo API routes. Store `FIREBASE_ADMIN_PRIVATE_KEY` with escaped
+newlines (`\n`) if it is on one line. Restart `npm run dev` after changing
+server-only environment variables. Do not commit `.env.local` or Firebase
+service account JSON files.
 The repository `.gitignore` already excludes `.env*.local` files.
 
 ## Local Setup

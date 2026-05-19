@@ -197,7 +197,7 @@ function DashboardProfileContent() {
           </WarmCard>
         </AnimatedSection>
       ) : (
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)]">
+        <div className="mt-8 grid gap-10 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] xl:gap-12">
           <AnimatedSection delay={0.08}>
             {loadError ? (
               <WarmCard className="mb-6 border-sahara-tertiary/30 bg-sahara-tertiary/10">

@@ -2,48 +2,8 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    function signedIn() {
-      return request.auth != null;
-    }
-
-    function isOwner(uid) {
-      return signedIn() && request.auth.uid == uid;
-    }
-
-    function isPublicPortfolio(uid) {
-      return firestore.exists(
-        /databases/(default)/documents/portfolios/$(uid)
-      )
-        && firestore.get(
-          /databases/(default)/documents/portfolios/$(uid)
-        ).data.isPublic == true;
-    }
-
-    function validAvatarFile(fileName) {
-      return (
-          fileName == 'avatar.jpg'
-          && request.resource.contentType == 'image/jpeg'
-        )
-        || (
-          fileName == 'avatar.png'
-          && request.resource.contentType == 'image/png'
-        )
-        || (
-          fileName == 'avatar.webp'
-          && request.resource.contentType == 'image/webp'
-        );
-    }
-
-    match /users/{uid}/profile/{fileName} {
-      allow read: if isOwner(uid) || isPublicPortfolio(uid);
-
-      allow create, update: if isOwner(uid)
-        && validAvatarFile(fileName)
-        && request.resource.size <= 2 * 1024 * 1024;
-
-      allow delete: if isOwner(uid);
-    }
-
+    // DevLaunch profile photos are stored in Cloudinary. Firebase Storage is
+    // intentionally unused so the Spark plan remains supported.
     match /{path=**} {
       allow read, write: if false;
     }

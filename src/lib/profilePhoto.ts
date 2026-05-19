@@ -1,11 +1,4 @@
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytes
-} from "firebase/storage";
-import { auth, db, storage } from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
 
 export const PROFILE_PHOTO_MAX_BYTES = 2 * 1024 * 1024;
 
@@ -19,18 +12,8 @@ type AllowedProfilePhotoType = keyof typeof ALLOWED_PROFILE_PHOTO_TYPES;
 
 type ProfilePhotoResult = {
   photoURL: string | null;
-  photoPath: string | null;
+  photoPublicId: string | null;
 };
-
-function getErrorCode(error: unknown) {
-  if (typeof error === "object" && error && "code" in error) {
-    const code = (error as { code?: unknown }).code;
-
-    return typeof code === "string" ? code : null;
-  }
-
-  return null;
-}
 
 function getErrorMessage(error: unknown) {
   return error instanceof Error
@@ -38,85 +21,69 @@ function getErrorMessage(error: unknown) {
     : "Firebase did not return an error message.";
 }
 
-function formatFirebaseStepError(step: string, error: unknown) {
-  const code = getErrorCode(error);
-  const message = getErrorMessage(error);
-
-  return `${step} failed${code ? ` (${code})` : ""}: ${message}`;
+function logProfilePhotoDebug(message: string, details?: unknown) {
+  if (process.env.NODE_ENV !== "production") {
+    console.info(`[PROFILE PHOTO] ${message}`, details ?? "");
+  }
 }
 
-function getCurrentUserId() {
-  const userId = auth.currentUser?.uid;
+async function getRequiredIdToken() {
+  const currentUser = auth.currentUser;
 
-  if (!userId) {
+  logProfilePhotoDebug("auth user exists", {
+    hasUser: Boolean(currentUser),
+    hasUid: Boolean(currentUser?.uid),
+    userId: currentUser?.uid ?? null
+  });
+
+  if (!currentUser) {
     throw new Error("You must be signed in to manage your profile photo.");
   }
 
-  return userId;
+  try {
+    return await currentUser.getIdToken();
+  } catch (error) {
+    throw new Error(`Auth token lookup failed: ${getErrorMessage(error)}`);
+  }
 }
 
 function isAllowedProfilePhotoType(type: string): type is AllowedProfilePhotoType {
   return type in ALLOWED_PROFILE_PHOTO_TYPES;
 }
 
-function getProfilePhotoPath(userId: string, file: File) {
+function getProfilePhotoFileName(file: File) {
   if (!isAllowedProfilePhotoType(file.type)) {
     throw new Error("Profile photo must be a JPG, PNG, or WEBP image.");
   }
 
-  return `users/${userId}/profile/avatar.${ALLOWED_PROFILE_PHOTO_TYPES[file.type]}`;
+  return `avatar.${ALLOWED_PROFILE_PHOTO_TYPES[file.type]}`;
 }
 
-function isOwnProfilePhotoPath(userId: string, path: string) {
-  return /^users\/[^/]+\/profile\/avatar\.(jpg|png|webp)$/.test(path)
-    && path.startsWith(`users/${userId}/profile/`);
-}
+async function readProfilePhotoResponse(response: Response) {
+  const data = (await response.json().catch(() => null)) as {
+    error?: unknown;
+    photoPublicId?: unknown;
+    photoURL?: unknown;
+  } | null;
 
-async function deleteExistingPhoto(path: string | null | undefined) {
-  if (!path) {
-    return;
+  if (!response.ok) {
+    throw new Error(
+      typeof data?.error === "string"
+        ? data.error
+        : "Profile photo request failed. Please try again."
+    );
   }
 
-  await deleteObject(ref(storage, path));
-}
-
-async function saveProfilePhotoMetadata(
-  userId: string,
-  photoURL: string | null,
-  photoPath: string | null
-) {
-  const userRef = doc(db, "users", userId);
-  const userSnapshot = await getDoc(userRef);
-  const timestamp = serverTimestamp();
-  const photoFields = {
-    photoURL,
-    photoPath,
-    photoUpdatedAt: timestamp,
-    updatedAt: timestamp
-  };
-
-  if (userSnapshot.exists()) {
-    await setDoc(userRef, photoFields, { merge: true });
-    return;
-  }
-
-  const currentUser = auth.currentUser;
-
-  await setDoc(
-    userRef,
-    {
-      uid: userId,
-      email: currentUser?.email ?? null,
-      displayName: currentUser?.displayName ?? null,
-      username: null,
-      createdAt: timestamp,
-      ...photoFields
-    },
-    { merge: true }
-  );
+  return data;
 }
 
 export function validateProfilePhotoFile(file: File) {
+  logProfilePhotoDebug("file validation", {
+    name: file.name,
+    size: file.size,
+    type: file.type
+  });
+
   if (!isAllowedProfilePhotoType(file.type)) {
     return "Choose a JPG, PNG, or WEBP image.";
   }
@@ -128,87 +95,89 @@ export function validateProfilePhotoFile(file: File) {
   return null;
 }
 
-export async function uploadProfilePhoto(
-  file: File,
-  previousPhotoPath?: string | null
-): Promise<ProfilePhotoResult> {
+export async function uploadProfilePhoto(file: File): Promise<ProfilePhotoResult> {
+  const token = await getRequiredIdToken();
   const validationError = validateProfilePhotoFile(file);
 
   if (validationError) {
     throw new Error(validationError);
   }
 
-  const userId = getCurrentUserId();
-  const photoPath = getProfilePhotoPath(userId, file);
-  const photoRef = ref(storage, photoPath);
-  let uploaded = false;
-  let photoURL: string;
+  const uploadFileName = getProfilePhotoFileName(file);
+  const formData = new FormData();
+  formData.append("file", file, uploadFileName);
+
+  logProfilePhotoDebug("Cloudinary upload request start", {
+    fileName: file.name,
+    fileSize: file.size,
+    fileType: file.type,
+    uploadFileName
+  });
+
+  let response: Response;
 
   try {
-    await uploadBytes(photoRef, file, {
-      contentType: file.type,
-      customMetadata: {
-        owner: userId
-      }
+    response = await fetch("/api/profile-photo/upload", {
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      method: "POST"
     });
-    uploaded = true;
   } catch (error) {
-    throw new Error(formatFirebaseStepError("Storage upload", error));
+    console.error("[PROFILE PHOTO] Cloudinary upload request failed", error);
+    throw new Error(`Profile photo upload failed: ${getErrorMessage(error)}`);
   }
 
-  try {
-    photoURL = await getDownloadURL(photoRef);
-  } catch (error) {
-    await deleteExistingPhoto(photoPath).catch((cleanupError) => {
-      console.warn("Unable to clean up profile photo after URL failure:", cleanupError);
-    });
-
-    throw new Error(formatFirebaseStepError("Download URL lookup", error));
-  }
-
-  try {
-    await saveProfilePhotoMetadata(userId, photoURL, photoPath);
-  } catch (error) {
-    if (uploaded) {
-      await deleteExistingPhoto(photoPath).catch((cleanupError) => {
-        console.warn("Unable to clean up failed profile photo upload:", cleanupError);
-      });
-    }
-
-    throw new Error(formatFirebaseStepError("Firestore profile update", error));
-  }
+  const data = await readProfilePhotoResponse(response);
 
   if (
-    previousPhotoPath &&
-    previousPhotoPath !== photoPath &&
-    isOwnProfilePhotoPath(userId, previousPhotoPath)
+    typeof data?.photoURL !== "string"
+    || typeof data.photoPublicId !== "string"
   ) {
-    deleteExistingPhoto(previousPhotoPath).catch((error) => {
-      console.warn("Unable to delete previous profile photo:", error);
-    });
+    throw new Error("Profile photo upload returned an invalid response.");
   }
 
-  return { photoURL, photoPath };
+  logProfilePhotoDebug("Cloudinary upload request success", {
+    hasPhotoURL: Boolean(data.photoURL),
+    photoPublicId: data.photoPublicId
+  });
+
+  return {
+    photoPublicId: data.photoPublicId,
+    photoURL: data.photoURL
+  };
 }
 
 export async function removeProfilePhoto(
-  currentPhotoPath?: string | null
+  currentPhotoPublicId?: string | null
 ): Promise<ProfilePhotoResult> {
-  const userId = getCurrentUserId();
+  const token = await getRequiredIdToken();
 
-  if (currentPhotoPath) {
-    if (!isOwnProfilePhotoPath(userId, currentPhotoPath)) {
-      throw new Error("This profile photo does not belong to the signed-in user.");
-    }
+  logProfilePhotoDebug("Cloudinary delete request start", {
+    photoPublicId: currentPhotoPublicId ?? null
+  });
 
-    await deleteExistingPhoto(currentPhotoPath);
-  }
+  let response: Response;
 
   try {
-    await saveProfilePhotoMetadata(userId, null, null);
+    response = await fetch("/api/profile-photo/remove", {
+      body: JSON.stringify({
+        photoPublicId: currentPhotoPublicId ?? null
+      }),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      method: "POST"
+    });
   } catch (error) {
-    throw new Error(formatFirebaseStepError("Firestore profile update", error));
+    console.error("[PROFILE PHOTO] Cloudinary delete request failed", error);
+    throw new Error(`Profile photo removal failed: ${getErrorMessage(error)}`);
   }
 
-  return { photoURL: null, photoPath: null };
+  await readProfilePhotoResponse(response);
+  logProfilePhotoDebug("Cloudinary delete request success");
+
+  return { photoPublicId: null, photoURL: null };
 }

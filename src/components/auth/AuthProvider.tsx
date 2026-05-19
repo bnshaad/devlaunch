@@ -46,9 +46,21 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 const PROFILE_LOAD_TIMEOUT_MS = 15000;
 
+type ProfileLoadOptions = {
+  preserveExistingProfileOnError?: boolean;
+};
+
 function getAuthErrorMessage(error: unknown) {
   if (error instanceof Error) {
     return error.message;
+  }
+
+  if (typeof error === "object" && error && "message" in error) {
+    const message = (error as { message?: unknown }).message;
+
+    if (typeof message === "string" && message) {
+      return message;
+    }
   }
 
   return "Authentication failed. Please try again.";
@@ -60,6 +72,28 @@ function getAuthErrorCode(error: unknown) {
   }
 
   return null;
+}
+
+function getErrorName(error: unknown) {
+  if (error instanceof Error) {
+    return error.name;
+  }
+
+  if (typeof error === "object" && error && "name" in error) {
+    const name = (error as { name?: unknown }).name;
+
+    return typeof name === "string" ? name : null;
+  }
+
+  return null;
+}
+
+function getReadableErrorDetails(error: unknown) {
+  return {
+    code: getAuthErrorCode(error),
+    message: getAuthErrorMessage(error),
+    name: getErrorName(error)
+  };
 }
 
 function logAuthDebug(message: string, details?: unknown) {
@@ -103,7 +137,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
   const loading = authLoading || profileLoading;
 
-  const loadUserProfile = useCallback(async (firebaseUser: FirebaseUser) => {
+  const loadUserProfile = useCallback(async (
+    firebaseUser: FirebaseUser,
+    options: ProfileLoadOptions = {}
+  ) => {
     setProfileLoading(true);
     setProfileError(null);
 
@@ -125,17 +162,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       return profile;
     } catch (error) {
-      const code = getAuthErrorCode(error);
-      const message = getAuthErrorMessage(error);
+      const details = getReadableErrorDetails(error);
 
-      console.error("[AUTH DEBUG] Unable to load user profile:", {
-        code,
-        message
-      });
-      setAppUser(null);
-      setProfileError(
-        "You are signed in, but DevLaunch could not load your profile from Firestore. Check your connection or Firestore rules, then try again."
-      );
+      console.warn("[AUTH DEBUG] Unable to load user profile:", details);
+
+      if (!options.preserveExistingProfileOnError) {
+        setAppUser(null);
+        setProfileError(
+          "You are signed in, but DevLaunch could not load your profile from Firestore. Check your connection or Firestore rules, then try again."
+        );
+      }
 
       return null;
     } finally {
@@ -290,7 +326,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return null;
     }
 
-    return loadUserProfile(currentUser);
+    return loadUserProfile(currentUser, {
+      preserveExistingProfileOnError: true
+    });
   }, [loadUserProfile]);
 
   const logout = useCallback(async () => {
