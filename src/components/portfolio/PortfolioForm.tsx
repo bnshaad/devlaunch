@@ -7,6 +7,11 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { SkillInput } from "@/components/portfolio/SkillInput";
 import { Button } from "@/components/ui/button";
+import {
+  MAX_PORTFOLIO_SKILL_LENGTH,
+  MAX_PORTFOLIO_SKILLS,
+  normalizeSkills
+} from "@/lib/skills";
 import { type PortfolioInput } from "@/types/portfolio";
 
 const emailSchema = z.string().trim().email();
@@ -57,7 +62,18 @@ const portfolioFormSchema = z.object({
   githubUrl: optionalUrlSchema,
   linkedinUrl: optionalUrlSchema,
   websiteUrl: optionalUrlSchema,
-  skills: z.array(z.string().trim().max(30)).max(20),
+  skills: z
+    .array(
+      z
+        .string()
+        .trim()
+        .max(
+          MAX_PORTFOLIO_SKILL_LENGTH,
+          `Each skill must be ${MAX_PORTFOLIO_SKILL_LENGTH} characters or fewer.`
+        )
+    )
+    .max(MAX_PORTFOLIO_SKILLS, `Add up to ${MAX_PORTFOLIO_SKILLS} skills.`)
+    .transform((skills) => normalizeSkills(skills)),
   isPublic: z.boolean()
 });
 
@@ -82,7 +98,7 @@ function normalizeValues(values: PortfolioFormValues): PortfolioInput {
     githubUrl: values.githubUrl,
     linkedinUrl: values.linkedinUrl,
     websiteUrl: values.websiteUrl,
-    skills: values.skills,
+    skills: normalizeSkills(values.skills),
     isPublic: values.isPublic
   };
 }
@@ -155,7 +171,7 @@ export function PortfolioForm({
         githubUrl: watchedValues.githubUrl ?? "",
         linkedinUrl: watchedValues.linkedinUrl ?? "",
         websiteUrl: watchedValues.websiteUrl ?? "",
-        skills: watchedValues.skills ?? [],
+        skills: normalizeSkills(watchedValues.skills),
         isPublic: watchedValues.isPublic ?? false
       })
     );
@@ -341,9 +357,17 @@ export function PortfolioForm({
           control={control}
           name="skills"
           render={({ field }) => (
-            <SkillInput onChange={field.onChange} skills={field.value} />
+            <SkillInput
+              onChange={(nextSkills) => field.onChange(normalizeSkills(nextSkills))}
+              skills={normalizeSkills(field.value)}
+            />
           )}
         />
+        {errors.skills ? (
+          <p className="mt-2 text-sm font-medium text-sahara-tertiary">
+            {errors.skills.message}
+          </p>
+        ) : null}
 
         <div className="mt-8 rounded-xl border border-sahara-border/60 bg-sahara-background p-5">
           <label className="flex items-start gap-3">

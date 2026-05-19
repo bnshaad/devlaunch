@@ -3,6 +3,11 @@
 import { Plus, X } from "lucide-react";
 import { useState, type KeyboardEvent } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  MAX_PORTFOLIO_SKILL_LENGTH,
+  MAX_PORTFOLIO_SKILLS,
+  normalizeSkills
+} from "@/lib/skills";
 
 type SkillInputProps = {
   skills: string[];
@@ -14,11 +19,12 @@ type SkillInputProps = {
 export function SkillInput({
   skills,
   onChange,
-  maxSkills = 20,
-  maxSkillLength = 30
+  maxSkills = MAX_PORTFOLIO_SKILLS,
+  maxSkillLength = MAX_PORTFOLIO_SKILL_LENGTH
 }: SkillInputProps) {
   const [skillText, setSkillText] = useState("");
   const [message, setMessage] = useState<string | null>(null);
+  const normalizedSkills = normalizeSkills(skills, maxSkills);
 
   function addSkill() {
     const nextSkill = skillText.trim();
@@ -33,17 +39,21 @@ export function SkillInput({
       return;
     }
 
-    if (skills.some((skill) => skill.toLowerCase() === nextSkill.toLowerCase())) {
+    if (
+      normalizedSkills.some(
+        (skill) => skill.toLowerCase() === nextSkill.toLowerCase()
+      )
+    ) {
       setMessage("That skill is already listed.");
       return;
     }
 
-    if (skills.length >= maxSkills) {
+    if (normalizedSkills.length >= maxSkills) {
       setMessage(`You can add up to ${maxSkills} skills.`);
       return;
     }
 
-    onChange([...skills, nextSkill]);
+    onChange(normalizeSkills([...normalizedSkills, nextSkill], maxSkills));
     setSkillText("");
     setMessage(null);
   }
@@ -56,7 +66,7 @@ export function SkillInput({
   }
 
   function removeSkill(skillToRemove: string) {
-    onChange(skills.filter((skill) => skill !== skillToRemove));
+    onChange(normalizedSkills.filter((skill) => skill !== skillToRemove));
     setMessage(null);
   }
 
@@ -90,9 +100,9 @@ export function SkillInput({
       {message ? (
         <p className="mt-2 text-sm font-medium text-sahara-tertiary">{message}</p>
       ) : null}
-      {skills.length ? (
+      {normalizedSkills.length ? (
         <div className="mt-4 flex flex-wrap gap-2">
-          {skills.map((skill) => (
+          {normalizedSkills.map((skill) => (
             <span
               className="inline-flex items-center gap-2 rounded-full border border-sahara-border/70 bg-sahara-background px-3 py-1 text-xs font-semibold text-sahara-muted"
               key={skill}

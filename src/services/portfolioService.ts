@@ -8,6 +8,7 @@ import {
   type Timestamp
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
+import { normalizeSkills } from "@/lib/skills";
 import { type Portfolio, type PortfolioInput } from "@/types/portfolio";
 
 function toPortfolio(data: DocumentData): Portfolio {
@@ -21,7 +22,7 @@ function toPortfolio(data: DocumentData): Portfolio {
     githubUrl: data.githubUrl ?? "",
     linkedinUrl: data.linkedinUrl ?? "",
     websiteUrl: data.websiteUrl ?? "",
-    skills: Array.isArray(data.skills) ? data.skills : [],
+    skills: normalizeSkills(data.skills),
     isPublic: Boolean(data.isPublic),
     createdAt: data.createdAt as Timestamp | undefined,
     updatedAt: data.updatedAt as Timestamp | undefined
@@ -38,18 +39,7 @@ function normalizePortfolioInput(data: PortfolioInput): PortfolioInput {
     githubUrl: data.githubUrl?.trim() ?? "",
     linkedinUrl: data.linkedinUrl?.trim() ?? "",
     websiteUrl: data.websiteUrl?.trim() ?? "",
-    skills: Array.isArray(data.skills)
-      ? data.skills
-          .map((skill) => skill.trim())
-          .filter(
-            (skill, index, skills) =>
-              skill &&
-              skills.findIndex(
-                (candidate) => candidate.toLowerCase() === skill.toLowerCase()
-              ) === index
-          )
-          .slice(0, 20)
-      : [],
+    skills: normalizeSkills(data.skills),
     isPublic: Boolean(data.isPublic)
   };
 }

@@ -13,6 +13,7 @@ import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { WarmCard } from "@/components/shared/WarmCard";
 import { buttonVariants } from "@/components/ui/button";
+import { normalizeSkills } from "@/lib/skills";
 import {
   createOrUpdatePortfolio,
   getPortfolio
@@ -46,7 +47,7 @@ function portfolioToFormValues(portfolio: Portfolio | null): PortfolioInput {
     githubUrl: portfolio.githubUrl ?? "",
     linkedinUrl: portfolio.linkedinUrl ?? "",
     websiteUrl: portfolio.websiteUrl ?? "",
-    skills: portfolio.skills,
+    skills: normalizeSkills(portfolio.skills),
     isPublic: portfolio.isPublic
   };
 }
@@ -135,17 +136,31 @@ function DashboardProfileContent() {
     setSaveError(null);
 
     try {
+      if (process.env.NODE_ENV !== "production") {
+        console.info("[PORTFOLIO DEBUG] Saving portfolio", {
+          ...values,
+          skills: normalizeSkills(values.skills)
+        });
+      }
+
       const savedPortfolio = await createOrUpdatePortfolio(userId, values);
+
+      if (!savedPortfolio) {
+        throw new Error("Portfolio saved, but the updated profile could not be loaded.");
+      }
+
       setPortfolio(savedPortfolio);
-      setPreviewPortfolio(values);
+      setPreviewPortfolio(portfolioToFormValues(savedPortfolio));
       setSaveMessage("Portfolio saved. Your profile draft is up to date.");
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
           : "Unable to save your portfolio right now.";
+      console.error("[PORTFOLIO DEBUG] Unable to save portfolio:", {
+        message
+      });
       setSaveError(message);
-      throw error;
     }
   }
 
