@@ -2,7 +2,7 @@
 
 import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
@@ -70,6 +70,10 @@ function DashboardProfileContent() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const formDefaultValues = useMemo(
+    () => portfolioToFormValues(portfolio),
+    [portfolio]
+  );
   const profilePhotoDisplayName =
     previewPortfolio.fullName.trim() ||
     appUser?.username ||
@@ -178,7 +182,19 @@ function DashboardProfileContent() {
                   <ExternalLink aria-hidden="true" className="h-4 w-4" />
                   View Public Portfolio
                 </Link>
-              ) : null}
+              ) : (
+                <span
+                  aria-disabled="true"
+                  className={buttonVariants({
+                    className: "cursor-not-allowed opacity-60",
+                    variant: "primary"
+                  })}
+                  title="Complete onboarding to claim your public profile URL."
+                >
+                  <ExternalLink aria-hidden="true" className="h-4 w-4" />
+                  View Public Portfolio
+                </span>
+              )}
               <Link
                 className={buttonVariants({ variant: "secondary" })}
                 href="/dashboard"
@@ -257,7 +273,7 @@ function DashboardProfileContent() {
               />
             ) : null}
             <PortfolioForm
-              defaultValues={portfolioToFormValues(portfolio)}
+              defaultValues={formDefaultValues}
               key={portfolio?.updatedAt?.toMillis?.() ?? portfolio?.headline ?? "new"}
               onSubmit={handleSubmit}
               onValuesChange={handleValuesChange}

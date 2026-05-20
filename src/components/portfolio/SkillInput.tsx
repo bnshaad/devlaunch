@@ -89,7 +89,12 @@ export function SkillInput({
           type="text"
           value={skillText}
         />
-        <Button className="sm:w-auto" onClick={addSkill} variant="secondary">
+        <Button
+          className="sm:w-auto"
+          onClick={addSkill}
+          type="button"
+          variant="secondary"
+        >
           <Plus aria-hidden="true" className="h-4 w-4" />
           Add
         </Button>

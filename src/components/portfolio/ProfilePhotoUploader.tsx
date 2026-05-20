@@ -238,6 +238,7 @@ export function ProfilePhotoUploader({
           className="w-full min-w-0 px-4"
           disabled={!selectedFile || isSaving}
           onClick={handleUpload}
+          type="button"
         >
           {operation === "uploading" ? (
             <Loader2 aria-hidden="true" className="h-4 w-4 shrink-0 animate-spin" />
@@ -253,6 +254,7 @@ export function ProfilePhotoUploader({
           className="w-full min-w-0 px-4 sm:col-span-2 xl:col-span-1"
           disabled={!hasSavedPhoto || isSaving}
           onClick={handleRemove}
+          type="button"
           variant="secondary"
         >
           {operation === "removing" ? (
