@@ -1,5 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { FieldValue } from "firebase-admin/firestore";
+import fs from "fs";
+import path from "path";
 import { getFirebaseAdminDb } from "@/lib/firebaseAdmin";
 
 export class AiConfigError extends Error {
@@ -24,17 +26,40 @@ export class AiRateLimitError extends Error {
 }
 
 export const DEFAULT_DAILY_LIMIT = Number(process.env.AI_DAILY_LIMIT) || 20;
-export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash";
 export const GEMINI_FALLBACK_MODELS = [
   GEMINI_MODEL,
-  "gemini-flash-latest",
-  "gemini-3.5-flash"
+  "gemini-3.5-flash",
+  "gemini-3.8-flash"
 ];
 
 let cachedGeminiClient: GoogleGenAI | null = null;
 
+function resolveGeminiApiKey(): string | undefined {
+  let apiKey = process.env.GEMINI_API_KEY?.trim();
+
+  // If long-running Node/Next.js dev process didn't pick up .env.local changes into memory, read directly
+  if (!apiKey && typeof window === "undefined") {
+    try {
+      const envPath = path.resolve(process.cwd(), ".env.local");
+      if (fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, "utf-8");
+        const match = content.match(/^GEMINI_API_KEY\s*=\s*(.*)$/m);
+        if (match && match[1]) {
+          apiKey = match[1].trim().replace(/^["']|["']$/g, "");
+          process.env.GEMINI_API_KEY = apiKey;
+        }
+      }
+    } catch (err) {
+      console.warn("[GEMINI] Failed to read fallback key from .env.local:", err);
+    }
+  }
+
+  return apiKey;
+}
+
 export function getGeminiClient(): GoogleGenAI {
-  const apiKey = process.env.GEMINI_API_KEY?.trim();
+  const apiKey = resolveGeminiApiKey();
 
   if (!apiKey) {
     throw new AiConfigError();
