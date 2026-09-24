@@ -1,0 +1,12 @@
+export { CopyLinkButton } from "./CopyLinkButton";
+export { FloatingCTA } from "./FloatingCTA";
+export { Hero3DVisual } from "./Hero3DVisual";
+export { InteractiveSkillBadge } from "./InteractiveSkillBadge";
+export { MagneticLink } from "./MagneticLink";
+export { ParallaxAvatar } from "./ParallaxAvatar";
+export { PortfolioFooter } from "./PortfolioFooter";
+export { ScrollProgressBar } from "./ScrollProgressBar";
+export { SectionNavDots } from "./SectionNavDots";
+export { SkillCounter } from "./SkillCounter";
+export { TiltProjectCard } from "./TiltProjectCard";
+export { TypewriterText } from "./TypewriterText";

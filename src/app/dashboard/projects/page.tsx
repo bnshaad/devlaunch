@@ -13,10 +13,14 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { WarmCard } from "@/components/shared/WarmCard";
 import { buttonVariants } from "@/components/ui/button";
 import {
+  createProject,
   deleteProject,
   getProjectsByUser
 } from "@/services/projectService";
-import { type Project } from "@/types/project";
+import { type Project, type ProjectInput } from "@/types/project";
+import { type PortfolioInput } from "@/types/portfolio";
+import { AiResumeButton } from "@/components/portfolio/AiResumeButton";
+import { ResumeImportModal } from "@/components/portfolio/ResumeImportModal";
 
 export default function DashboardProjectsPage() {
   return (
@@ -34,6 +38,31 @@ function DashboardProjectsContent() {
   const [deleteMessage, setDeleteMessage] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deletingProjectId, setDeletingProjectId] = useState<string | null>(null);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+
+  const handleApplyAiData = async ({
+    selectedProjects
+  }: {
+    portfolio: PortfolioInput;
+    selectedProjects: ProjectInput[];
+  }) => {
+    if (!user?.uid) return;
+
+    let createdCount = 0;
+    if (selectedProjects.length > 0) {
+      for (const project of selectedProjects) {
+        try {
+          await createProject(user.uid, project);
+          createdCount++;
+        } catch (err) {
+          console.error("Failed to create project:", project.title, err);
+        }
+      }
+      const updatedProjects = await getProjectsByUser(user.uid);
+      setProjects(updatedProjects);
+      setDeleteMessage(`Successfully imported ${createdCount} project(s) from resume!`);
+    }
+  };
 
   useEffect(() => {
     if (!user?.uid) {
@@ -117,13 +146,18 @@ function DashboardProjectsContent() {
       <AnimatedSection>
         <PageHeader
           action={
-            <Link
-              className={buttonVariants()}
-              href="/dashboard/projects/new"
-            >
-              <Plus aria-hidden="true" className="h-4 w-4" />
-              Add Project
-            </Link>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <AiResumeButton onClick={() => setIsAiModalOpen(true)}>
+                Import from Resume
+              </AiResumeButton>
+              <Link
+                className={buttonVariants()}
+                href="/dashboard/projects/new"
+              >
+                <Plus aria-hidden="true" className="h-4 w-4" />
+                Add Project
+              </Link>
+            </div>
           }
           description="Manage the projects that appear on your public portfolio."
           eyebrow="Portfolio projects"
@@ -203,6 +237,13 @@ function DashboardProjectsContent() {
           </WarmCard>
         </AnimatedSection>
       )}
+
+      <ResumeImportModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+        existingProjects={projects}
+        onApply={handleApplyAiData}
+      />
     </DashboardShell>
   );
 }

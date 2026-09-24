@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Save } from "lucide-react";
-import { useEffect, type ReactNode } from "react";
+import { Check, Loader2, Save } from "lucide-react";
+import { useEffect, useMemo, type ReactNode } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { SkillInput } from "@/components/portfolio/SkillInput";
@@ -103,6 +103,30 @@ function normalizeValues(values: PortfolioFormValues): PortfolioInput {
   };
 }
 
+function hasFormChanged(
+  current: Partial<PortfolioFormValues>,
+  defaults: PortfolioInput
+): boolean {
+  if ((current.fullName ?? "").trim() !== (defaults.fullName ?? "").trim()) return true;
+  if ((current.headline ?? "").trim() !== (defaults.headline ?? "").trim()) return true;
+  if ((current.bio ?? "").trim() !== (defaults.bio ?? "").trim()) return true;
+  if ((current.location ?? "").trim() !== (defaults.location ?? "").trim()) return true;
+  if ((current.email ?? "").trim() !== (defaults.email ?? "").trim()) return true;
+  if ((current.githubUrl ?? "").trim() !== (defaults.githubUrl ?? "").trim()) return true;
+  if ((current.linkedinUrl ?? "").trim() !== (defaults.linkedinUrl ?? "").trim()) return true;
+  if ((current.websiteUrl ?? "").trim() !== (defaults.websiteUrl ?? "").trim()) return true;
+  if (Boolean(current.isPublic) !== Boolean(defaults.isPublic)) return true;
+
+  const curSkills = normalizeSkills(current.skills ?? []);
+  const defSkills = normalizeSkills(defaults.skills ?? []);
+  if (curSkills.length !== defSkills.length) return true;
+  for (let i = 0; i < curSkills.length; i++) {
+    if (curSkills[i] !== defSkills[i]) return true;
+  }
+
+  return false;
+}
+
 export function PortfolioForm({
   defaultValues,
   onSubmit,
@@ -132,6 +156,11 @@ export function PortfolioForm({
   });
 
   const watchedValues = useWatch({ control });
+
+  const hasChanges = useMemo(
+    () => hasFormChanged(watchedValues, defaultValues),
+    [defaultValues, watchedValues]
+  );
 
   useEffect(() => {
     reset({
@@ -388,9 +417,27 @@ export function PortfolioForm({
         </div>
 
         <div className="mt-8 flex justify-end">
-          <Button disabled={isSubmitting} type="submit">
-            <Save aria-hidden="true" className="h-4 w-4" />
-            {isSubmitting ? "Saving..." : "Save Portfolio"}
+          <Button
+            disabled={isSubmitting || !hasChanges}
+            type="submit"
+            variant={hasChanges ? "primary" : "secondary"}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : hasChanges ? (
+              <>
+                <Save aria-hidden="true" className="h-4 w-4" />
+                Save Portfolio
+              </>
+            ) : (
+              <>
+                <Check aria-hidden="true" className="h-4 w-4 text-green-700" />
+                Profile Up to Date
+              </>
+            )}
           </Button>
         </div>
       </section>

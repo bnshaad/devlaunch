@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, Loader2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -18,7 +18,14 @@ import {
   createOrUpdatePortfolio,
   getPortfolio
 } from "@/services/portfolioService";
+import {
+  createProject,
+  getProjectsByUser
+} from "@/services/projectService";
 import { type Portfolio, type PortfolioInput } from "@/types/portfolio";
+import { type Project, type ProjectInput } from "@/types/project";
+import { AiResumeButton } from "@/components/portfolio/AiResumeButton";
+import { ResumeImportModal } from "@/components/portfolio/ResumeImportModal";
 
 const emptyPortfolio: PortfolioInput = {
   fullName: "",
@@ -70,6 +77,10 @@ function DashboardProfileContent() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [existingProjects, setExistingProjects] = useState<Project[]>([]);
+  const [formRevision, setFormRevision] = useState(0);
+
   const formDefaultValues = useMemo(
     () => portfolioToFormValues(portfolio),
     [portfolio]
@@ -93,7 +104,10 @@ function DashboardProfileContent() {
       setLoadError(null);
 
       try {
-        const existingPortfolio = await getPortfolio(userId);
+        const [existingPortfolio, userProjects] = await Promise.all([
+          getPortfolio(userId),
+          getProjectsByUser(userId).catch(() => [])
+        ]);
 
         if (!isActive) {
           return;
@@ -101,6 +115,7 @@ function DashboardProfileContent() {
 
         setPortfolio(existingPortfolio);
         setPreviewPortfolio(portfolioToFormValues(existingPortfolio));
+        setExistingProjects(userProjects);
       } catch (error) {
         if (!isActive) {
           return;
@@ -128,6 +143,60 @@ function DashboardProfileContent() {
   const handleValuesChange = useCallback((values: PortfolioInput) => {
     setPreviewPortfolio(values);
   }, []);
+
+  const handleApplyAiData = useCallback(
+    async ({
+      portfolio: importedPortfolio,
+      selectedProjects
+    }: {
+      portfolio: PortfolioInput;
+      selectedProjects: ProjectInput[];
+    }) => {
+      const userId = user?.uid;
+      if (!userId) return;
+
+      setPreviewPortfolio(importedPortfolio);
+      setPortfolio((prev) => ({
+        userId,
+        fullName: importedPortfolio.fullName,
+        headline: importedPortfolio.headline,
+        bio: importedPortfolio.bio,
+        location: importedPortfolio.location,
+        email: importedPortfolio.email ?? "",
+        githubUrl: importedPortfolio.githubUrl ?? "",
+        linkedinUrl: importedPortfolio.linkedinUrl ?? "",
+        websiteUrl: importedPortfolio.websiteUrl ?? "",
+        skills: importedPortfolio.skills,
+        isPublic: importedPortfolio.isPublic,
+        createdAt: prev?.createdAt,
+        updatedAt: prev?.updatedAt
+      }));
+      setFormRevision((r) => r + 1);
+
+      let createdProjectsCount = 0;
+      if (selectedProjects.length > 0) {
+        for (const project of selectedProjects) {
+          try {
+            await createProject(userId, project);
+            createdProjectsCount++;
+          } catch (err) {
+            console.error("Failed to create imported project:", project.title, err);
+          }
+        }
+        const updatedProjects = await getProjectsByUser(userId);
+        setExistingProjects(updatedProjects);
+      }
+
+      setSaveMessage(
+        `Resume imported! Applied profile details${
+          createdProjectsCount > 0
+            ? ` and created ${createdProjectsCount} project(s)`
+            : ""
+        }. Review your draft below and click 'Save Portfolio' to publish.`
+      );
+    },
+    [user?.uid]
+  );
 
   async function handleSubmit(values: PortfolioInput) {
     const userId = user?.uid;
@@ -173,7 +242,10 @@ function DashboardProfileContent() {
       <AnimatedSection>
         <PageHeader
           action={
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <AiResumeButton onClick={() => setIsAiModalOpen(true)}>
+                Import Resume
+              </AiResumeButton>
               {appUser?.username ? (
                 <Link
                   className={buttonVariants({ variant: "primary" })}
@@ -272,9 +344,33 @@ function DashboardProfileContent() {
                 user={appUser}
               />
             ) : null}
+            <WarmCard className="mb-6 border-sahara-primary/30 bg-gradient-to-r from-sahara-primary/10 via-amber-500/5 to-transparent p-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3.5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sahara-primary/15 text-sahara-primary flex-shrink-0 mt-0.5">
+                    <Sparkles className="h-5 w-5 text-sahara-accent" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-sahara-text">
+                      Autofill Portfolio with AI
+                    </p>
+                    <p className="mt-0.5 text-xs text-sahara-muted leading-relaxed">
+                      Upload your resume or CV (PDF/Text) to instantly draft your headline, bio, skills, and projects.
+                    </p>
+                  </div>
+                </div>
+                <AiResumeButton
+                  onClick={() => setIsAiModalOpen(true)}
+                  variant="secondary"
+                  className="sm:self-center flex-shrink-0"
+                >
+                  Import Resume
+                </AiResumeButton>
+              </div>
+            </WarmCard>
             <PortfolioForm
               defaultValues={formDefaultValues}
-              key={portfolio?.updatedAt?.toMillis?.() ?? portfolio?.headline ?? "new"}
+              key={`${portfolio?.updatedAt?.toMillis?.() ?? portfolio?.headline ?? "new"}-rev-${formRevision}`}
               onSubmit={handleSubmit}
               onValuesChange={handleValuesChange}
             />
@@ -288,6 +384,14 @@ function DashboardProfileContent() {
           </AnimatedSection>
         </div>
       )}
+
+      <ResumeImportModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+        currentPortfolio={previewPortfolio}
+        existingProjects={existingProjects}
+        onApply={handleApplyAiData}
+      />
     </DashboardShell>
   );
 }

@@ -6,6 +6,7 @@ import { type ReactNode } from "react";
 type AnimatedSectionProps = {
   children: ReactNode;
   className?: string;
+  id?: string;
   delay?: number;
   amount?: number;
   as?: "div" | "section" | "article" | "aside";
@@ -16,6 +17,7 @@ type AnimatedSectionProps = {
 export function AnimatedSection({
   children,
   className,
+  id,
   delay = 0,
   amount = 0.2,
   as = "div",
@@ -35,7 +37,7 @@ export function AnimatedSection({
       };
 
   return (
-    <Component className={className} {...motionProps}>
+    <Component className={className} id={id} {...motionProps}>
       {children}
     </Component>
   );

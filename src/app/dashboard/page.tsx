@@ -9,6 +9,7 @@ import {
   LogOut,
   PencilLine,
   Plus,
+  Sparkles,
   Trophy
 } from "lucide-react";
 import Link from "next/link";
@@ -378,20 +379,27 @@ function DashboardContent() {
       <AnimatedSection>
         <PageHeader
           action={
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
-                className={buttonVariants()}
-                href="/dashboard/applications/new"
+                className={buttonVariants({ variant: "primary" })}
+                href="/dashboard/profile"
               >
-                <Plus aria-hidden="true" className="h-4 w-4" />
-                New Application
+                <Sparkles aria-hidden="true" className="h-4 w-4 text-sahara-accent" />
+                Import Resume (AI)
               </Link>
               <Link
-                className={buttonVariants()}
+                className={buttonVariants({ variant: "secondary" })}
                 href="/dashboard/projects/new"
               >
                 <Plus aria-hidden="true" className="h-4 w-4" />
                 Add Project
+              </Link>
+              <Link
+                className={buttonVariants({ variant: "secondary" })}
+                href="/dashboard/applications/new"
+              >
+                <Plus aria-hidden="true" className="h-4 w-4" />
+                New Application
               </Link>
               <Button
                 disabled={isLoggingOut}

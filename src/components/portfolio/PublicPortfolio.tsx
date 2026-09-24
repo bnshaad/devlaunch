@@ -1,26 +1,36 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
-
 import {
-  ExternalLink,
   Github,
   Globe,
   Linkedin,
   Mail,
-  MapPin
+  MapPin,
+  Sparkles
 } from "lucide-react";
 import Link from "next/link";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
-import { StaggerContainer, StaggerItem } from "@/components/shared/AnimatedList";
 import { EditorialHeading } from "@/components/shared/EditorialHeading";
 import { PageShell } from "@/components/shared/PageShell";
 import { WarmCard } from "@/components/shared/WarmCard";
-import { ProjectCard } from "@/components/projects/ProjectCard";
 import { buttonVariants } from "@/components/ui/button";
 import { type Portfolio } from "@/types/portfolio";
 import { type Project } from "@/types/project";
 import { type AppUser } from "@/types/user";
+import {
+  CopyLinkButton,
+  FloatingCTA,
+  Hero3DVisual,
+  InteractiveSkillBadge,
+  MagneticLink,
+  ParallaxAvatar,
+  PortfolioFooter,
+  ScrollProgressBar,
+  SectionNavDots,
+  SkillCounter,
+  TiltProjectCard,
+  TypewriterText
+} from "@/components/portfolio/interactive";
 
 type PublicPortfolioProps = {
   portfolio: Portfolio;
@@ -29,12 +39,13 @@ type PublicPortfolioProps = {
   username: string;
 };
 
-type ContactLink = {
-  href: string;
-  label: string;
-  icon: typeof Github;
-  external?: boolean;
-};
+const SECTIONS = [
+  { id: "hero", label: "Intro" },
+  { id: "about", label: "About" },
+  { id: "contact", label: "Connect" },
+  { id: "skills", label: "Skills" },
+  { id: "projects", label: "Projects" }
+];
 
 function safeExternalUrl(value: string) {
   const trimmedValue = value.trim();
@@ -67,7 +78,13 @@ function getInitials(name: string) {
 }
 
 function ContactLinks({ portfolio }: { portfolio: Portfolio }) {
-  const links: ContactLink[] = [];
+  const links: {
+    href: string;
+    label: string;
+    icon: React.ReactNode;
+    external?: boolean;
+  }[] = [];
+
   const githubUrl = safeExternalUrl(portfolio.githubUrl);
   const linkedinUrl = safeExternalUrl(portfolio.linkedinUrl);
   const websiteUrl = safeExternalUrl(portfolio.websiteUrl);
@@ -77,7 +94,7 @@ function ContactLinks({ portfolio }: { portfolio: Portfolio }) {
     links.push({
       href: `mailto:${email}`,
       label: "Email",
-      icon: Mail
+      icon: <Mail aria-hidden="true" className="h-4 w-4" />
     });
   }
 
@@ -85,7 +102,7 @@ function ContactLinks({ portfolio }: { portfolio: Portfolio }) {
     links.push({
       href: githubUrl,
       label: "GitHub",
-      icon: Github,
+      icon: <Github aria-hidden="true" className="h-4 w-4" />,
       external: true
     });
   }
@@ -94,7 +111,7 @@ function ContactLinks({ portfolio }: { portfolio: Portfolio }) {
     links.push({
       href: linkedinUrl,
       label: "LinkedIn",
-      icon: Linkedin,
+      icon: <Linkedin aria-hidden="true" className="h-4 w-4" />,
       external: true
     });
   }
@@ -103,49 +120,31 @@ function ContactLinks({ portfolio }: { portfolio: Portfolio }) {
     links.push({
       href: websiteUrl,
       label: "Website",
-      icon: Globe,
+      icon: <Globe aria-hidden="true" className="h-4 w-4" />,
       external: true
     });
   }
 
   if (!links.length) {
     return (
-      <p className="text-sm leading-7 text-sahara-muted">
+      <p className="text-xs sm:text-sm leading-6 sm:leading-7 text-sahara-muted">
         Contact links have not been added yet.
       </p>
     );
   }
 
   return (
-    <div className="flex flex-wrap gap-3">
-      {links.map((link) => {
-        const Icon = link.icon;
-
-        return (
-          <a
-            className="inline-flex items-center gap-2 rounded-lg border border-sahara-border/70 bg-sahara-background px-4 py-2.5 text-sm font-semibold text-sahara-text transition hover:-translate-y-0.5 hover:border-sahara-primary/40 hover:text-sahara-primary motion-reduce:transform-none"
-            href={link.href}
-            key={link.label}
-            rel={link.external ? "noopener noreferrer" : undefined}
-            target={link.external ? "_blank" : undefined}
-          >
-            <Icon aria-hidden="true" className="h-4 w-4" />
-            {link.label}
-            {link.external ? (
-              <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
-            ) : null}
-          </a>
-        );
-      })}
+    <div className="flex flex-wrap gap-2.5 sm:gap-3">
+      {links.map((link) => (
+        <MagneticLink
+          external={link.external}
+          href={link.href}
+          icon={link.icon}
+          key={link.label}
+          label={link.label}
+        />
+      ))}
     </div>
-  );
-}
-
-function SkillBadge({ skill }: { skill: string }) {
-  return (
-    <span className="rounded-full border border-sahara-border/70 bg-sahara-background px-3 py-1 text-xs font-semibold text-sahara-muted">
-      {skill}
-    </span>
   );
 }
 
@@ -159,154 +158,216 @@ export function PublicPortfolio({
 
   return (
     <PageShell>
-      <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-5 py-8 sm:px-8 lg:px-10">
-        <header className="flex items-center justify-between gap-4 border-b border-sahara-border/60 pb-5">
+      {/* Scroll progress bar indicator at top */}
+      <ScrollProgressBar />
+
+      {/* Floating Section Navigation Dots for Desktop */}
+      <SectionNavDots sections={SECTIONS} />
+
+      {/* Persistent Floating 'Build Yours' CTA */}
+      <FloatingCTA />
+
+      <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-5 sm:px-8 sm:py-8 lg:px-10">
+        {/* Navigation header */}
+        <header className="flex items-center justify-between gap-3 border-b border-sahara-border/60 pb-4 sm:pb-5">
           <Link
-            className="font-serif text-2xl font-bold tracking-tight text-sahara-primary"
+            className="flex items-center gap-2 font-serif text-xl sm:text-2xl font-bold tracking-tight text-sahara-primary transition-opacity hover:opacity-90"
             href="/"
           >
-            DevLaunch
+            <span>DevLaunch</span>
           </Link>
-          <Link
-            className={buttonVariants({ size: "sm", variant: "secondary" })}
-            href="/login"
-          >
-            Build Yours
-          </Link>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <CopyLinkButton username={username} />
+            <Link
+              className={`${buttonVariants({ size: "sm", variant: "primary" })} min-h-[44px] px-3.5 sm:px-4 text-xs sm:text-sm`}
+              href="/login"
+            >
+              Build Yours
+            </Link>
+          </div>
         </header>
 
+        {/* Hero Section */}
         <AnimatedSection
           as="section"
-          className="grid flex-1 items-center gap-12 py-16 md:grid-cols-[0.95fr_1.35fr] lg:py-24"
+          className="relative grid flex-1 items-center gap-6 sm:gap-8 md:gap-12 py-8 sm:py-12 md:py-16 lg:py-24 md:grid-cols-[0.95fr_1.35fr]"
+          id="hero"
           y={16}
         >
-          <div className="mx-auto w-full max-w-xs md:mx-0">
-            {user.photoURL ? (
-              <img
-                alt={`${displayName} avatar`}
-                className="aspect-square rounded-2xl border border-sahara-border/70 object-cover shadow-warm"
-                referrerPolicy="no-referrer"
-                src={user.photoURL}
-              />
-            ) : (
-              <div className="flex aspect-square items-center justify-center rounded-2xl border border-sahara-border/70 bg-sahara-surfaceLow font-serif text-7xl font-bold text-sahara-primary shadow-warm">
-                {getInitials(displayName)}
-              </div>
-            )}
+          {/* Subtle interactive 3D geometric background */}
+          <Hero3DVisual />
+
+          {/* 3D Parallax Avatar */}
+          <div className="relative z-10 mx-auto w-full max-w-[190px] sm:max-w-[240px] md:max-w-xs md:mx-0">
+            <ParallaxAvatar
+              alt={`${displayName} avatar`}
+              initials={getInitials(displayName)}
+              src={user.photoURL || null}
+            />
           </div>
 
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
+          {/* Developer identity details */}
+          <div className="relative z-10 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 rounded-full border border-sahara-border/70 bg-sahara-surface/85 px-3 py-1 text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-sahara-muted shadow-sm backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sahara-primary opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-sahara-primary" />
+              </span>
               /dev/{username}
-            </p>
-            <EditorialHeading className="mt-4 text-5xl leading-[0.95] md:text-7xl">
+            </div>
+
+            <EditorialHeading className="mt-3 sm:mt-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] sm:leading-[0.95] break-words">
               {displayName}
             </EditorialHeading>
-            <h2 className="mt-6 max-w-3xl font-serif text-3xl font-bold leading-tight text-sahara-primary md:text-4xl">
-              {portfolio.headline}
+
+            <h2 className="mt-3 sm:mt-5 max-w-3xl font-serif text-2xl sm:text-3xl md:text-4xl font-bold leading-tight text-sahara-primary">
+              <TypewriterText text={portfolio.headline} />
             </h2>
+
             {portfolio.location ? (
-              <p className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-sahara-muted">
-                <MapPin aria-hidden="true" className="h-4 w-4 text-sahara-primary" />
+              <p className="mt-3 sm:mt-5 inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-sahara-muted">
+                <MapPin aria-hidden="true" className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-sahara-primary" />
                 {portfolio.location}
               </p>
             ) : null}
-            <p className="mt-7 max-w-2xl text-base leading-8 text-sahara-muted">
+
+            <p className="mt-4 sm:mt-6 max-w-2xl text-sm sm:text-base leading-6 sm:leading-8 text-sahara-muted mx-auto md:mx-0">
               {portfolio.bio ||
                 "This developer is shaping their DevLaunch portfolio."}
             </p>
+
+            <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center md:justify-start gap-2.5 sm:gap-3">
+              <a
+                className={`${buttonVariants({ size: "default", variant: "primary" })} min-h-[44px] px-5 text-xs sm:text-sm flex-1 sm:flex-initial text-center justify-center`}
+                href="#contact"
+              >
+                Get in touch
+              </a>
+              <div className="flex-1 sm:flex-initial">
+                <CopyLinkButton username={username} />
+              </div>
+            </div>
           </div>
         </AnimatedSection>
 
-        <div className="grid gap-8 pb-16 lg:grid-cols-[1.2fr_0.8fr]">
-          <AnimatedSection as="section" delay={0.08}>
-            <WarmCard>
-              <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
-                About
-              </p>
-              <EditorialHeading as="h2" className="mt-3 text-4xl">
+        {/* Content Sections Grid */}
+        <div className="grid gap-6 sm:gap-8 pb-12 sm:pb-16 lg:grid-cols-[1.2fr_0.8fr]">
+          {/* About Section */}
+          <AnimatedSection as="section" delay={0.08} id="about">
+            <WarmCard className="relative h-full overflow-hidden p-5 sm:p-7 md:p-8">
+              <div className="pointer-events-none absolute right-0 top-0 h-28 w-28 sm:h-32 sm:w-32 rounded-bl-full bg-gradient-to-bl from-sahara-primary/10 to-transparent" />
+              <div className="flex items-center gap-2">
+                <p className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-sahara-muted">
+                  About
+                </p>
+                <Sparkles className="h-3.5 w-3.5 text-sahara-primary/70" />
+              </div>
+              <EditorialHeading as="h2" className="mt-2 text-2xl sm:text-3xl md:text-4xl">
                 Developer profile
               </EditorialHeading>
-              <p className="mt-5 text-sm leading-7 text-sahara-muted">
+              <p className="mt-4 sm:mt-5 text-xs sm:text-sm leading-6 sm:leading-7 text-sahara-muted">
                 {portfolio.bio ||
                   "A concise professional story will appear here as this portfolio grows."}
               </p>
             </WarmCard>
           </AnimatedSection>
 
-          <AnimatedSection as="section" delay={0.14}>
-            <WarmCard tone="low">
-              <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
+          {/* Contact Section */}
+          <AnimatedSection as="section" delay={0.12} id="contact">
+            <WarmCard className="relative h-full overflow-hidden p-5 sm:p-7 md:p-8" tone="low">
+              <p className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-sahara-muted">
                 Contact
               </p>
-              <EditorialHeading as="h2" className="mt-3 text-3xl">
+              <EditorialHeading as="h2" className="mt-2 text-2xl sm:text-3xl">
                 Connect
               </EditorialHeading>
-              <div className="mt-6">
+              <div className="mt-5 sm:mt-6">
                 <ContactLinks portfolio={portfolio} />
               </div>
             </WarmCard>
           </AnimatedSection>
 
-          <AnimatedSection as="section" delay={0.18}>
-            <WarmCard>
-              <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
-                Skills
-              </p>
-              <EditorialHeading as="h2" className="mt-3 text-4xl">
-                Tools and strengths
-              </EditorialHeading>
+          {/* Skills Section */}
+          <AnimatedSection as="section" delay={0.16} id="skills">
+            <WarmCard className="relative h-full overflow-hidden p-5 sm:p-7 md:p-8">
+              <div className="flex items-center justify-between gap-3 sm:gap-4">
+                <div>
+                  <p className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-sahara-muted">
+                    Skills
+                  </p>
+                  <EditorialHeading as="h2" className="mt-1 text-2xl sm:text-3xl md:text-4xl">
+                    Tools & strengths
+                  </EditorialHeading>
+                </div>
+                {portfolio.skills.length > 0 ? (
+                  <SkillCounter count={portfolio.skills.length} label="mastered" />
+                ) : null}
+              </div>
+
               {portfolio.skills.length ? (
-                <StaggerContainer
-                  className="mt-6 flex flex-wrap gap-2"
-                  staggerDelay={0.04}
-                >
-                  {portfolio.skills.map((skill) => (
-                    <StaggerItem key={skill} y={8}>
-                      <SkillBadge skill={skill} />
-                    </StaggerItem>
+                <div className="mt-5 sm:mt-6 flex flex-wrap gap-2 sm:gap-2.5">
+                  {portfolio.skills.map((skill, index) => (
+                    <InteractiveSkillBadge
+                      index={index}
+                      key={skill}
+                      skill={skill}
+                      total={portfolio.skills.length}
+                    />
                   ))}
-                </StaggerContainer>
+                </div>
               ) : (
-                <p className="mt-5 text-sm leading-7 text-sahara-muted">
+                <p className="mt-4 sm:mt-5 text-xs sm:text-sm leading-6 sm:leading-7 text-sahara-muted">
                   Skills will appear here once added by the portfolio owner.
                 </p>
               )}
             </WarmCard>
           </AnimatedSection>
 
-          <AnimatedSection as="section" className="lg:col-span-2" delay={0.22}>
-            <div className="mb-5 border-b border-sahara-border/60 pb-4">
-              <p className="text-sm font-semibold uppercase tracking-wide text-sahara-muted">
-                Projects
-              </p>
-              <EditorialHeading as="h2" className="mt-2 text-4xl">
-                Selected work
-              </EditorialHeading>
+          {/* Projects Section */}
+          <AnimatedSection
+            as="section"
+            className="lg:col-span-2"
+            delay={0.2}
+            id="projects"
+          >
+            <div className="mb-4 sm:mb-6 flex flex-wrap items-end justify-between gap-2 border-b border-sahara-border/60 pb-3 sm:pb-4">
+              <div>
+                <p className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-sahara-muted">
+                  Projects
+                </p>
+                <EditorialHeading as="h2" className="mt-1 text-2xl sm:text-3xl md:text-4xl">
+                  Selected work
+                </EditorialHeading>
+              </div>
+              {projects.length > 0 ? (
+                <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-sahara-muted">
+                  {projects.length} {projects.length === 1 ? "project" : "projects"}{" "}
+                  showcase
+                </span>
+              ) : null}
             </div>
+
             {projects.length ? (
-              <StaggerContainer
-                className="grid gap-6 md:grid-cols-2"
-                staggerDelay={0.06}
-              >
+              <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
                 {projects.map((project) => (
-                  <StaggerItem key={project.id} y={10}>
-                    <ProjectCard mode="public" project={project} />
-                  </StaggerItem>
+                  <TiltProjectCard key={project.id} project={project} />
                 ))}
-              </StaggerContainer>
+              </div>
             ) : (
-              <WarmCard tone="low">
-                <EditorialHeading as="h3" className="text-3xl">
+              <WarmCard className="p-5 sm:p-7 md:p-8" tone="low">
+                <EditorialHeading as="h3" className="text-2xl sm:text-3xl">
                   Projects coming soon
                 </EditorialHeading>
-                <p className="mt-4 text-sm leading-7 text-sahara-muted">
+                <p className="mt-3 sm:mt-4 text-xs sm:text-sm leading-6 sm:leading-7 text-sahara-muted">
                   This developer has not published projects to their portfolio yet.
                 </p>
               </WarmCard>
             )}
           </AnimatedSection>
         </div>
+
+        {/* Branded Footer */}
+        <PortfolioFooter />
       </div>
     </PageShell>
   );
