@@ -1,7 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import {
   AiConfigError,
-  checkAndRecordAiUsage,
+  checkAiUsage,
+  recordAiUsage,
+  DEFAULT_DAILY_LIMIT,
   getGeminiClient,
   GEMINI_FALLBACK_MODELS
 } from "@/lib/gemini";
@@ -56,13 +58,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Enforce lightweight Firebase Spark rate limit (5 parses per user per day)
+  // Enforce daily rate limit per user
   try {
-    const usage = await checkAndRecordAiUsage(decodedToken.uid);
+    const usage = await checkAiUsage(decodedToken.uid);
     if (!usage.allowed) {
       return NextResponse.json(
         {
-          error: `You have reached the daily limit of 5 AI resume imports. Quota resets in ${usage.resetHours} hour(s).`
+          error: `You have reached the daily limit of ${DEFAULT_DAILY_LIMIT} AI resume imports. Quota resets in ${usage.resetHours} hour(s).`
         },
         { status: 429 }
       );
@@ -207,6 +209,13 @@ export async function POST(request: NextRequest) {
 
     // Defensively validate and sanitize with Zod
     const validatedOutput = aiResumeOutputSchema.parse(parsedJson);
+
+    // Record AI usage count only after successful parsing
+    try {
+      await recordAiUsage(decodedToken.uid);
+    } catch (recError) {
+      console.warn("[AI RESUME API] Failed to record usage count:", recError);
+    }
 
     return NextResponse.json({
       success: true,

@@ -23,7 +23,7 @@ export class AiRateLimitError extends Error {
   }
 }
 
-const DEFAULT_DAILY_LIMIT = 5;
+export const DEFAULT_DAILY_LIMIT = Number(process.env.AI_DAILY_LIMIT) || 20;
 export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.6-flash";
 export const GEMINI_FALLBACK_MODELS = [
   GEMINI_MODEL,
@@ -48,13 +48,13 @@ export function getGeminiClient(): GoogleGenAI {
 }
 
 /**
- * Checks and records user AI usage using Firebase Admin Firestore.
- * Conforms to the Firebase Spark (free) plan with minimal reads/writes.
+ * Checks if user is within their daily AI quota.
+ * Does not increment the counter so failed requests are not penalized.
  */
-export async function checkAndRecordAiUsage(
+export async function checkAiUsage(
   userId: string,
   dailyLimit = DEFAULT_DAILY_LIMIT
-): Promise<{ allowed: boolean; remaining: number; resetHours: number }> {
+): Promise<{ allowed: boolean; remaining: number; resetHours: number; currentCount: number }> {
   const db = getFirebaseAdminDb();
   const rateLimitRef = db.doc(`aiRateLimits/${userId}`);
 
@@ -73,11 +73,35 @@ export async function checkAndRecordAiUsage(
     return {
       allowed: false,
       remaining: 0,
-      resetHours
+      resetHours,
+      currentCount
     };
   }
 
-  // Atomically record or reset today's usage
+  return {
+    allowed: true,
+    remaining: Math.max(0, dailyLimit - currentCount),
+    resetHours,
+    currentCount
+  };
+}
+
+/**
+ * Records successful AI usage for the user.
+ */
+export async function recordAiUsage(
+  userId: string
+): Promise<void> {
+  const db = getFirebaseAdminDb();
+  const rateLimitRef = db.doc(`aiRateLimits/${userId}`);
+
+  const now = new Date();
+  const todayStr = now.toISOString().slice(0, 10);
+
+  const snap = await rateLimitRef.get();
+  const data = snap.data();
+  const isToday = data?.lastDate === todayStr;
+
   await rateLimitRef.set(
     {
       count: isToday ? FieldValue.increment(1) : 1,
@@ -86,10 +110,23 @@ export async function checkAndRecordAiUsage(
     },
     { merge: true }
   );
+}
 
+/**
+ * Backward compatibility helper that checks and records in one step.
+ */
+export async function checkAndRecordAiUsage(
+  userId: string,
+  dailyLimit = DEFAULT_DAILY_LIMIT
+): Promise<{ allowed: boolean; remaining: number; resetHours: number }> {
+  const check = await checkAiUsage(userId, dailyLimit);
+  if (!check.allowed) {
+    return check;
+  }
+  await recordAiUsage(userId);
   return {
     allowed: true,
-    remaining: Math.max(0, dailyLimit - (currentCount + 1)),
-    resetHours
+    remaining: Math.max(0, check.remaining - 1),
+    resetHours: check.resetHours
   };
 }
