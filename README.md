@@ -1,234 +1,161 @@
 # DevLaunch
 
-DevLaunch is a web app for students and early-career developers to manage their developer journey: authenticate with Google, claim a public username, build a portfolio, manage projects, track internship applications, and review basic dashboard progress.
+DevLaunch is a modern web application for students and early-career software engineers to manage their developer journey: authenticate with Google, claim a custom public username, build an interactive portfolio with 3D elements, import profiles from resumes using AI, showcase projects, and track internship applications in a centralized workspace.
 
-The app is built as an MVP-ready career workspace. The landing and demo pages are static product previews, while the authenticated dashboard uses real user-specific Firestore data.
+Built with Next.js App Router, Tailwind CSS, Firebase, Google Gemini, and Framer Motion, DevLaunch blends a warm editorial aesthetic with interactive micro-experiences and touch-optimized mobile responsiveness.
 
-## Features
+---
 
-- Google login with Firebase Authentication
-- First-time username onboarding
-- Protected dashboard routes
-- Portfolio profile editor backed by Firestore
-- Public portfolio pages at `/dev/{username}`
-- Public/private portfolio visibility
-- Project create, edit, delete, and featured/public display
-- Internship/application create, edit, delete, and status tracking
-- Dashboard overview with real portfolio, project, and application counts
-- Firestore security rules for owner-scoped private data and public portfolio reads
-- Responsive UI styled with the app's warm minimal design system
+## ✨ Features
 
-## Tech Stack
+### 🎨 Interactive Public Portfolio (`/dev/{username}`)
+- **Interactive 3D Geometric Crystal**: A lightweight, GPU-accelerated HTML5 Canvas 3D vector-projected icosahedron with glowing vertices and ambient motes in Sahara terracotta tones (`#c2652a`, `#e8955c`). Smoothly tilts on mouse movement and automatically pauses during scroll for a locked 60 FPS.
+- **3D Parallax Avatar**: Spring-damped perspective tilt, specular lighting reflection overlay, an inverse-shifting drop shadow, and a floating 3D "Available" status badge hovering at `translateZ(32px)`.
+- **3D Multi-Plane Tilt Project Cards**: Multi-plane Z-layering where project images (`translateZ(16px)`), titles (`translateZ(30px)`), featured stars (`translateZ(38px)`), descriptions, tech tags, and action buttons float at distinct depths with dynamic specular light sheen.
+- **Progressive Typewriter Headline**: Character-by-character text reveal with a blinking terracotta cursor, rendered progressively to preserve full DOM content for SEO crawlers.
+- **Interactive Skill Cloud & Counter**: Accent-tinted skill badges with spring pop, active tap feedback, rank hover hints, and a scroll-triggered animated numeric counter.
+- **Magnetic Contact Links**: Direct links (Email, GitHub, LinkedIn, Website) with cursor-pull magnetic physics and playful icon micro-animations.
+- **Page Navigation & CTAs**: Top gradient scroll progress bar, desktop floating section navigation dots (`SectionNavDots`) tracking active viewport sections via `IntersectionObserver`, floating "Build Yours" bottom CTA, and branded footer.
 
-- Next.js App Router
-- React
-- TypeScript
-- Tailwind CSS
-- Firebase Authentication
-- Cloud Firestore
-- React Hook Form
-- Zod
-- Framer Motion
-- Lucide React
-- Vercel for deployment
+### 📱 Mobile UI & Touch Optimizations
+- **Touch & Hover Safety**: Uses a custom `useCanHover` hook powered by React 19's `useSyncExternalStore` (`(hover: hover)`) to cleanly disable mouse tilt on touchscreens, preventing drag-scroll locking while gracefully applying an ambient floating breath animation (`animate-sahara-float`).
+- **Native Web Share API**: Mobile users get native system share sheets (AirDrop, Messages, WhatsApp, Copy Link) with haptic vibration feedback, falling back to clipboard copy on desktop.
+- **Responsive Geometry & GPU Efficiency**: On screens `< 768px`, the 3D hero crystal automatically scales down, centers behind the avatar, halves particle density, clamps DPR to 1.5, and pauses rendering while the user scrolls to conserve battery.
+- **Touch Target & Safe Area Compliance**: All buttons and interactive pills enforce minimum 44px tap targets conforming to iOS/Android human interface guidelines, and bottom floating elements respect `env(safe-area-inset-bottom)`.
 
-## Routes Overview
+### 🤖 AI Resume & CV Import
+- **Instant Profile Generation**: Powered by the Google Gemini API (`@google/genai`) to parse pasted resume text or CV markdown into structured developer profile data.
+- **Structured Schema Validation**: Validated server-side with Zod (`aiResumeSchema.ts`) ensuring consistent extraction of full name, headline, bio, location, contact links, and categorized technical skills.
+- **Interactive Review Modal**: Review and edit extracted fields before applying them to the portfolio editor with a single click.
 
-| Route | Purpose |
+### 💼 Career Workspace & Dashboard
+- **Google Authentication**: Seamless authentication with Firebase Auth.
+- **Username Onboarding**: Unique `@username` validation and reservation system.
+- **Project Management**: Add, edit, delete, and feature showcase projects with live demo links, repositories, and tech stacks.
+- **Internship Tracker**: Kanban/table tracker for internship applications with status stages (Applied, Interviewing, Offer, Rejected).
+- **Dashboard Overview**: Metrics tracking portfolio visibility, project counts, and application pipeline progress.
+- **Secure Architecture**: Server-side profile photo uploading via Cloudinary and Firestore security rules enforcing owner-only mutations and public portfolio reads.
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
 | --- | --- |
-| `/` | Public landing page |
-| `/demo` | Static product preview |
-| `/login` | Google sign-in |
-| `/onboarding` | First-time username setup |
-| `/dashboard` | Authenticated overview with real user data |
-| `/dashboard/profile` | Portfolio profile editor |
-| `/dashboard/projects` | Project management |
-| `/dashboard/projects/new` | Create project |
-| `/dashboard/projects/[id]/edit` | Edit project |
-| `/dashboard/applications` | Internship/application tracker |
-| `/dashboard/applications/new` | Create application |
-| `/dashboard/applications/[id]/edit` | Edit application |
-| `/dev/[username]` | Public portfolio page |
+| **Framework** | [Next.js](https://nextjs.org/) 16 (App Router, Turbopack) |
+| **Core** | [React](https://react.dev/) 19, [TypeScript](https://www.typescriptlang.org/) |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) (Sahara warm design tokens), CSS 3D Transforms |
+| **Animations** | [Framer Motion](https://www.framer.com/motion/) 12, HTML5 Canvas 2D/3D Math |
+| **Database & Auth** | [Firebase](https://firebase.google.com/) (Auth, Cloud Firestore, Firebase Admin SDK) |
+| **AI / LLM** | [Google Gemini](https://ai.google.dev/) (`@google/genai`) |
+| **Media Storage** | [Cloudinary](https://cloudinary.com/) (Profile photo upload API) |
+| **Form Management** | [React Hook Form](https://react-hook-form.com/), [Zod](https://zod.dev/) |
+| **Icons** | [Lucide React](https://lucide.dev/) |
 
-## Firebase Services Used
+---
 
-- Firebase Authentication for Google sign-in and identity
-- Cloud Firestore for:
-  - `users/{uid}`
-  - `usernames/{username}`
-  - `portfolios/{uid}`
-  - `projects/{projectId}`
-  - `applications/{applicationId}`
+## 🗺️ Routes Overview
 
-Editable profile fields are stored in Firestore portfolio documents. Firebase Auth profile data is used only for identity fields and fallback metadata, not as the source of truth for public/editable profile names.
+| Route | Access | Purpose |
+| --- | --- | --- |
+| `/` | Public | Landing page showcasing DevLaunch features and value |
+| `/demo` | Public | Static product preview for visitors |
+| `/login` | Public | Google sign-in authentication page |
+| `/onboarding` | Authenticated | First-time custom username reservation |
+| `/dashboard` | Protected | Dashboard overview with portfolio, project, and application metrics |
+| `/dashboard/profile` | Protected | Portfolio profile editor with AI Resume Import and live preview |
+| `/dashboard/projects` | Protected | Project management list |
+| `/dashboard/projects/new` | Protected | Add new showcase project |
+| `/dashboard/projects/[id]/edit` | Protected | Edit existing project |
+| `/dashboard/applications` | Protected | Internship application pipeline tracker |
+| `/dashboard/applications/new` | Protected | Add internship application |
+| `/dashboard/applications/[id]/edit`| Protected | Edit internship application details and status |
+| `/dev/[username]` | Public | Interactive 3D public developer portfolio |
+| `/api/ai/parse-resume` | Protected | API endpoint for Gemini resume extraction |
+| `/api/profile-photo/upload` | Protected | Signed upload to Cloudinary |
+| `/api/profile-photo/remove` | Protected | Delete profile photo asset |
 
-## Environment Variables
+---
 
-Create `.env.local` for local development using the keys from `.env.example`.
+## 🔑 Environment Variables
+
+Create `.env.local` in the project root based on `.env.example`:
 
 ```bash
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-NEXT_PUBLIC_FIREBASE_APP_ID=
+# Firebase Client (Public)
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 
-FIREBASE_ADMIN_PROJECT_ID=
-FIREBASE_ADMIN_CLIENT_EMAIL=
-FIREBASE_ADMIN_PRIVATE_KEY=
+# Firebase Admin (Server-only)
+FIREBASE_ADMIN_PROJECT_ID=your_project_id
+FIREBASE_ADMIN_CLIENT_EMAIL=your_service_account_email
+FIREBASE_ADMIN_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+# Cloudinary (Server-only photo storage)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Google Gemini AI (Server-only for Resume Parser)
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
-The `NEXT_PUBLIC_FIREBASE_*` values are Firebase web app public config values.
-The Firebase Admin and Cloudinary values are server-only secrets used by the
-profile photo API routes. Store `FIREBASE_ADMIN_PRIVATE_KEY` with escaped
-newlines (`\n`) if it is on one line. Restart `npm run dev` after changing
-server-only environment variables. Do not commit `.env.local` or Firebase
-service account JSON files.
-The repository `.gitignore` already excludes `.env*.local` files.
+> [!NOTE]
+> `FIREBASE_ADMIN_PRIVATE_KEY` must have its newlines escaped as `\n` when stored as a single-line string in environment variables.
 
-## Local Setup
+---
 
-1. Install dependencies:
+## 🚀 Getting Started
 
+### 1. Clone & Install Dependencies
 ```bash
+git clone https://github.com/bnshaad/devlaunch.git
+cd devlaunch
 npm install
 ```
 
-2. Create `.env.local` and fill in the Firebase web app config.
+### 2. Configure Firebase
+1. Enable **Google Sign-In** under **Firebase Console -> Authentication -> Sign-in method**.
+2. Add authorized domains under **Authentication -> Settings -> Authorized domains** (`localhost`, `127.0.0.1`, and your production domain).
+3. Create a Firestore database in test/production mode.
 
-3. In Firebase Console, enable Google as a sign-in provider:
-
-```txt
-Authentication -> Sign-in method -> Google
-```
-
-4. Add local and deployed domains in Firebase Authorized domains:
-
-```txt
-Authentication -> Settings -> Authorized domains
-```
-
-Include at least:
-
-- `localhost`
-- your Vercel production domain
-- any custom domain used for the app
-
-5. Start the dev server:
-
-```bash
-npm run dev
-```
-
-6. Open the local URL printed by Next.js, usually:
-
-```txt
-http://localhost:3000
-```
-
-## Scripts
-
-```bash
-npm run dev
-npm run lint
-npm run build
-npm run start
-```
-
-Use `npm run lint` and `npm run build` before pushing or deploying.
-
-## Firestore Rules
-
-This repo includes a versioned Firestore rules file:
-
-```txt
-firestore.rules
-```
-
-`firebase.json` points Firebase CLI at that file:
-
-```json
-{
-  "firestore": {
-    "rules": "firestore.rules"
-  }
-}
-```
-
-Rules are not deployed automatically by the app. Deploy them manually when ready:
-
+### 3. Deploy Firestore Security Rules
 ```bash
 firebase deploy --only firestore:rules
 ```
 
-Before deploying rules, verify they match the current Firestore collections and that public portfolio reads still work for published portfolios.
+### 4. Run Development Server
+```bash
+npm run dev
+```
 
-## Deployment Notes
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-For Vercel:
+---
 
-1. Add all required `NEXT_PUBLIC_FIREBASE_*` variables to the Vercel project.
-2. Make sure they are configured for the Production environment.
-3. Redeploy after changing environment variables.
-4. Add the Vercel production domain to Firebase Authorized domains.
-5. Confirm Google sign-in provider is enabled in Firebase Authentication.
-6. Deploy Firestore rules separately from Firebase CLI when you are ready.
+## 📜 Available Scripts
 
-## Manual QA Checklist
+| Command | Action |
+| --- | --- |
+| `npm run dev` | Starts the Next.js Turbopack development server |
+| `npm run build` | Builds the optimized production bundle |
+| `npm run start` | Starts the production server |
+| `npm run lint` | Runs ESLint checks across the codebase |
 
-- Google login works for an existing user.
-- New Google user is sent to onboarding.
-- Username rejects spaces, invalid symbols, and taken names.
-- Valid onboarding lands on `/dashboard`.
-- Existing user skips onboarding.
-- Dashboard shows real portfolio/project/application data.
-- Profile editor saves Firestore portfolio data.
-- Public portfolio uses `portfolio.fullName` or username, not Gmail display name.
-- Private portfolio is not publicly readable.
-- Project add/edit/delete works.
-- Saved projects appear on public portfolios when portfolio visibility is public.
-- Featured projects appear first on public portfolios.
-- Application add/edit/delete works.
-- Application status changes persist.
-- Logout clears protected UI.
-- Refreshing protected routes does not send signed-in users to login.
-- Logged-out users cannot access dashboard routes.
-- Logged-out users can open a public `/dev/{username}` page.
-- Mobile layout is usable for landing, login, onboarding, dashboard, forms, and public portfolio.
+---
 
-## Presentation Screenshots
+## 🛡️ Security & Architecture
 
-Useful screens to capture for a GitHub README, portfolio case study, or LinkedIn post:
+- **Scoped Data Isolation**: Users can only read, update, and delete their own projects, applications, and private profile documents.
+- **Public Portfolios**: Unauthenticated users can only access `/dev/{username}` if the portfolio has `isPublic: true`.
+- **Server-Side AI & Cloud Credentials**: Gemini and Firebase Admin SDK credentials reside strictly in Node.js server routes and are never exposed to the client bundle.
+- **Accessibility & Motion Preference**: All animations and 3D effects strictly respect `prefers-reduced-motion: reduce` via `useReducedMotion()`.
 
-- Landing page hero: shows the product positioning and visual style.
-- Demo page: shows the live MVP feature summary without requiring login.
-- Login page: shows the Google-auth entry point.
-- Onboarding page: shows first-time username setup.
-- Dashboard overview: shows real portfolio, project, and application data.
-- Portfolio editor: shows editable profile fields and preview.
-- Projects page: shows project management and featured projects.
-- Applications page: shows the internship tracker and statuses.
-- Public portfolio: shows the recruiter-facing `/dev/{username}` page.
+---
 
-Avoid showing real personal email addresses, private application notes, or unreleased Firebase project details in screenshots.
-
-## Known Limitations
-
-- Dashboard stats are basic counts and status summaries, not full analytics charts.
-- Landing and demo page numbers are illustrative preview content.
-- Public portfolio project visibility is currently controlled by the `featured` flag plus public portfolio visibility.
-- Firestore rules must be deployed manually.
-- No file upload/storage UI is currently implemented.
-
-## Future Improvements
-
-- Richer dashboard analytics and trends
-- Application filtering/search/sorting
-- Profile image or project image upload workflow
-- Better public portfolio customization
-- Reminder and follow-up workflows for applications
-- Automated end-to-end tests for the main user flows
+## 📄 License
+This project is open-source and available under the [MIT License](LICENSE).
