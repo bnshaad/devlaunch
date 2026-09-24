@@ -134,7 +134,11 @@ export async function createProject(userId: string, data: ProjectInput) {
     updatedAt: serverTimestamp()
   });
 
-  return getProjectById(projectRef.id);
+  return {
+    id: projectRef.id,
+    userId,
+    ...normalizedData
+  } satisfies Project;
 }
 
 export async function getProjectsByUser(userId: string) {
@@ -207,7 +211,10 @@ export async function updateProject(
     updatedAt: serverTimestamp()
   });
 
-  return getProjectById(projectId);
+  return {
+    ...existingProject,
+    ...normalizedData
+  } satisfies Project;
 }
 
 export async function deleteProject(projectId: string, userId: string) {

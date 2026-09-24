@@ -27,11 +27,29 @@ export class AiRateLimitError extends Error {
 
 export const DEFAULT_DAILY_LIMIT = Number(process.env.AI_DAILY_LIMIT) || 20;
 export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash";
-export const GEMINI_FALLBACK_MODELS = [
-  GEMINI_MODEL,
-  "gemini-3.5-flash",
-  "gemini-3.8-flash"
-];
+export const GEMINI_FALLBACK_MODELS = Array.from(
+  new Set([
+    GEMINI_MODEL,
+    "gemini-3.5-flash-lite",
+    "gemini-3.5-flash",
+    "gemini-3.8-flash"
+  ])
+);
+
+/**
+ * Returns optimal thinking configuration per model to minimize latency.
+ * For structured JSON extraction, MINIMAL or LOW thinking slashes response times
+ * from >13s down to 1-2s.
+ */
+export function getModelThinkingConfig(modelName: string) {
+  if (modelName.includes("3.8")) {
+    return { thinkingLevel: "LOW" as const };
+  }
+  if (modelName.includes("3.5")) {
+    return { thinkingLevel: "MINIMAL" as const };
+  }
+  return undefined;
+}
 
 let cachedGeminiClient: GoogleGenAI | null = null;
 

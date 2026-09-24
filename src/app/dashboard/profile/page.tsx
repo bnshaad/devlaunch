@@ -24,8 +24,16 @@ import {
 } from "@/services/projectService";
 import { type Portfolio, type PortfolioInput } from "@/types/portfolio";
 import { type Project, type ProjectInput } from "@/types/project";
+import dynamic from "next/dynamic";
 import { AiResumeButton } from "@/components/portfolio/AiResumeButton";
-import { ResumeImportModal } from "@/components/portfolio/ResumeImportModal";
+
+const ResumeImportModal = dynamic(
+  () =>
+    import("@/components/portfolio/ResumeImportModal").then(
+      (mod) => mod.ResumeImportModal
+    ),
+  { ssr: false }
+);
 
 const emptyPortfolio: PortfolioInput = {
   fullName: "",
@@ -175,14 +183,12 @@ function DashboardProfileContent() {
 
       let createdProjectsCount = 0;
       if (selectedProjects.length > 0) {
-        for (const project of selectedProjects) {
-          try {
-            await createProject(userId, project);
-            createdProjectsCount++;
-          } catch (err) {
-            console.error("Failed to create imported project:", project.title, err);
-          }
-        }
+        const results = await Promise.allSettled(
+          selectedProjects.map((project) => createProject(userId, project))
+        );
+        createdProjectsCount = results.filter(
+          (result) => result.status === "fulfilled"
+        ).length;
         const updatedProjects = await getProjectsByUser(userId);
         setExistingProjects(updatedProjects);
       }

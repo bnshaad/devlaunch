@@ -187,6 +187,16 @@ function buildRecentActivity(
     .slice(0, 4);
 }
 
+type DashboardCacheEntry = {
+  portfolio: Portfolio | null;
+  projects: Project[];
+  applications: InternshipApplication[];
+  timestamp: number;
+};
+
+const dashboardDataCache = new Map<string, DashboardCacheEntry>();
+const CACHE_COOLDOWN_MS = 30000; // 30-second freshness window to prevent network storms
+
 export default function DashboardPage() {
   return (
     <ProtectedRoute>
@@ -198,15 +208,16 @@ export default function DashboardPage() {
 function DashboardContent() {
   const { appUser, logout, user } = useAuth();
   const router = useRouter();
+  const cachedData = user?.uid ? dashboardDataCache.get(user.uid) : null;
   const [logoutError, setLogoutError] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [portfolio, setPortfolio] = useState<Portfolio | null>(() => cachedData?.portfolio ?? null);
+  const [projects, setProjects] = useState<Project[]>(() => cachedData?.projects ?? []);
   const [applications, setApplications] = useState<InternshipApplication[]>(
-    []
+    () => cachedData?.applications ?? []
   );
   const [dashboardError, setDashboardError] = useState<string | null>(null);
-  const [isDashboardLoading, setIsDashboardLoading] = useState(true);
+  const [isDashboardLoading, setIsDashboardLoading] = useState(() => !cachedData);
   const displayName = useMemo(
     () =>
       portfolio?.fullName?.trim() ||
@@ -286,7 +297,7 @@ function DashboardContent() {
     ]
   );
 
-  const loadDashboardData = useCallback(async (showLoading = true) => {
+  const loadDashboardData = useCallback(async (forceRefresh = false) => {
     const userId = user?.uid;
 
     if (!userId) {
@@ -297,7 +308,14 @@ function DashboardContent() {
       return;
     }
 
-    if (showLoading) {
+    const cached = dashboardDataCache.get(userId);
+    const now = Date.now();
+    if (!forceRefresh && cached && now - cached.timestamp < CACHE_COOLDOWN_MS) {
+      setIsDashboardLoading(false);
+      return;
+    }
+
+    if (!cached) {
       setIsDashboardLoading(true);
     }
 
@@ -310,6 +328,13 @@ function DashboardContent() {
           getProjectsByUser(userId),
           getApplicationsByUser(userId)
         ]);
+
+      dashboardDataCache.set(userId, {
+        portfolio: nextPortfolio,
+        projects: nextProjects,
+        applications: nextApplications,
+        timestamp: Date.now()
+      });
 
       setPortfolio(nextPortfolio);
       setProjects(nextProjects);
@@ -341,16 +366,13 @@ function DashboardContent() {
       }
     }
 
-    const initialLoadId = window.setTimeout(() => {
-      void loadDashboardData(false);
-    }, 0);
+    void loadDashboardData(false);
     window.addEventListener("focus", refreshDashboardData);
     window.addEventListener("pageshow", refreshDashboardData);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       isActive = false;
-      window.clearTimeout(initialLoadId);
       window.removeEventListener("focus", refreshDashboardData);
       window.removeEventListener("pageshow", refreshDashboardData);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
@@ -478,7 +500,7 @@ function DashboardContent() {
             </p>
             <Button
               className="mt-5"
-              onClick={() => void loadDashboardData()}
+              onClick={() => void loadDashboardData(true)}
               variant="secondary"
             >
               Refresh dashboard

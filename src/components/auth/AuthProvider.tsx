@@ -124,9 +124,30 @@ function withTimeout<T>(
   });
 }
 
+function getStoredAppUser(): AppUser | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = sessionStorage.getItem("devlaunch_app_user");
+    return raw ? (JSON.parse(raw) as AppUser) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setStoredAppUser(appUser: AppUser | null) {
+  if (typeof window === "undefined") return;
+  try {
+    if (appUser) {
+      sessionStorage.setItem("devlaunch_app_user", JSON.stringify(appUser));
+    } else {
+      sessionStorage.removeItem("devlaunch_app_user");
+    }
+  } catch {}
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [appUser, setAppUser] = useState<AppUser | null>(null);
+  const [appUser, setAppUser] = useState<AppUser | null>(getStoredAppUser);
   const [authLoading, setAuthLoading] = useState(isFirebaseConfigured);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
@@ -135,13 +156,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ? null
       : "Firebase is not configured yet. Add the NEXT_PUBLIC_FIREBASE_* environment variables and restart the dev server."
   );
-  const loading = authLoading || profileLoading;
+  const loading = authLoading || (profileLoading && !appUser);
 
   const loadUserProfile = useCallback(async (
     firebaseUser: FirebaseUser,
     options: ProfileLoadOptions = {}
   ) => {
-    setProfileLoading(true);
+    // If we already have appUser in memory or session for this user, do not block the UI
+    const isBackgroundRefresh = Boolean(options.preserveExistingProfileOnError);
+    if (!isBackgroundRefresh) {
+      setProfileLoading(true);
+    }
     setProfileError(null);
 
     try {
@@ -152,6 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       );
 
       setAppUser(profile);
+      setStoredAppUser(profile);
       setAuthError(null);
       logAuthDebug("appUser loaded", {
         hasUid: Boolean(profile.uid),
@@ -238,6 +264,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!firebaseUser) {
           setUser(null);
           setAppUser(null);
+          setStoredAppUser(null);
           setProfileError(null);
           setProfileLoading(false);
           setAuthLoading(false);
@@ -246,9 +273,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         setUser(firebaseUser);
-        setAppUser(null);
         setAuthLoading(false);
-        await loadUserProfile(firebaseUser);
+        await loadUserProfile(firebaseUser, {
+          preserveExistingProfileOnError: true
+        });
       },
       (error) => {
         if (!isActive) {
@@ -336,6 +364,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await signOut(auth);
       setUser(null);
       setAppUser(null);
+      setStoredAppUser(null);
       setProfileError(null);
     } catch (error) {
       console.error("Sign out failed:", getAuthErrorMessage(error));

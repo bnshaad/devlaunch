@@ -85,7 +85,12 @@ export async function createOrUpdatePortfolio(
     };
 
     await setDoc(portfolioRef, newPortfolio);
-    return getPortfolio(userId);
+    return {
+      userId,
+      ...normalizedData,
+      createdAt: undefined,
+      updatedAt: undefined
+    } satisfies Portfolio;
   }
 
   const existingPortfolio = toPortfolio(portfolioSnapshot.data());
@@ -99,7 +104,10 @@ export async function createOrUpdatePortfolio(
     updatedAt: serverTimestamp()
   });
 
-  return getPortfolio(userId);
+  return {
+    ...existingPortfolio,
+    ...normalizedData
+  } satisfies Portfolio;
 }
 
 export async function getPortfolioByUserId(userId: string) {

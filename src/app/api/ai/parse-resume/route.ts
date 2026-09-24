@@ -5,7 +5,8 @@ import {
   recordAiUsage,
   DEFAULT_DAILY_LIMIT,
   getGeminiClient,
-  GEMINI_FALLBACK_MODELS
+  GEMINI_FALLBACK_MODELS,
+  getModelThinkingConfig
 } from "@/lib/gemini";
 import {
   aiResumeOutputSchema,
@@ -174,15 +175,31 @@ export async function POST(request: NextRequest) {
     for (const modelName of GEMINI_FALLBACK_MODELS) {
       try {
         console.info(`[AI RESUME API] Calling Gemini model: ${modelName}`);
-        const response = await ai.models.generateContent({
+        const thinking = getModelThinkingConfig(modelName);
+        const config: Record<string, unknown> = {
+          responseMimeType: "application/json",
+          responseSchema: geminiResumeResponseSchema,
+          temperature: 0.1
+        };
+        if (thinking) {
+          config.thinkingConfig = thinking;
+        }
+
+        // Apply a 12-second timeout per candidate attempt to fail over quickly on spikes
+        const modelPromise = ai.models.generateContent({
           model: modelName,
           contents: contentsPayload,
-          config: {
-            responseMimeType: "application/json",
-            responseSchema: geminiResumeResponseSchema,
-            temperature: 0.2
-          }
+          config
         });
+
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(
+            () => reject(new Error(`Model ${modelName} timed out after 12s`)),
+            12000
+          );
+        });
+
+        const response = await Promise.race([modelPromise, timeoutPromise]);
 
         const text = response.text?.trim();
         if (text) {
